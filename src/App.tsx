@@ -7,13 +7,19 @@ import {
   IonTabBar,
   IonTabButton,
   IonTabs,
+  IonSpinner,
+  IonContent,
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButton,
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle } from 'ionicons/icons';
-import Tab1 from './pages/Tab1';
-import Tab2 from './pages/Tab2';
-import Tab3 from './pages/Tab3';
+import { iceCream, restaurant, beer } from 'ionicons/icons';
+import { ApiProvider, useApi } from './contexts/ApiContext';
+import { getButtonColor } from './utils/buttonUtils';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -31,15 +37,7 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* import '@ionic/react/css/palettes/dark.always.css'; */
-/* import '@ionic/react/css/palettes/dark.class.css'; */
+/* Dark mode CSS */
 import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
@@ -47,41 +45,121 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/tab1">
-            <Tab1 />
+// Icon mapping for different button map names
+const getIconForTab = (name: string) => {
+  switch (name.toLowerCase()) {
+    case 'godis':
+      return iceCream;
+    case 'lunch':
+      return restaurant;
+    case 'läsk':
+      return beer;
+    default:
+      return restaurant;
+  }
+};
+
+const TabPage: React.FC<{ buttonMap: any }> = ({ buttonMap }) => {
+  if (!buttonMap) return null;
+
+  return (
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>{buttonMap.name}</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent fullscreen>
+        <div className="ion-padding">
+          {buttonMap.buttons.map((button: any) => (
+            <IonButton 
+              key={`${button.x}-${button.y}-${button.product}`}
+              expand="block"
+              color={getButtonColor(button.theme)}
+            >
+              {button.name || `Product ${button.product}`}
+            </IonButton>
+          ))}
+        </div>
+      </IonContent>
+    </IonPage>
+  );
+};
+
+const TabContent: React.FC = () => {
+  const { buttonMaps, loading, error } = useApi();
+
+  if (loading) {
+    return (
+      <IonContent className="ion-padding ion-text-center">
+        <IonSpinner />
+      </IonContent>
+    );
+  }
+
+  if (error) {
+    return (
+      <IonContent className="ion-padding">
+        <p>Ett fel uppstod: {error.message}</p>
+      </IonContent>
+    );
+  }
+
+ // Filtrera endast tablet-knappar med faktiska knappar
+  const filteredMaps = buttonMaps.filter(map => 
+    map.type === 'tablet-buttons' && map.buttons && map.buttons.length > 0
+  );
+
+  if (filteredMaps.length === 0) {
+    return (
+      <IonContent className="ion-padding ion-text-center">
+        <p>Inga knappar tillgängliga</p>
+      </IonContent>
+    );
+  }
+
+  return (
+    <IonTabs>
+      <IonRouterOutlet>
+        {filteredMaps.map((buttonMap, index) => (
+          <Route 
+            key={buttonMap.id}
+            exact={index === 0}
+            path={`/tab${buttonMap.id}`}
+          >
+            <TabPage buttonMap={buttonMap} />
           </Route>
-          <Route exact path="/tab2">
-            <Tab2 />
-          </Route>
-          <Route path="/tab3">
-            <Tab3 />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/tab1" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/tab1">
-            <IonIcon aria-hidden="true" icon={triangle} />
-            <IonLabel>Tab 1</IonLabel>
+        ))}
+        <Route exact path="/">
+          <Redirect to={`/tab${filteredMaps[0].id}`} />
+        </Route>
+      </IonRouterOutlet>
+      <IonTabBar slot="bottom">
+        {filteredMaps.map(buttonMap => (
+          <IonTabButton 
+            key={buttonMap.id}
+            tab={`tab${buttonMap.id}`} 
+            href={`/tab${buttonMap.id}`}
+          >
+            <IonIcon aria-hidden="true" icon={getIconForTab(buttonMap.name)} />
+            <IonLabel>{buttonMap.name}</IonLabel>
           </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon aria-hidden="true" icon={ellipse} />
-            <IonLabel>Tab 2</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon aria-hidden="true" icon={square} />
-            <IonLabel>Tab 3</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+        ))}
+      </IonTabBar>
+    </IonTabs>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <IonApp>
+      <ApiProvider>
+        <IonReactRouter>
+          <TabContent />
+        </IonReactRouter>
+      </ApiProvider>
+    </IonApp>
+  );
+};
 
 export default App;

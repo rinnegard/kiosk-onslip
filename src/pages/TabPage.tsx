@@ -5,45 +5,25 @@ import {
     IonTitle,
     IonToolbar,
     IonButton,
-    IonSpinner,
 } from "@ionic/react";
-import { useApi } from '../contexts/apiContext';
 import { getButtonColor } from '../utils/buttonUtils';
+import { ButtonMap } from '../types';
 
-const Tab2: React.FC = () => {
-    const { buttonMaps, loading, error } = useApi();
-    const lunchButtons = buttonMaps.find(map => map.name === "Lunch")?.buttons || [];
+interface TabPageProps {
+    buttonMap: ButtonMap;
+}
 
-    if (loading) {
-        return (
-            <IonPage>
-                <IonContent className="ion-padding ion-text-center">
-                    <IonSpinner />
-                </IonContent>
-            </IonPage>
-        );
-    }
-
-    if (error) {
-        return (
-            <IonPage>
-                <IonContent className="ion-padding">
-                    <p>Error: {error.message}</p>
-                </IonContent>
-            </IonPage>
-        );
-    }
-
+const TabPage: React.FC<TabPageProps> = ({ buttonMap }) => {
     return (
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonTitle>Lunch</IonTitle>
+                    <IonTitle>{buttonMap.name}</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
                 <div className="ion-padding">
-                    {lunchButtons.map((button) => (
+                    {buttonMap.buttons.map((button) => (
                         <IonButton 
                             key={`${button.x}-${button.y}-${button.product}`}
                             expand="block"
@@ -58,4 +38,4 @@ const Tab2: React.FC = () => {
     );
 };
 
-export default Tab2;
+export default TabPage;

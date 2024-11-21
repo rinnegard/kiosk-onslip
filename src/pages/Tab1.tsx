@@ -4,42 +4,55 @@ import {
     IonPage,
     IonTitle,
     IonToolbar,
+    IonButton,
+    IonSpinner,
 } from "@ionic/react";
-
-import "./Tab1.css";
-import { useEffect, useState } from "react";
-
-import { API, webRequestHandler } from "@onslip/onslip-360-web-api";
-
-API.initialize(webRequestHandler({}));
-
-const hawk = import.meta.env.VITE_HAWK_ID;
-const key = import.meta.env.VITE_KEY;
-const realm = import.meta.env.VITE_REALM;
-
-const api = new API("https://test.onslip360.com/v1/", realm, hawk, key);
+import { useApi } from '../contexts/apiContext';
+import { getButtonColor } from '../utils/buttonUtils';
 
 const Tab1: React.FC = () => {
-    const [data, setData] = useState<any>();
+    const { buttonMaps, loading, error } = useApi();
+    const candyButtons = buttonMaps.find(map => map.name === "Godis")?.buttons || [];
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await api.listProducts();
-            setData(response);
-        };
+    if (loading) {
+        return (
+            <IonPage>
+                <IonContent className="ion-padding ion-text-center">
+                    <IonSpinner />
+                </IonContent>
+            </IonPage>
+        );
+    }
 
-        fetchData();
-    }, []);
+    if (error) {
+        return (
+            <IonPage>
+                <IonContent className="ion-padding">
+                    <p>Error: {error.message}</p>
+                </IonContent>
+            </IonPage>
+        );
+    }
 
     return (
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonTitle>Products</IonTitle>
+                    <IonTitle>Godis</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
-                <pre>{JSON.stringify(data, null, 2)}</pre>
+                <div className="ion-padding">
+                    {candyButtons.map((button) => (
+                        <IonButton 
+                            key={`${button.x}-${button.y}-${button.product}`}
+                            expand="block"
+                            color={getButtonColor(button.theme)}
+                        >
+                            {button.name || `Product ${button.product}`}
+                        </IonButton>
+                    ))}
+                </div>
             </IonContent>
         </IonPage>
     );
