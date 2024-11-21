@@ -42,6 +42,9 @@ import "@ionic/react/css/palettes/dark.system.css";
 
 /* Theme variables */
 import "./theme/variables.css";
+import Tab3 from "./pages/Tab3";
+import Cart from "./pages/Cart";
+import { CartProvider, useCart } from "./contexts/cartContext";
 
 setupIonicReact();
 
@@ -60,6 +63,7 @@ const getIconForTab = (name: string) => {
 };
 
 const TabPage: React.FC<{ buttonMap: any }> = ({ buttonMap }) => {
+    const { state, dispatch } = useCart();
     if (!buttonMap) return null;
 
     return (
@@ -76,6 +80,16 @@ const TabPage: React.FC<{ buttonMap: any }> = ({ buttonMap }) => {
                             key={`${button.x}-${button.y}-${button.product}`}
                             expand="block"
                             color={getButtonColor(button.theme)}
+                            onClick={() => {
+                                dispatch({
+                                    type: "ADD_ITEM",
+                                    payload: {
+                                        id: button.product!,
+                                        name: button.name!,
+                                        quantity: 1,
+                                    },
+                                });
+                            }}
                         >
                             {button.name || `Product ${button.product}`}
                         </IonButton>
@@ -136,6 +150,9 @@ const TabContent: React.FC = () => {
                 <Route exact path="/">
                     <Redirect to={`/tab${filteredMaps[0].id}`} />
                 </Route>
+                <Route exact path={`/cart`}>
+                    <Cart />
+                </Route>
             </IonRouterOutlet>
             <IonTabBar slot="bottom">
                 {filteredMaps.map((buttonMap) => (
@@ -159,11 +176,13 @@ const TabContent: React.FC = () => {
 const App: React.FC = () => {
     return (
         <IonApp>
-            <ApiProvider>
-                <IonReactRouter>
-                    <TabContent />
-                </IonReactRouter>
-            </ApiProvider>
+            <CartProvider>
+                <ApiProvider>
+                    <IonReactRouter>
+                        <TabContent />
+                    </IonReactRouter>
+                </ApiProvider>
+            </CartProvider>
         </IonApp>
     );
 };

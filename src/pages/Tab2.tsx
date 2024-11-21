@@ -7,12 +7,13 @@ import {
     IonButton,
     IonSpinner,
 } from "@ionic/react";
-import { useApi } from '../contexts/apiContext';
-import { getButtonColor } from '../utils/buttonUtils';
+import { useApi } from "../contexts/apiContext";
+import { getButtonColor } from "../utils/buttonUtils";
 
 const Tab2: React.FC = () => {
     const { buttonMaps, loading, error } = useApi();
-    const lunchButtons = buttonMaps.find(map => map.name === "Lunch")?.buttons || [];
+    const lunchButtons =
+        buttonMaps.find((map) => map.name === "Lunch")?.buttons || [];
 
     if (loading) {
         return (
@@ -44,7 +45,7 @@ const Tab2: React.FC = () => {
             <IonContent fullscreen>
                 <div className="ion-padding">
                     {lunchButtons.map((button) => (
-                        <IonButton 
+                        <IonButton
                             key={`${button.x}-${button.y}-${button.product}`}
                             expand="block"
                             color={getButtonColor(button.theme)}
