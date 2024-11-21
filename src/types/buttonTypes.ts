@@ -37,9 +37,9 @@ export interface ApiContextType {
 }
 
 export type ButtonTheme = 
-    | 'success'   // Green (0, 5)
-    | 'primary'   // Blue (1, 6)
-    | 'warning'   // Yellow/Orange (2, 7)
-    | 'danger'    // Red (3, 8)
-    | 'tertiary'  // Purple (4, 9)
-    | 'medium';   // Default gray
+    | 'success'   // Grön (0, 5)
+    | 'primary'   // Blå (1, 6)
+    | 'warning'   // Gul/Orange (2, 7)
+    | 'danger'    // Röd (3, 8)
+    | 'tertiary'  // Lila (4, 9)
+    | 'medium';   // Grå (default)

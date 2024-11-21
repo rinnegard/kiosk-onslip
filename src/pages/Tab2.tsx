@@ -1,58 +1,21 @@
-import {
-    IonContent,
-    IonHeader,
-    IonPage,
-    IonTitle,
-    IonToolbar,
-    IonButton,
-    IonSpinner,
-} from "@ionic/react";
-import { useApi } from '../contexts/apiContext';
-import { getButtonColor } from '../utils/buttonUtils';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import { UserList } from '../components/UserList';
+import { User } from '../types/userTypes';
 
 const Tab2: React.FC = () => {
-    const { buttonMaps, loading, error } = useApi();
-    const lunchButtons = buttonMaps.find(map => map.name === "Lunch")?.buttons || [];
-
-    if (loading) {
-        return (
-            <IonPage>
-                <IonContent className="ion-padding ion-text-center">
-                    <IonSpinner />
-                </IonContent>
-            </IonPage>
-        );
-    }
-
-    if (error) {
-        return (
-            <IonPage>
-                <IonContent className="ion-padding">
-                    <p>Error: {error.message}</p>
-                </IonContent>
-            </IonPage>
-        );
-    }
+    const handleUserSelect = (user: User) => {
+        console.log('Selected user:', user);
+    };
 
     return (
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonTitle>Lunch</IonTitle>
+                    <IonTitle>Anställda</IonTitle>
                 </IonToolbar>
             </IonHeader>
-            <IonContent fullscreen>
-                <div className="ion-padding">
-                    {lunchButtons.map((button) => (
-                        <IonButton 
-                            key={`${button.x}-${button.y}-${button.product}`}
-                            expand="block"
-                            color={getButtonColor(button.theme)}
-                        >
-                            {button.name || `Product ${button.product}`}
-                        </IonButton>
-                    ))}
-                </div>
+            <IonContent>
+                <UserList onUserSelect={handleUserSelect} />
             </IonContent>
         </IonPage>
     );
