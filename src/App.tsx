@@ -45,6 +45,7 @@ import "./theme/variables.css";
 import Tab3 from "./pages/Tab3";
 import Cart from "./pages/Cart";
 import { CartProvider, useCart } from "./contexts/cartContext";
+import CartIcon from "./components/CartIcon";
 
 setupIonicReact();
 
@@ -71,6 +72,7 @@ const TabPage: React.FC<{ buttonMap: any }> = ({ buttonMap }) => {
             <IonHeader>
                 <IonToolbar>
                     <IonTitle>{buttonMap.name}</IonTitle>
+                    <CartIcon></CartIcon>
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>

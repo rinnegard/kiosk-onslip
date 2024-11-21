@@ -8,15 +8,17 @@ import {
 } from "@ionic/react";
 import { useCart } from "../contexts/cartContext";
 import CartItem from "../components/CartItem";
+import CartIcon from "../components/CartIcon";
 
 export default function Cart() {
-    const { state, dispatch } = useCart();
+    const { state } = useCart();
 
     return (
         <IonPage>
             <IonHeader>
                 <IonToolbar>
                     <IonTitle>Tabs</IonTitle>
+                    <CartIcon></CartIcon>
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
