@@ -21,7 +21,9 @@ export default function CartItem({ item }: { item: CartItem }) {
             <IonLabel>
                 {item.name} {item.quantity}st
             </IonLabel>
-            {product && <IonNote slot="end">{product.price}kr</IonNote>}
+            {product && (
+                <IonNote slot="end">{product.price * item.quantity}kr</IonNote>
+            )}
             <IonButton
                 size="small"
                 onClick={() => {
