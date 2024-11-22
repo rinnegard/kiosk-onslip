@@ -50,6 +50,7 @@ import Cart from "./pages/Cart";
 import { CartProvider, useCart } from "./contexts/cartContext";
 import CartIcon from "./components/CartIcon";
 import { getButtonColor } from "./utils/buttonUtils";
+import TabPage from "./pages/TabPage";
 
 setupIonicReact();
 
@@ -64,45 +65,6 @@ const getIconForTab = (name: string) => {
         default:
             return restaurant;
     }
-};
-
-const TabPage: React.FC<{ buttonMap: any }> = ({ buttonMap }) => {
-    const { state, dispatch } = useCart();
-    if (!buttonMap) return null;
-
-    return (
-        <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonTitle>{buttonMap.name}</IonTitle>
-                    <CartIcon></CartIcon>
-                </IonToolbar>
-            </IonHeader>
-            <IonContent fullscreen>
-                <div className="ion-padding">
-                    {buttonMap.buttons.map((button: any) => (
-                        <IonButton
-                            key={`${button.x}-${button.y}-${button.product}`}
-                            expand="block"
-                            color={getButtonColor(button.theme)}
-                            onClick={() => {
-                                dispatch({
-                                    type: "ADD_ITEM",
-                                    payload: {
-                                        id: button.product!,
-                                        name: button.name!,
-                                        quantity: 1,
-                                    },
-                                });
-                            }}
-                        >
-                            {button.name || `Product ${button.product}`}
-                        </IonButton>
-                    ))}
-                </div>
-            </IonContent>
-        </IonPage>
-    );
 };
 
 const TabContent: React.FC = () => {
