@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
     IonContent,
     IonHeader,
@@ -6,8 +6,9 @@ import {
     IonTitle,
     IonToolbar,
 } from "@ionic/react";
-import { ButtonMap } from '../types/buttonTypes';
-import { ProductButton } from '../components/ProductButton';
+import { useCart } from "../contexts/cartContext";
+import { ButtonMap } from "../types/buttonTypes";
+import { ProductButton } from "../components/ProductButton";
 
 interface TabPageProps {
     buttonMap: ButtonMap;
@@ -24,7 +25,7 @@ const TabPage: React.FC<TabPageProps> = ({ buttonMap }) => {
             <IonContent fullscreen>
                 <div className="ion-padding">
                     {buttonMap.buttons.map((button) => (
-                        <ProductButton 
+                        <ProductButton
                             key={`${button.x}-${button.y}-${button.product}`}
                             button={button}
                         />
