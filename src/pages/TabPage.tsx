@@ -1,13 +1,13 @@
+import React from 'react';
 import {
     IonContent,
     IonHeader,
     IonPage,
     IonTitle,
     IonToolbar,
-    IonButton,
 } from "@ionic/react";
-import { getButtonColor } from '../utils/buttonUtils';
-import { ButtonMap } from '../types';
+import { ButtonMap } from '../types/buttonTypes';
+import { ProductButton } from '../components/ProductButton';
 
 interface TabPageProps {
     buttonMap: ButtonMap;
@@ -24,13 +24,10 @@ const TabPage: React.FC<TabPageProps> = ({ buttonMap }) => {
             <IonContent fullscreen>
                 <div className="ion-padding">
                     {buttonMap.buttons.map((button) => (
-                        <IonButton 
+                        <ProductButton 
                             key={`${button.x}-${button.y}-${button.product}`}
-                            expand="block"
-                            color={getButtonColor(button.theme)}
-                        >
-                            {button.name || `Product ${button.product}`}
-                        </IonButton>
+                            button={button}
+                        />
                     ))}
                 </div>
             </IonContent>
