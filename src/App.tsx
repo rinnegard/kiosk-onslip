@@ -48,7 +48,6 @@ import "@ionic/react/css/palettes/dark.system.css";
 import Cart from "./pages/Cart";
 import { CartProvider, useCart } from "./contexts/cartContext";
 import CartIcon from "./components/CartIcon";
-import { getButtonColor } from "./utils/buttonUtils";
 import TabPage from "./pages/TabPage";
 
 setupIonicReact();
@@ -133,10 +132,6 @@ const TabContent: React.FC = () => {
                         <IonLabel>{buttonMap.name}</IonLabel>
                     </IonTabButton>
                 ))}
-                <IonTabButton tab="users" href="/users">
-                    <IonIcon aria-hidden="true" icon={people} />
-                    <IonLabel>Anställda</IonLabel>
-                </IonTabButton>
             </IonTabBar>
         </IonTabs>
     );
