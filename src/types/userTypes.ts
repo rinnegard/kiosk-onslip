@@ -1,12 +1,9 @@
+import { API } from '@onslip/onslip-360-api';
+
 export type SystemRole = 'admin' | 'cashier' | 'service' | 'employee';
 
-export interface User {
-    id?: number;
-    name: string;
-    alias: string;
-    'system-roles'?: SystemRole[];
-    deleted?: string;
-}
+// Använd User från API:et
+export type User = API.User;
 
 export interface UserContextType {
     users: User[];
