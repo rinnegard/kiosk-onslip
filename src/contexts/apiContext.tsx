@@ -1,18 +1,21 @@
 import React, { createContext, useContext, useReducer, ReactNode, useEffect } from "react";
-import { ButtonMap, Product, ApiContextType } from "../types/buttonTypes";
+import { ButtonMap, Product } from "../types/buttonTypes";
+import { API } from "../types/apiTypes";
 import { fetchApiData } from "../services/apiService";
 
-type ApiState = {
+interface ApiState {
     buttonMaps: ButtonMap[];
     products: { [key: number]: Product };
     loading: boolean;
     error: Error | null;
-};
+}
 
 type ApiAction = 
-    | { type: "SET_DATA"; payload: { buttonMaps: ButtonMap[], products: { [key: number]: Product } } }
-    | { type: "SET_ERROR"; payload: Error }
-    | { type: "SET_LOADING"; payload: boolean };
+    | { type: "FETCH_SUCCESS"; payload: { 
+        buttonMaps: API.Stored_ButtonMap[]; 
+        products: { [key: number]: API.Stored_Product }; 
+    }}
+    | { type: "FETCH_ERROR"; payload: Error };
 
 const initialState: ApiState = {
     buttonMaps: [],
@@ -23,23 +26,19 @@ const initialState: ApiState = {
 
 const apiReducer = (state: ApiState, action: ApiAction): ApiState => {
     switch (action.type) {
-        case "SET_DATA":
+        case "FETCH_SUCCESS":
             return {
-                ...state,
-                buttonMaps: action.payload.buttonMaps,
-                products: action.payload.products,
+                buttonMaps: action.payload.buttonMaps
+                    .filter(map => map.type === 'tablet-buttons' && map.buttons?.length > 0) as ButtonMap[],
+                products: action.payload.products as { [key: number]: Product },
                 loading: false,
+                error: null
             };
-        case "SET_ERROR":
+        case "FETCH_ERROR":
             return {
-                ...state,
-                error: action.payload,
+                ...initialState,
                 loading: false,
-            };
-        case "SET_LOADING":
-            return {
-                ...state,
-                loading: action.payload,
+                error: action.payload
             };
         default:
             return state;
@@ -49,25 +48,22 @@ const apiReducer = (state: ApiState, action: ApiAction): ApiState => {
 const ApiContext = createContext<{
     state: ApiState;
     dispatch: React.Dispatch<ApiAction>;
-}>({ state: initialState, dispatch: () => undefined });
+} | undefined>(undefined);
 
-export const ApiProvider: React.FC<{ children: ReactNode }> = ({
-    children,
-}) => {
+export const ApiProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [state, dispatch] = useReducer(apiReducer, initialState);
 
     useEffect(() => {
         const loadData = async () => {
             try {
-                dispatch({ type: "SET_LOADING", payload: true });
-                const { buttonMaps, products } = await fetchApiData();
+                const data = await fetchApiData();
                 dispatch({ 
-                    type: "SET_DATA", 
-                    payload: { buttonMaps, products } 
+                    type: "FETCH_SUCCESS", 
+                    payload: data
                 });
             } catch (err) {
                 dispatch({ 
-                    type: "SET_ERROR", 
+                    type: "FETCH_ERROR", 
                     payload: err instanceof Error ? err : new Error("An error occurred") 
                 });
             }

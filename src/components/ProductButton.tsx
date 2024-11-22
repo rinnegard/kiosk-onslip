@@ -2,7 +2,6 @@ import React from "react";
 import { IonButton } from "@ionic/react";
 import { ButtonMapItem } from "../types/buttonTypes";
 import { useApi } from "../contexts/apiContext";
-import { getButtonColor } from "../utils/buttonUtils";
 import { useCart } from "../contexts/cartContext";
 
 interface ProductButtonProps {
@@ -18,7 +17,6 @@ export const ProductButton: React.FC<ProductButtonProps> = ({ button }) => {
         return (
             <IonButton
                 expand="block"
-                color={getButtonColor(button.theme)}
                 disabled
             >
                 Loading...
@@ -29,7 +27,6 @@ export const ProductButton: React.FC<ProductButtonProps> = ({ button }) => {
     return (
         <IonButton
             expand="block"
-            color={getButtonColor(button.theme)}
             onClick={() => {
                 console.log(product);
 
