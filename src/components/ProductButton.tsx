@@ -9,7 +9,7 @@ interface ProductButtonProps {
 }
 
 export const ProductButton: React.FC<ProductButtonProps> = ({ button }) => {
-    const { products, loading } = useApi();
+    const { state: { products, loading } } = useApi();
     const product = button.product ? products[button.product] : null;
 
     if (loading || !product) {

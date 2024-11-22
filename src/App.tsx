@@ -68,7 +68,7 @@ const getIconForTab = (name: string) => {
 };
 
 const TabContent: React.FC = () => {
-    const { buttonMaps, loading, error } = useApi();
+    const { state: { buttonMaps, loading, error } } = useApi();
 
     if (loading) {
         return (
