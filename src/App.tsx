@@ -22,7 +22,6 @@ import { ApiProvider, useApi } from "./contexts/apiContext";
 import { UserProvider } from "./contexts/userContext";
 import { initializeUserService } from "./services/userService";
 import { initializeApi } from "./api/config";
-import Tab2 from "./pages/Tab2";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -113,9 +112,6 @@ const TabContent: React.FC = () => {
                         <TabPage buttonMap={buttonMap} />
                     </Route>
                 ))}
-                <Route exact path="/users">
-                    <Tab2 />
-                </Route>
                 <Route exact path="/">
                     <Redirect to={`/tab${filteredMaps[0].id}`} />
                 </Route>
