@@ -30,8 +30,20 @@ export interface ButtonMap {
     labels?: number[];
 }
 
+export interface Product {
+    id?: number;
+    name: string;
+    description?: string;
+    price?: number;
+    'product-group': number;
+    unit?: string;
+    sku?: string;
+    brand?: string;
+}
+
 export interface ApiContextType {
     buttonMaps: ButtonMap[];
+    products: { [key: number]: Product };
     loading: boolean;
     error: Error | null;
 }
