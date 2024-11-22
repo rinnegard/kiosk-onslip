@@ -7,7 +7,7 @@ interface UserListProps {
 }
 
 export const UserList: React.FC<UserListProps> = ({ onUserSelect }) => {
-    const { users, loading } = useUsers();
+    const { state: { users, loading } } = useUsers();
 
     if (loading) return null;
 
