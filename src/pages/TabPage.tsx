@@ -9,6 +9,7 @@ import {
 import { useCart } from "../contexts/cartContext";
 import { ButtonMap } from "../types/buttonTypes";
 import { ProductButton } from "../components/ProductButton";
+import CartIcon from "../components/CartIcon";
 
 interface TabPageProps {
     buttonMap: ButtonMap;
@@ -20,6 +21,7 @@ const TabPage: React.FC<TabPageProps> = ({ buttonMap }) => {
             <IonHeader>
                 <IonToolbar>
                     <IonTitle>{buttonMap.name}</IonTitle>
+                    <CartIcon />
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>

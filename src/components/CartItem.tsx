@@ -5,21 +5,22 @@ import { initializeApi } from "../api/config";
 
 export default function CartItem({ item }: { item: CartItem }) {
     const [product, setProduct] = useState<any>();
+
     const { dispatch } = useCart();
 
     useEffect(() => {
         async function fetch() {
             const api = initializeApi();
-            const res = await api.getProduct(item.id);
+            const res = await api.getProduct(item.product!);
             setProduct(res);
         }
         fetch();
-    });
+    }, []);
 
     return (
         <IonItem>
             <IonLabel>
-                {item.name} {item.quantity}st
+                {item["product-name"]} {item.quantity}st
             </IonLabel>
             {product && (
                 <IonNote slot="end">{product.price * item.quantity}kr</IonNote>
@@ -29,7 +30,10 @@ export default function CartItem({ item }: { item: CartItem }) {
                 onClick={() => {
                     dispatch({
                         type: "UPDATE_QUANTITY",
-                        payload: { id: item.id, quantity: ++item.quantity },
+                        payload: {
+                            product: item.product!,
+                            quantity: ++item.quantity,
+                        },
                     });
                 }}
             >
@@ -40,7 +44,10 @@ export default function CartItem({ item }: { item: CartItem }) {
                 onClick={() => {
                     dispatch({
                         type: "UPDATE_QUANTITY",
-                        payload: { id: item.id, quantity: --item.quantity },
+                        payload: {
+                            product: item.product!,
+                            quantity: --item.quantity,
+                        },
                     });
                 }}
             >
@@ -50,7 +57,7 @@ export default function CartItem({ item }: { item: CartItem }) {
                 color="danger"
                 size="small"
                 onClick={() => {
-                    dispatch({ type: "REMOVE_ITEM", payload: item.id });
+                    dispatch({ type: "REMOVE_ITEM", payload: item.product! });
                 }}
             >
                 Delete

@@ -5,12 +5,9 @@ import React, {
     ReactNode,
     useEffect,
 } from "react";
+import { Item } from "../types/itemTypes";
 
-export type CartItem = {
-    id: number;
-    name: string;
-    quantity: number;
-};
+export type CartItem = Item;
 
 type CartState = {
     items: CartItem[];
@@ -19,7 +16,10 @@ type CartState = {
 type CartAction =
     | { type: "ADD_ITEM"; payload: CartItem }
     | { type: "REMOVE_ITEM"; payload: number } // id
-    | { type: "UPDATE_QUANTITY"; payload: { id: number; quantity: number } }
+    | {
+          type: "UPDATE_QUANTITY";
+          payload: { product: number; quantity: number };
+      }
     | { type: "CLEAR_CART" };
 
 const initialState: CartState = {
@@ -30,7 +30,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     switch (action.type) {
         case "ADD_ITEM": {
             const existingItemIndex = state.items.findIndex(
-                (item) => item.id === action.payload.id
+                (item) => item.product === action.payload.product
             );
             if (existingItemIndex !== -1) {
                 const updatedItems = [...state.items];
@@ -42,20 +42,22 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         }
         case "REMOVE_ITEM":
             return {
-                items: state.items.filter((item) => item.id !== action.payload),
+                items: state.items.filter(
+                    (item) => item.product !== action.payload
+                ),
             };
         case "UPDATE_QUANTITY":
             if (action.payload.quantity <= 0) {
                 return {
                     items: state.items.filter(
-                        (item) => item.id !== action.payload.id
+                        (item) => item.product !== action.payload.product
                     ),
                 };
             }
 
             return {
                 items: state.items.map((item) =>
-                    item.id === action.payload.id
+                    item.product === action.payload.product
                         ? { ...item, quantity: action.payload.quantity }
                         : item
                 ),
