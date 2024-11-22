@@ -9,43 +9,42 @@ import {
     IonTabs,
     IonSpinner,
     IonContent,
-    IonPage,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonButton,
     setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { iceCream, restaurant, beer } from "ionicons/icons";
+import { iceCream, restaurant, beer, people } from "ionicons/icons";
 import { ApiProvider, useApi } from "./contexts/apiContext";
-import { getButtonColor } from "./utils/buttonUtils";
+import { UserProvider } from "./contexts/userContext";
+import { API, webRequestHandler } from "@onslip/onslip-360-web-api";
+import { initializeUserService } from './services/userService';
+import { initializeApi } from "./api/config";
+import TabPage from './pages/TabPage';
+import Tab2 from './pages/Tab2';
 
 /* Core CSS required for Ionic components to work properly */
-import "@ionic/react/css/core.css";
+import '@ionic/react/css/core.css';
 
 /* Basic CSS for apps built with Ionic */
-import "@ionic/react/css/normalize.css";
-import "@ionic/react/css/structure.css";
-import "@ionic/react/css/typography.css";
+import '@ionic/react/css/normalize.css';
+import '@ionic/react/css/structure.css';
+import '@ionic/react/css/typography.css';
 
 /* Optional CSS utils that can be commented out */
-import "@ionic/react/css/padding.css";
-import "@ionic/react/css/float-elements.css";
-import "@ionic/react/css/text-alignment.css";
-import "@ionic/react/css/text-transformation.css";
-import "@ionic/react/css/flex-utils.css";
-import "@ionic/react/css/display.css";
-
-/* Dark mode CSS */
-import "@ionic/react/css/palettes/dark.system.css";
+import '@ionic/react/css/padding.css';
+import '@ionic/react/css/float-elements.css';
+import '@ionic/react/css/text-alignment.css';
+import '@ionic/react/css/text-transformation.css';
+import '@ionic/react/css/flex-utils.css';
+import '@ionic/react/css/display.css';
 
 /* Theme variables */
-import "./theme/variables.css";
+import './theme/variables.css';
+
+/* Dark mode CSS */
+import '@ionic/react/css/palettes/dark.system.css';
 
 setupIonicReact();
 
-// Icon mapping for different button map names
 const getIconForTab = (name: string) => {
     switch (name.toLowerCase()) {
         case "godis":
@@ -57,33 +56,6 @@ const getIconForTab = (name: string) => {
         default:
             return restaurant;
     }
-};
-
-const TabPage: React.FC<{ buttonMap: any }> = ({ buttonMap }) => {
-    if (!buttonMap) return null;
-
-    return (
-        <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonTitle>{buttonMap.name}</IonTitle>
-                </IonToolbar>
-            </IonHeader>
-            <IonContent fullscreen>
-                <div className="ion-padding">
-                    {buttonMap.buttons.map((button: any) => (
-                        <IonButton
-                            key={`${button.x}-${button.y}-${button.product}`}
-                            expand="block"
-                            color={getButtonColor(button.theme)}
-                        >
-                            {button.name || `Product ${button.product}`}
-                        </IonButton>
-                    ))}
-                </div>
-            </IonContent>
-        </IonPage>
-    );
 };
 
 const TabContent: React.FC = () => {
@@ -105,7 +77,6 @@ const TabContent: React.FC = () => {
         );
     }
 
-    // Filtrera endast tablet-knappar med faktiska knappar
     const filteredMaps = buttonMaps.filter(
         (map) =>
             map.type === "tablet-buttons" &&
@@ -133,6 +104,9 @@ const TabContent: React.FC = () => {
                         <TabPage buttonMap={buttonMap} />
                     </Route>
                 ))}
+                <Route exact path="/users">
+                    <Tab2 />
+                </Route>
                 <Route exact path="/">
                     <Redirect to={`/tab${filteredMaps[0].id}`} />
                 </Route>
@@ -151,18 +125,27 @@ const TabContent: React.FC = () => {
                         <IonLabel>{buttonMap.name}</IonLabel>
                     </IonTabButton>
                 ))}
+                <IonTabButton tab="users" href="/users">
+                    <IonIcon aria-hidden="true" icon={people} />
+                    <IonLabel>Anställda</IonLabel>
+                </IonTabButton>
             </IonTabBar>
         </IonTabs>
     );
 };
 
 const App: React.FC = () => {
+    const api = initializeApi();
+    initializeUserService(api);
+
     return (
         <IonApp>
             <ApiProvider>
-                <IonReactRouter>
-                    <TabContent />
-                </IonReactRouter>
+                <UserProvider>
+                    <IonReactRouter>
+                        <TabContent />
+                    </IonReactRouter>
+                </UserProvider>
             </ApiProvider>
         </IonApp>
     );
