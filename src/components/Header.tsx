@@ -1,12 +1,5 @@
 import React from "react";
-import {
-    IonHeader,
-    IonToolbar,
-    IonButtons,
-    IonButton,
-    IonTabButton,
-    IonRouterLink,
-} from "@ionic/react";
+import { IonHeader, IonToolbar, IonButtons, IonRouterLink } from "@ionic/react";
 import CartIcon from "./CartIcon";
 
 interface HeaderProps {
@@ -25,7 +18,12 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
                             className="header-logo"
                         />
                     </div>
-                    <IonRouterLink href={`/campaigns`}>Kampanjer</IonRouterLink>
+                    <IonRouterLink
+                        color={"--var(--ion-text-color)"}
+                        href={`/campaigns`}
+                    >
+                        Kampanjer
+                    </IonRouterLink>
                     <IonButtons slot="end" className="cart-button">
                         <CartIcon />
                     </IonButtons>

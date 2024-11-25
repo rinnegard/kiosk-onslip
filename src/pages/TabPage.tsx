@@ -13,15 +13,17 @@ import { useApi } from "../contexts/apiContext";
 import { ButtonMap } from "../types/buttonTypes";
 import { ProductCard } from "../components/ProductCard";
 import { Header } from "../components/Header";
-import { refreshOutline } from 'ionicons/icons';
-import { motion, AnimatePresence } from 'framer-motion';
+import { refreshOutline } from "ionicons/icons";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface TabPageProps {
     buttonMap: ButtonMap;
 }
 
 const TabPage: React.FC<TabPageProps> = ({ buttonMap }) => {
-    const { state: { products, loading } } = useApi();
+    const {
+        state: { products, loading },
+    } = useApi();
 
     const handleRefresh = (event: CustomEvent) => {
         window.location.reload();
@@ -37,9 +39,9 @@ const TabPage: React.FC<TabPageProps> = ({ buttonMap }) => {
             transition: {
                 duration: 0.5,
                 when: "beforeChildren",
-                staggerChildren: 0.1
-            }
-        }
+                staggerChildren: 0.1,
+            },
+        },
     };
 
     const itemVariants = {
@@ -48,9 +50,9 @@ const TabPage: React.FC<TabPageProps> = ({ buttonMap }) => {
             opacity: 1,
             y: 0,
             transition: {
-                duration: 0.5
-            }
-        }
+                duration: 0.5,
+            },
+        },
     };
 
     if (loading) {
@@ -59,7 +61,7 @@ const TabPage: React.FC<TabPageProps> = ({ buttonMap }) => {
                 <Header />
                 <IonContent>
                     <div className="loading-container">
-                        <IonSpinner 
+                        <IonSpinner
                             name="crescent"
                             className="loading-spinner"
                         />
@@ -80,22 +82,22 @@ const TabPage: React.FC<TabPageProps> = ({ buttonMap }) => {
     }
 
     const validProducts = buttonMap.buttons
-        .filter(button => {
+        .filter((button) => {
             const product = button.product ? products[button.product] : null;
             return button.product && product;
         })
-        .map(button => ({
+        .map((button) => ({
             button,
-            product: products[button.product!]
+            product: products[button.product!],
         }));
 
     return (
         <IonPage className="shop-page">
             <Header />
-            
+
             <IonContent>
-                <IonRefresher 
-                    slot="fixed" 
+                <IonRefresher
+                    slot="fixed"
                     onIonRefresh={handleRefresh}
                     className="custom-refresher"
                 >
@@ -109,7 +111,7 @@ const TabPage: React.FC<TabPageProps> = ({ buttonMap }) => {
 
                 <AnimatePresence mode="wait">
                     {validProducts.length === 0 ? (
-                        <motion.div 
+                        <motion.div
                             className="empty-state-container"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -119,27 +121,33 @@ const TabPage: React.FC<TabPageProps> = ({ buttonMap }) => {
                             <div className="empty-state-content">
                                 <IonText>
                                     <h2>Inga produkter tillgängliga</h2>
-                                    <p>Det finns inga produkter att visa just nu.</p>
+                                    <p>
+                                        Det finns inga produkter att visa just
+                                        nu.
+                                    </p>
                                 </IonText>
-                                
-                                <IonButton 
+
+                                <IonButton
                                     onClick={() => window.location.reload()}
                                     fill="solid"
                                     className="retry-button"
                                 >
-                                    <IonIcon slot="start" icon={refreshOutline} />
+                                    <IonIcon
+                                        slot="start"
+                                        icon={refreshOutline}
+                                    />
                                     Försök igen
                                 </IonButton>
                             </div>
                         </motion.div>
                     ) : (
-                        <motion.div 
+                        <motion.div
                             className="shop-content"
                             variants={containerVariants}
                             initial="hidden"
                             animate="visible"
                         >
-                            <motion.div 
+                            <motion.div
                                 className="product-grid"
                                 variants={containerVariants}
                             >
@@ -150,7 +158,7 @@ const TabPage: React.FC<TabPageProps> = ({ buttonMap }) => {
                                         custom={index}
                                     >
                                         <ProductCard
-                                            button={button}
+                                            productId={button.product!}
                                             index={index}
                                         />
                                     </motion.div>
