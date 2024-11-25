@@ -1,5 +1,5 @@
 import { API } from "@onslip/onslip-360-web-api";
-import { User } from '../types/userTypes';
+import { Customer } from '../types/userTypes';
 
 let api: API;
 
@@ -7,11 +7,11 @@ export const initializeUserService = (apiInstance: API) => {
     api = apiInstance;
 };
 
-export const fetchUsers = async (): Promise<User[]> => {
+export const fetchUsers = async (): Promise<Customer[]> => {
     try {
         if (!api) throw new Error('API är inte initialiserat');
-        const response = await api.listUsers();
-        return response as unknown as User[];
+        const response = await api.listCustomers();
+        return response as unknown as Customer[];
     } catch (error) {
         console.error('Fel vid hämtning av användare:', error);
         throw error;

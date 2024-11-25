@@ -1,35 +1,38 @@
+import React from "react";
 import { IonSelect, IonSelectOption } from "@ionic/react";
-import { User } from '../types/userTypes';
-import { useUsers } from '../contexts/userContext';
+import { Customer } from "../types/userTypes";
+import { useUsers } from "../contexts/userContext";
 
 interface UserListProps {
-    onUserSelect: (user: User) => void;
+    onUserSelect: (customer: Customer) => void;
 }
 
 export const UserList: React.FC<UserListProps> = ({ onUserSelect }) => {
-    const { state: { users, loading } } = useUsers();
+    const { state: { customers, loading, error } } = useUsers();
 
-    if (loading) return null;
+    if (loading) return <p>Laddar användare...</p>;
+    if (error) return <p>Fel vid hämtning av användare: {error.message}</p>;
 
-    const employees = users
-        .filter((user: User) => !user.deleted)
-        .filter((user: User) => user['system-roles']?.includes('employee'))
-        .sort((a: User, b: User) => a.name.localeCompare(b.name));
+    if (!customers || customers.length === 0) {
+        return <p>Inga användare tillgängliga.</p>;
+    }
 
     return (
         <div className="user-select-container">
-            <IonSelect 
+            <IonSelect
                 interface="popover"
                 placeholder="Välj användare"
-                onIonChange={e => {
-                    const selectedUser = employees.find(user => user.id === e.detail.value);
-                    if (selectedUser) onUserSelect(selectedUser);
+                onIonChange={(e) => {
+                    const selectedCustomer = customers.find(user => user.id === e.detail.value);
+                    if (selectedCustomer) {
+                        onUserSelect(selectedCustomer);
+                    }
                 }}
                 className="modern-select"
             >
-                {employees.map((user: User) => (
+                {customers.map((user: Customer) => (
                     <IonSelectOption key={user.id} value={user.id}>
-                        {user.name}
+                        {user.name} ({user.email ?? "Ingen e-post"})
                     </IonSelectOption>
                 ))}
             </IonSelect>

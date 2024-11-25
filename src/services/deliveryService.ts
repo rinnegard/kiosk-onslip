@@ -1,4 +1,4 @@
-import { User } from '../types/userTypes';
+import { Customer } from '../types/userTypes';
 import { Resource } from '../types/resourceTypes';
 
 interface DeliveryDetails {
@@ -9,10 +9,9 @@ interface DeliveryDetails {
     staffId: number;
 }
 
-export const getRandomDeliveryStaff = (users: User[], currentUserId?: number): User | null => {
+export const getRandomDeliveryStaff = (users: Customer[], currentUserId?: number): Customer | null => {
     const availableStaff = users.filter(u => 
-        u.id !== currentUserId && 
-        u['system-roles']?.includes('employee')
+        u.id !== currentUserId
     );
     
     if (availableStaff.length === 0) {

@@ -19,7 +19,7 @@ import {
 import { IonReactRouter } from "@ionic/react-router";
 import { iceCream, restaurant, beer, people } from "ionicons/icons";
 import { ApiProvider, useApi } from "./contexts/apiContext";
-import { UserProvider } from "./contexts/userContext";
+import { CustomerProvider } from "./contexts/userContext";
 import { initializeUserService } from "./services/userService";
 import { initializeApi } from "./api/config";
 
@@ -175,11 +175,11 @@ const App: React.FC = () => {
         <IonApp>
             <CartProvider>
                 <ApiProvider>
-                    <UserProvider>
+                    <CustomerProvider>
                         <IonReactRouter>
                             <TabContent />
                         </IonReactRouter>
-                    </UserProvider>
+                    </CustomerProvider>
                 </ApiProvider>
             </CartProvider>
         </IonApp>

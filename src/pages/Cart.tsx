@@ -17,7 +17,7 @@ import { useUsers } from "../contexts/userContext";
 import CartItem from "../components/CartItem";
 import CartIcon from "../components/CartIcon";
 import { UserList } from "../components/UserList";
-import { User } from "../types/userTypes";
+import { Customer } from "../types/userTypes";
 import { Resource } from "../types/resourceTypes";
 import { initializeApi } from "../api/config";
 import { fetchResources, createResource } from "../services/resourceService";
@@ -25,10 +25,10 @@ import { getRandomDeliveryStaff, logDeliveryAssignment, createDeliveryTags } fro
 import { API } from '@onslip/onslip-360-api';
 
 export default function Cart() {
-    const [user, setUser] = useState<User>();
+    const [user, setUser] = useState<Customer>();
     const [resources, setResources] = useState<Resource[]>([]);
     const { state, dispatch } = useCart();
-    const { state: { users } } = useUsers();
+    const { state: { customers } } = useUsers();
     const [presentToast] = useIonToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -66,7 +66,7 @@ export default function Cart() {
 }
 
             // 2. Hitta leveranspersonal
-            const deliveryStaff = getRandomDeliveryStaff(users, user.id);
+            const deliveryStaff = getRandomDeliveryStaff(customers, user.id);
             if (!deliveryStaff) {
                 throw new Error('Ingen tillgänglig anställd för leverans');
             }   

@@ -1,86 +1,69 @@
 import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
-import { User, UserContextType } from '../types/userTypes';
+import { Customer } from '../types/userTypes';
 import { fetchUsers } from '../services/userService';
 
-type UserState = {
-    users: User[];
+type CustomerState = {
+    customers: Customer[];
     loading: boolean;
     error: Error | null;
 };
 
-type UserAction = 
-    | { type: "SET_USERS"; payload: User[] }
+type CustomerAction =
+    | { type: "SET_CUSTOMERS"; payload: Customer[] }
     | { type: "SET_ERROR"; payload: Error }
     | { type: "SET_LOADING"; payload: boolean };
 
-const initialState: UserState = {
-    users: [],
+const initialState: CustomerState = {
+    customers: [],
     loading: true,
-    error: null
+    error: null,
 };
 
-const userReducer = (state: UserState, action: UserAction): UserState => {
+const customerReducer = (state: CustomerState, action: CustomerAction): CustomerState => {
     switch (action.type) {
-        case "SET_USERS":
-            return {
-                ...state,
-                users: action.payload,
-                loading: false,
-            };
+        case "SET_CUSTOMERS":
+            return { ...state, customers: action.payload, loading: false };
         case "SET_ERROR":
-            return {
-                ...state,
-                error: action.payload,
-                loading: false,
-            };
+            return { ...state, error: action.payload, loading: false };
         case "SET_LOADING":
-            return {
-                ...state,
-                loading: action.payload,
-            };
+            return { ...state, loading: action.payload };
         default:
             return state;
     }
 };
 
-const UserContext = createContext<{
-    state: UserState;
-    dispatch: React.Dispatch<UserAction>;
+const CustomerContext = createContext<{
+    state: CustomerState;
+    dispatch: React.Dispatch<CustomerAction>;
 }>({ state: initialState, dispatch: () => undefined });
 
-export const UserProvider: React.FC<{ children: ReactNode }> = ({
-    children,
-}) => {
-    const [state, dispatch] = useReducer(userReducer, initialState);
+export const CustomerProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const [state, dispatch] = useReducer(customerReducer, initialState);
 
     useEffect(() => {
-        const loadUsers = async () => {
+        const loadCustomers = async () => {
+            dispatch({ type: "SET_LOADING", payload: true });
             try {
-                dispatch({ type: "SET_LOADING", payload: true });
-                const users = await fetchUsers();
-                dispatch({ type: "SET_USERS", payload: users });
-            } catch (err) {
-                dispatch({ 
-                    type: "SET_ERROR", 
-                    payload: err instanceof Error ? err : new Error('Fel vid hämtning utav användare') 
+                const customers = await fetchUsers();
+                dispatch({ type: "SET_CUSTOMERS", payload: customers });
+            } catch (error) {
+                dispatch({
+                    type: "SET_ERROR",
+                    payload: error instanceof Error ? error : new Error('Fel vid hämtning av användare'),
                 });
             }
         };
 
-        loadUsers();
+        loadCustomers();
     }, []);
 
     return (
-        <UserContext.Provider value={{ state, dispatch }}>
+        <CustomerContext.Provider value={{ state, dispatch }}>
             {children}
-        </UserContext.Provider>
+        </CustomerContext.Provider>
     );
 };
 
 export const useUsers = () => {
-    const context = useContext(UserContext);
-    if (!context) {
-        throw new Error('useUsers måste användas inom en UserProvider');
-    }
-    return context;
+    return useContext(CustomerContext);
 };
