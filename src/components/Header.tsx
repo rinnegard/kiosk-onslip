@@ -3,6 +3,9 @@ import {
     IonHeader,
     IonToolbar,
     IonButtons,
+    IonButton,
+    IonTabButton,
+    IonRouterLink,
 } from "@ionic/react";
 import CartIcon from "./CartIcon";
 
@@ -16,12 +19,13 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
             <IonToolbar>
                 <div className="header-container">
                     <div className="logo-container">
-                        <img 
+                        <img
                             src="assets/onslip-brand-full.png"
                             alt="Onslip Logo"
                             className="header-logo"
                         />
                     </div>
+                    <IonRouterLink href={`/campaigns`}>Kampanjer</IonRouterLink>
                     <IonButtons slot="end" className="cart-button">
                         <CartIcon />
                     </IonButtons>

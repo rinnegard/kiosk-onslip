@@ -49,7 +49,8 @@ import Cart from "./pages/Cart";
 import { CartProvider, useCart } from "./contexts/cartContext";
 import CartIcon from "./components/CartIcon";
 import TabPage from "./pages/TabPage";
-import './theme/variables.css';
+import "./theme/variables.css";
+import Campaign from "./pages/Campaign";
 
 setupIonicReact();
 
@@ -67,18 +68,23 @@ const getIconForTab = (name: string) => {
 };
 
 const TabContent: React.FC = () => {
-    const { state: { buttonMaps, loading, error } } = useApi();
+    const {
+        state: { buttonMaps, loading, error },
+    } = useApi();
 
     if (loading) {
         return (
             <IonPage>
                 <IonContent className="ion-padding ion-text-center">
-                    <div className="loading-container" style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: '100%'
-                    }}>
+                    <div
+                        className="loading-container"
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "100%",
+                        }}
+                    >
                         <IonSpinner name="crescent" />
                     </div>
                 </IonContent>
@@ -137,8 +143,11 @@ const TabContent: React.FC = () => {
                 <Route exact path={`/cart`}>
                     <Cart />
                 </Route>
+                <Route exact path={`/campaigns`}>
+                    <Campaign />
+                </Route>
             </IonRouterOutlet>
-            
+
             <IonTabBar slot="bottom" className="fade-in">
                 {filteredMaps.map((buttonMap) => (
                     <IonTabButton
