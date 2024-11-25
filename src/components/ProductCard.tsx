@@ -12,20 +12,25 @@ import {
     IonRippleEffect,
     IonImg,
 } from "@ionic/react";
-import { cartOutline, flashOutline } from 'ionicons/icons';
+import { cartOutline, flashOutline } from "ionicons/icons";
 import { ButtonMapItem } from "../types/buttonTypes";
 import { useCart } from "../contexts/cartContext";
 import { useApi } from "../contexts/apiContext";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 interface ProductCardProps {
-    button: ButtonMapItem;
+    productId: number;
     index: number;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ button, index }) => {
-    const { state: { products, loading } } = useApi();
-    const product = button.product ? products[button.product] : null;
+export const ProductCard: React.FC<ProductCardProps> = ({
+    productId,
+    index,
+}) => {
+    const {
+        state: { products, loading },
+    } = useApi();
+    const product = productId ? products[productId] : null;
     const { dispatch } = useCart();
 
     if (loading || !product) {
@@ -82,7 +87,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ button, index }) => {
 
                 <IonCardHeader>
                     <IonCardTitle className="product-title">
-                        {button.name || product.name}
+                        {product.name}
                     </IonCardTitle>
                 </IonCardHeader>
 
@@ -93,17 +98,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({ button, index }) => {
                                 per {product.unit}
                             </IonBadge>
                         )}
-                        
+
                         <IonButton
                             className="add-to-cart-button"
                             expand="block"
                             disabled={loading || !product.price}
                             onClick={handleAddToCart}
                         >
-                            <IonIcon icon={product.price ? cartOutline : flashOutline} slot="start" />
-                            {loading ? 'Laddar...' : 
-                             !product.price ? 'Ej tillgänglig' : 
-                             'Lägg till i kundvagn'}
+                            <IonIcon
+                                icon={
+                                    product.price ? cartOutline : flashOutline
+                                }
+                                slot="start"
+                            />
+                            {loading
+                                ? "Laddar..."
+                                : !product.price
+                                ? "Ej tillgänglig"
+                                : "Lägg till i kundvagn"}
                             <IonRippleEffect />
                         </IonButton>
                     </div>
