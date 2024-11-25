@@ -13,7 +13,6 @@ import {
     IonImg,
 } from "@ionic/react";
 import { cartOutline, flashOutline } from "ionicons/icons";
-import { ButtonMapItem } from "../types/buttonTypes";
 import { useCart } from "../contexts/cartContext";
 import { useApi } from "../contexts/apiContext";
 import { motion } from "framer-motion";
@@ -72,7 +71,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <IonCard className="product-card">
                 <div className="image-container">
                     <IonImg
-                        src="/api/placeholder/200/200"
+                        src={product.description}
                         alt={product.name}
                         className="product-image"
                     />

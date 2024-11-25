@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { initializeApi } from "../api/config";
 import { API } from "@onslip/onslip-360-web-api";
 import { ProductCard } from "../components/ProductCard";
+import { Header } from "../components/Header";
 
 export default function Campaign() {
     const [campaigns, setCampaigns] = useState<API.Campaign[]>([]);
@@ -35,11 +36,7 @@ export default function Campaign() {
 
     return (
         <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonTitle>Kampanjer</IonTitle>
-                </IonToolbar>
-            </IonHeader>
+            <Header></Header>
             <IonContent>
                 {campaigns.length > 0 ? (
                     <IonList>
