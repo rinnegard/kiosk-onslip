@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
 import { Customer } from '../types/userTypes';
-import { fetchUsers } from '../services/userService';
+import { fetchCustomer } from '../services/userService';
 
 type CustomerState = {
     customers: Customer[];
@@ -44,7 +44,7 @@ export const CustomerProvider: React.FC<{ children: ReactNode }> = ({ children }
         const loadCustomers = async () => {
             dispatch({ type: "SET_LOADING", payload: true });
             try {
-                const customers = await fetchUsers();
+                const customers = await fetchCustomer();
                 dispatch({ type: "SET_CUSTOMERS", payload: customers });
             } catch (error) {
                 dispatch({
@@ -64,6 +64,6 @@ export const CustomerProvider: React.FC<{ children: ReactNode }> = ({ children }
     );
 };
 
-export const useUsers = () => {
+export const useCustomer = () => {
     return useContext(CustomerContext);
 };

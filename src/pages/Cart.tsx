@@ -13,10 +13,10 @@ import {
     IonLabel,
 } from "@ionic/react";
 import { useCart } from "../contexts/cartContext";
-import { useUsers } from "../contexts/userContext";
+import { useCustomer } from "../contexts/userContext";
 import CartItem from "../components/CartItem";
 import CartIcon from "../components/CartIcon";
-import { UserList } from "../components/UserList";
+import { CustomerList } from "../components/UserList";
 import { Customer } from "../types/userTypes";
 import { Resource } from "../types/resourceTypes";
 import { initializeApi } from "../api/config";
@@ -28,7 +28,7 @@ export default function Cart() {
     const [user, setUser] = useState<Customer>();
     const [resources, setResources] = useState<Resource[]>([]);
     const { state, dispatch } = useCart();
-    const { state: { customers } } = useUsers();
+    const { state: { customers } } = useCustomer();
     const [presentToast] = useIonToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -147,7 +147,7 @@ export default function Cart() {
                 {/* Leveransplats-sektion */}
                 <div>
                     <h2 className="text-lg font-semibold mb-2">Välj leveransplats</h2>
-                    <UserList onUserSelect={setUser} />
+                    <CustomerList onCustomerSelect={setUser} />
                 </div>
 
                 {/* Produktlista */}

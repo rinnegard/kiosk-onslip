@@ -7,13 +7,13 @@ export const initializeUserService = (apiInstance: API) => {
     api = apiInstance;
 };
 
-export const fetchUsers = async (): Promise<Customer[]> => {
+export const fetchCustomer = async (): Promise<Customer[]> => {
     try {
         if (!api) throw new Error('API är inte initialiserat');
         const response = await api.listCustomers();
         return response as unknown as Customer[];
     } catch (error) {
-        console.error('Fel vid hämtning av användare:', error);
+        console.error('Fel vid hämtning av anställda:', error);
         throw error;
     }
 };
