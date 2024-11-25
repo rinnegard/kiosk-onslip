@@ -49,6 +49,7 @@ import Cart from "./pages/Cart";
 import { CartProvider, useCart } from "./contexts/cartContext";
 import CartIcon from "./components/CartIcon";
 import TabPage from "./pages/TabPage";
+import './theme/variables.css';
 
 setupIonicReact();
 
@@ -70,32 +71,51 @@ const TabContent: React.FC = () => {
 
     if (loading) {
         return (
-            <IonContent className="ion-padding ion-text-center">
-                <IonSpinner />
-            </IonContent>
+            <IonPage>
+                <IonContent className="ion-padding ion-text-center">
+                    <div className="loading-container" style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100%'
+                    }}>
+                        <IonSpinner name="crescent" />
+                    </div>
+                </IonContent>
+            </IonPage>
         );
     }
 
     if (error) {
         return (
-            <IonContent className="ion-padding">
-                <p>Ett fel uppstod: {error.message}</p>
-            </IonContent>
+            <IonPage>
+                <IonContent className="ion-padding">
+                    <div className="error-container ion-text-center">
+                        <h2>Ett fel uppstod</h2>
+                        <p>{error.message}</p>
+                        <IonButton onClick={() => window.location.reload()}>
+                            Försök igen
+                        </IonButton>
+                    </div>
+                </IonContent>
+            </IonPage>
         );
     }
 
     const filteredMaps = buttonMaps.filter(
-        (map) =>
-            map.type === "tablet-buttons" &&
-            map.buttons &&
-            map.buttons.length > 0
+        (map) => map.type === "tablet-buttons" && map.buttons?.length > 0
     );
 
     if (filteredMaps.length === 0) {
         return (
-            <IonContent className="ion-padding ion-text-center">
-                <p>Inga knappar tillgängliga</p>
-            </IonContent>
+            <IonPage>
+                <IonContent className="ion-padding ion-text-center">
+                    <div className="empty-state">
+                        <h2>Inga produkter tillgängliga</h2>
+                        <p>Vänligen försök igen senare</p>
+                    </div>
+                </IonContent>
+            </IonPage>
         );
     }
 
@@ -118,7 +138,8 @@ const TabContent: React.FC = () => {
                     <Cart />
                 </Route>
             </IonRouterOutlet>
-            <IonTabBar slot="bottom">
+            
+            <IonTabBar slot="bottom" className="fade-in">
                 {filteredMaps.map((buttonMap) => (
                     <IonTabButton
                         key={buttonMap.id}
