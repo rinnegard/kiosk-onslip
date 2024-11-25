@@ -6,11 +6,21 @@ export default function CartIcon() {
     const { state } = useCart();
 
     return (
-        <IonRouterLink href="/cart">
-            <IonIcon size="large" icon={cart} />
-            {state.items.length > 0 && (
-                <IonBadge color="danger">{state.items.length}</IonBadge>
-            )}
+        <IonRouterLink className="cart-icon-container" href="/cart">
+            <div className="cart-icon-wrapper">
+                <IonIcon 
+                    icon={cart} 
+                    className="cart-icon"
+                />
+                {state.items.length > 0 && (
+                    <IonBadge 
+                        color="danger" 
+                        className="cart-badge"
+                    >
+                        {state.items.length}
+                    </IonBadge>
+                )}
+            </div>
         </IonRouterLink>
     );
 }

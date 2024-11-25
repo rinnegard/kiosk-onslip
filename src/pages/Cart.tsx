@@ -84,7 +84,7 @@ export default function Cart() {
             // 4. Skapa order
             const order = await api.addOrder({
                 location: 1,
-                state: "active",
+                state: "requested",
                 name: `Leverans till ${user.name}`,
                 items: state.items,
                 owner: user.id,
@@ -145,13 +145,13 @@ export default function Cart() {
 
             <IonContent>
                 {/* Leveransplats-sektion */}
-                <div className="p-4 bg-gray-50">
+                <div>
                     <h2 className="text-lg font-semibold mb-2">Välj leveransplats</h2>
                     <UserList onUserSelect={setUser} />
                 </div>
 
                 {/* Produktlista */}
-                <div className="divide-y divide-gray-200">
+                <div>
                     {state.items.length > 0 ? (
                         <IonList>
                             {state.items.map((item) => (
@@ -176,7 +176,7 @@ export default function Cart() {
                 </div>
 
                 {/* Knappar */}
-                <div className="p-4 space-y-3">
+                <div>
                     {state.items.length > 0 && (
                         <IonButton
                             expand="block"
