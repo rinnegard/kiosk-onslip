@@ -10,7 +10,11 @@ export default function CartIcon() {
     }, 0);
 
     return (
-        <IonRouterLink className="cart-icon-container" href="/cart">
+        <IonRouterLink
+            className="cart-icon-container"
+            routerLink="/cart"
+            routerDirection="none"
+        >
             <div className="cart-icon-wrapper">
                 <IonIcon icon={cart} className="cart-icon" />
                 {state.items.length > 0 && (

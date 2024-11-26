@@ -20,7 +20,8 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
                     </div>
                     <IonRouterLink
                         color={"--var(--ion-text-color)"}
-                        href={`/campaigns`}
+                        routerLink={`/campaigns`}
+                        routerDirection="none"
                     >
                         Kampanjer
                     </IonRouterLink>
