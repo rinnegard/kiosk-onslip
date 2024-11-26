@@ -83,6 +83,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                         </div>
                     )}
                 </div>
+                <div className="product-card-discount">20%</div>
 
                 <IonCardHeader>
                     <IonCardTitle className="product-title">
