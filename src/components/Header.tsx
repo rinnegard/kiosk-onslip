@@ -1,5 +1,11 @@
 import React from "react";
-import { IonHeader, IonToolbar, IonButtons, IonRouterLink } from "@ionic/react";
+import { 
+    IonHeader, 
+    IonToolbar, 
+    IonButtons, 
+    IonRouterLink,
+    useIonRouter
+} from "@ionic/react";
 import CartIcon from "./CartIcon";
 
 interface HeaderProps {
@@ -7,26 +13,33 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ title }) => {
+    const router = useIonRouter();
+
     return (
         <IonHeader className="ion-no-border modern-header">
             <IonToolbar>
                 <div className="header-container">
-                    <div className="logo-container">
+                    <div 
+                        className="logo-container cursor-pointer"
+                        onClick={() => router.push('/')}
+                    >
                         <img
                             src="assets/onslip-brand-full.png"
                             alt="Onslip Logo"
                             className="header-logo"
                         />
                     </div>
-                    <IonRouterLink
-                        color={"--var(--ion-text-color)"}
-                        href={`/campaigns`}
-                    >
-                        Kampanjer
-                    </IonRouterLink>
-                    <IonButtons slot="end" className="cart-button">
-                        <CartIcon />
-                    </IonButtons>
+                    <div className="flex items-center gap-4">
+                        <IonRouterLink
+                            className="text-current hover:text-primary transition-colors"
+                            routerLink="/campaigns"
+                        >
+                            Kampanjer
+                        </IonRouterLink>
+                        <IonButtons slot="end" className="cart-button">
+                            <CartIcon />
+                        </IonButtons>
+                    </div>
                 </div>
             </IonToolbar>
         </IonHeader>
