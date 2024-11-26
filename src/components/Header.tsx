@@ -1,10 +1,10 @@
 import React from "react";
-import { 
-    IonHeader, 
-    IonToolbar, 
-    IonButtons, 
+import {
+    IonHeader,
+    IonToolbar,
+    IonButtons,
     IonRouterLink,
-    useIonRouter
+    useIonRouter,
 } from "@ionic/react";
 import CartIcon from "./CartIcon";
 
@@ -19,9 +19,9 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
         <IonHeader className="ion-no-border modern-header">
             <IonToolbar>
                 <div className="header-container">
-                    <div 
+                    <div
                         className="logo-container cursor-pointer"
-                        onClick={() => router.push('/')}
+                        onClick={() => router.push("/")}
                     >
                         <img
                             src="assets/onslip-brand-full.png"
@@ -32,7 +32,8 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
                     <div className="flex items-center gap-4">
                         <IonRouterLink
                             className="text-current hover:text-primary transition-colors"
-                            routerLink="/campaigns"
+                            routerLink={`/campaigns`}
+                            routerDirection="none"
                         >
                             Kampanjer
                         </IonRouterLink>

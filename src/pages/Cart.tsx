@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
     IonPage,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
     IonList,
     IonButton,
-    IonButtons,
     useIonToast,
     IonItem,
     IonLabel,
@@ -27,6 +23,7 @@ import {
     createDeliveryTags,
 } from "../services/deliveryService";
 import { API } from "@onslip/onslip-360-api";
+import { Header } from "../components/Header";
 
 export default function Cart() {
     const [user, setUser] = useState<Customer>();
@@ -143,14 +140,7 @@ export default function Cart() {
 
     return (
         <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonTitle>Kundvagn</IonTitle>
-                    <IonButtons slot="end">
-                        <CartIcon />
-                    </IonButtons>
-                </IonToolbar>
-            </IonHeader>
+            <Header />
 
             <IonContent>
                 {/* Leveransplats-sektion */}
