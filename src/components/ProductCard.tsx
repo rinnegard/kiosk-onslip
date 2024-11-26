@@ -43,7 +43,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             const filteredCampaigns = campaigns.filter((campaign) =>
                 campaign.rules.some((rule) => rule.products.includes(productId))
             );
-            setCampaignType(filteredCampaigns[0].type);
+            setCampaignType(filteredCampaigns[0]?.type);
             setCampaign(
                 filteredCampaigns[0]["discount-rate"] ||
                     filteredCampaigns[0].amount ||
@@ -51,7 +51,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             );
         }
         fetch();
-    }, []);
+    }, [productId]);
 
     if (loading || !product) {
         return (
