@@ -33,8 +33,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     } = useApi();
     const product = productId ? products[productId] : null;
     const { dispatch } = useCart();
-    const [campaign, setCampaign] = useState<number | string>();
+    const [campaignDisplay, setCampaignDisplay] = useState<number | string>();
     const [campaignType, setCampaignType] = useState<API.Campaign.Type>();
+    const [reducedPrice, setReducedPrice] = useState<number | string>();
 
     useEffect(() => {
         async function fetch() {
@@ -44,11 +45,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 campaign.rules.some((rule) => rule.products.includes(productId))
             );
             setCampaignType(filteredCampaigns[0]?.type);
-            setCampaign(
+            setCampaignDisplay(
                 filteredCampaigns[0]["discount-rate"] ||
                     filteredCampaigns[0].amount ||
                     filteredCampaigns[0].name
             );
+            switch (filteredCampaigns[0]?.type) {
+                case "fixed-amount":
+                    setReducedPrice(
+                        product?.price! - filteredCampaigns[0].amount!
+                    );
+                    break;
+                case "fixed-price":
+                    setReducedPrice(filteredCampaigns[0].amount);
+                    break;
+                case "percentage":
+                    setReducedPrice(
+                        (
+                            (1 - filteredCampaigns[0]["discount-rate"]! / 100) *
+                            product?.price!
+                        ).toFixed(2)
+                    );
+                    break;
+                default:
+                    break;
+            }
         }
         fetch();
     }, [productId]);
@@ -99,22 +120,51 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     {product.price && (
                         <div className="price-badge">
                             <IonText>
-                                <h3>{product.price} kr</h3>
+                                {reducedPrice ? (
+                                    <>
+                                        <span
+                                            style={{
+                                                textDecorationThickness: "2px",
+                                                textDecoration: "line-through",
+                                                textDecorationColor: "black",
+                                            }}
+                                        >
+                                            {product.price} kr
+                                        </span>
+                                        <h3
+                                            style={{
+                                                color: "red",
+                                            }}
+                                        >
+                                            {reducedPrice} kr
+                                        </h3>
+                                    </>
+                                ) : (
+                                    <h3>{product.price} kr</h3>
+                                )}
                             </IonText>
                         </div>
                     )}
                 </div>
                 {campaignType === "percentage" && (
-                    <div className="product-card-discount">-{campaign}%</div>
+                    <div className="product-card-discount">
+                        -{campaignDisplay}%
+                    </div>
                 )}
                 {campaignType === "fixed-amount" && (
-                    <div className="product-card-discount">-{campaign}kr</div>
+                    <div className="product-card-discount">
+                        -{campaignDisplay}kr
+                    </div>
                 )}
                 {campaignType === "cheapest-free" && (
-                    <div className="product-card-discount">{campaign}</div>
+                    <div className="product-card-discount">
+                        {campaignDisplay}
+                    </div>
                 )}
                 {campaignType === "fixed-price" && (
-                    <div className="product-card-discount">{campaign}kr</div>
+                    <div className="product-card-discount">
+                        {campaignDisplay}kr
+                    </div>
                 )}
 
                 <IonCardHeader>
