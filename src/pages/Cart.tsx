@@ -21,14 +21,20 @@ import { Customer } from "../types/userTypes";
 import { Resource } from "../types/resourceTypes";
 import { initializeApi } from "../api/config";
 import { fetchResources, createResource } from "../services/resourceService";
-import { getRandomDeliveryStaff, logDeliveryAssignment, createDeliveryTags } from "../services/deliveryService";
-import { API } from '@onslip/onslip-360-api';
+import {
+    getRandomDeliveryStaff,
+    logDeliveryAssignment,
+    createDeliveryTags,
+} from "../services/deliveryService";
+import { API } from "@onslip/onslip-360-api";
 
 export default function Cart() {
     const [user, setUser] = useState<Customer>();
     const [resources, setResources] = useState<Resource[]>([]);
     const { state, dispatch } = useCart();
-    const { state: { customers } } = useCustomer();
+    const {
+        state: { customers },
+    } = useCustomer();
     const [presentToast] = useIonToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -44,8 +50,9 @@ export default function Cart() {
         loadResources();
     }, []);
 
-    const totalAmount = state.items.reduce((sum, item) => 
-        sum + (item.price || 0) * item.quantity, 0
+    const totalAmount = state.items.reduce(
+        (sum, item) => sum + (item.price || 0) * item.quantity,
+        0
     );
 
     async function handleSendOrder() {
@@ -56,29 +63,32 @@ export default function Cart() {
             const api = initializeApi();
 
             // 1. Levereras till plats baserat på användarens namn
-        let deliveryResource = resources.find(r => r.name === user.name);
+            let deliveryResource = resources.find((r) => r.name === user.name);
             if (!deliveryResource) {
-            deliveryResource = await createResource({
-            location: 1,
-            name: user.name,    
- });
-    setResources([...resources, deliveryResource]);
-}
+                deliveryResource = await createResource({
+                    location: 1,
+                    name: user.name,
+                });
+                setResources([...resources, deliveryResource]);
+            }
 
             // 2. Hitta leveranspersonal
             const deliveryStaff = getRandomDeliveryStaff(customers, user.id);
             if (!deliveryStaff) {
-                throw new Error('Ingen tillgänglig anställd för leverans');
-            }   
+                throw new Error("Ingen tillgänglig anställd för leverans");
+            }
 
             // 3. Skapa leveranstags och logga tilldelning
-            const deliveryTags = createDeliveryTags(deliveryResource.id!, deliveryStaff.id!);
+            const deliveryTags = createDeliveryTags(
+                deliveryResource.id!,
+                deliveryStaff.id!
+            );
             logDeliveryAssignment({
                 orderName: crypto.randomUUID(),
                 customerName: user.name,
                 deliveryLocation: deliveryResource.name,
                 resourceId: deliveryResource.id!,
-                staffId: deliveryStaff.id!
+                staffId: deliveryStaff.id!,
             });
 
             // 4. Skapa order
@@ -91,16 +101,16 @@ export default function Cart() {
                 type: "take-out",
                 "order-reference": crypto.randomUUID(),
                 description: `Leveransplats: ${deliveryResource.name} | Levereras av: ${deliveryStaff.name}`,
-                tags: deliveryTags
+                tags: deliveryTags,
             });
 
             // 5. Skapa tab
-            const tabItems: API.Item[] = state.items.map(item => ({
-                'product': item.product,
-                'product-name': item["product-name"],
-                'quantity': item.quantity,
-                'price': item.price,
-                'type': 'goods' as API.ProductGroup.Type,
+            const tabItems: API.Item[] = state.items.map((item) => ({
+                product: item.product,
+                "product-name": item["product-name"],
+                quantity: item.quantity,
+                price: item.price,
+                type: "goods" as API.ProductGroup.Type,
             }));
 
             await api.addTab({
@@ -108,24 +118,23 @@ export default function Cart() {
                 description: `Levereras till: ${deliveryResource.name} | Hämtas och levereras av: ${deliveryStaff.name}`,
                 order: order.id,
                 items: tabItems,
-                tags: deliveryTags
+                tags: deliveryTags,
             });
 
             dispatch({ type: "CLEAR_CART" });
             await presentToast({
                 message: `Din beställning är på väg! ${deliveryStaff.name} levererar till din plats.`,
                 duration: 3000,
-                position: 'bottom',
-                color: 'success'
+                position: "bottom",
+                color: "success",
             });
-
         } catch (error) {
             console.error("Failed to send order:", error);
             await presentToast({
-                message: 'Ett fel uppstod när beställningen skulle skickas',
+                message: "Ett fel uppstod när beställningen skulle skickas",
                 duration: 3000,
-                position: 'bottom',
-                color: 'danger'
+                position: "bottom",
+                color: "danger",
             });
         } finally {
             setIsSubmitting(false);
@@ -146,7 +155,9 @@ export default function Cart() {
             <IonContent>
                 {/* Leveransplats-sektion */}
                 <div>
-                    <h2 className="text-lg font-semibold mb-2">Välj leveransplats</h2>
+                    <h2 className="text-lg font-semibold mb-2">
+                        Välj leveransplats
+                    </h2>
                     <CustomerList onCustomerSelect={setUser} />
                 </div>
 
@@ -157,9 +168,12 @@ export default function Cart() {
                             {state.items.map((item) => (
                                 <CartItem key={item.product} item={item} />
                             ))}
-                            
+
                             {/* Totalsumma */}
-                            <IonItem lines="none" className="ion-margin-top font-semibold">
+                            <IonItem
+                                lines="none"
+                                className="ion-margin-top font-semibold"
+                            >
                                 <IonLabel>
                                     <h2 className="text-lg">Totalt</h2>
                                 </IonLabel>
@@ -187,17 +201,22 @@ export default function Cart() {
                             Rensa kundvagn
                         </IonButton>
                     )}
-                    
+
                     <IonButton
                         expand="block"
                         color="primary"
                         onClick={handleSendOrder}
-                        disabled={!user || state.items.length === 0 || isSubmitting}
+                        disabled={
+                            !user || state.items.length === 0 || isSubmitting
+                        }
                     >
-                        {isSubmitting ? 'Skickar beställning...' : 
-                         !user ? 'Välj leveransplats först' :
-                         state.items.length === 0 ? 'Lägg till produkter först' :
-                         `Skicka beställning till ${user.name}`}
+                        {isSubmitting
+                            ? "Skickar beställning..."
+                            : !user
+                            ? "Välj leveransplats först"
+                            : state.items.length === 0
+                            ? "Lägg till produkter först"
+                            : `Skicka beställning till ${user.name}`}
                     </IonButton>
                 </div>
             </IonContent>
