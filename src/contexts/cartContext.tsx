@@ -5,9 +5,9 @@ import React, {
     ReactNode,
     useEffect,
 } from "react";
-import { Item } from "../types/itemTypes";
+import { API } from "@onslip/onslip-360-web-api";
 
-export type CartItem = Item;
+export type CartItem = API.Item;
 
 type CartState = {
     items: CartItem[];
