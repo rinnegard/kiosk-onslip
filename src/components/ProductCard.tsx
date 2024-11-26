@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     IonCard,
     IonCardHeader,
@@ -16,6 +16,8 @@ import { cartOutline, flashOutline } from "ionicons/icons";
 import { useCart } from "../contexts/cartContext";
 import { useApi } from "../contexts/apiContext";
 import { motion } from "framer-motion";
+import { initializeApi } from "../api/config";
+import { API } from "@onslip/onslip-360-web-api";
 
 interface ProductCardProps {
     productId: number;
@@ -31,6 +33,25 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     } = useApi();
     const product = productId ? products[productId] : null;
     const { dispatch } = useCart();
+    const [campaign, setCampaign] = useState<number | string>();
+    const [campaignType, setCampaignType] = useState<API.Campaign.Type>();
+
+    useEffect(() => {
+        async function fetch() {
+            const api = initializeApi();
+            const campaigns = await api.listCampaigns();
+            const filteredCampaigns = campaigns.filter((campaign) =>
+                campaign.rules.some((rule) => rule.products.includes(productId))
+            );
+            setCampaignType(filteredCampaigns[0].type);
+            setCampaign(
+                filteredCampaigns[0]["discount-rate"] ||
+                    filteredCampaigns[0].amount ||
+                    filteredCampaigns[0].name
+            );
+        }
+        fetch();
+    }, []);
 
     if (loading || !product) {
         return (
@@ -83,7 +104,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                         </div>
                     )}
                 </div>
-                <div className="product-card-discount">20%</div>
+                {campaignType === "percentage" && (
+                    <div className="product-card-discount">-{campaign}%</div>
+                )}
+                {campaignType === "fixed-amount" && (
+                    <div className="product-card-discount">-{campaign}kr</div>
+                )}
+                {campaignType === "cheapest-free" && (
+                    <div className="product-card-discount">{campaign}</div>
+                )}
+                {campaignType === "fixed-price" && (
+                    <div className="product-card-discount">{campaign}kr</div>
+                )}
 
                 <IonCardHeader>
                     <IonCardTitle className="product-title">
