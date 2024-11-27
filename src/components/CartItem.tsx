@@ -24,9 +24,27 @@ export default function CartItem({ item }: { item: CartItem }) {
                 {item["product-name"]} {item.quantity}st
             </IonLabel>
             {product && (
-                <IonNote slot="end">
-                    {(product.price || 0) * item.quantity}kr
-                </IonNote>
+                <div slot="end">
+                    {item.reducedPrice ? (
+                        <div>
+                            <span className="old-price">
+                                {((product.price || 0) * item.quantity).toFixed(
+                                    2
+                                )}{" "}
+                                kr
+                            </span>
+                            <h3 className="reduced-price">
+                                {(item.reducedPrice * item.quantity).toFixed(2)}{" "}
+                                kr
+                            </h3>
+                        </div>
+                    ) : (
+                        <h3>
+                            {((product.price || 0) * item.quantity).toFixed(2)}{" "}
+                            kr
+                        </h3>
+                    )}
+                </div>
             )}
             <IonButton
                 size="small"

@@ -511,13 +511,15 @@ ion-content {
 }
 
 .old-price {
+    text-align: end;
     text-decoration: line-through;
     text-decoration-color: gray;
-    text-decoration-thickness: 2px;
+    text-decoration-thickness: 10%;
     color: gray;
 }
 
 .reduced-price {
+    text-align: end;
     color: var(--red);
 }
 
