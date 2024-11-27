@@ -18,7 +18,6 @@ import {
 import { useApi } from '../contexts/apiContext';
 import { motion } from 'framer-motion';
 import { Header } from '../components/Header';
-import { Footer } from '../components/Footer';
 import { ProductCard } from '../components/ProductCard';
 import { initializeApi } from "../api/config";
 import { API } from "@onslip/onslip-360-web-api";
@@ -165,7 +164,6 @@ const LandingPage: React.FC = () => {
                         <p>Laddar...</p>
                     </div>
                 </IonContent>
-                <Footer />
             </IonPage>
         );
     }
@@ -183,7 +181,6 @@ const LandingPage: React.FC = () => {
                         </IonButton>
                     </div>
                 </IonContent>
-                <Footer />
             </IonPage>
         );
     }
@@ -191,13 +188,12 @@ const LandingPage: React.FC = () => {
     return (
         <IonPage>
             <Header />
-            <IonContent>
+            <IonContent className="ion-padding">
                 <div className="container">
                     <CategorySection />
                     <NewProductsSection products={products} />
                 </div>
             </IonContent>
-            <Footer />
         </IonPage>
     );
 };

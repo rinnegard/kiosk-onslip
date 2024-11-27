@@ -1,8 +1,8 @@
-// src/App.tsx
 import { Redirect, Route } from "react-router-dom";
 import {
     IonApp,
     IonRouterOutlet,
+    IonTabs,
     setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
@@ -11,6 +11,8 @@ import { CustomerProvider } from "./contexts/userContext";
 import { CartProvider } from "./contexts/cartContext";
 import { initializeUserService } from "./services/userService";
 import { initializeApi } from "./api/config";
+import { useApi } from "./contexts/apiContext";
+import { TabBar } from "./components/TabBar";
 
 // CSS imports
 import "@ionic/react/css/core.css";
@@ -34,6 +36,23 @@ import Campaign from "./pages/Campaign";
 
 setupIonicReact();
 
+const TabsContainer: React.FC = () => {
+    const { state: { buttonMaps } } = useApi();
+
+    return (
+        <IonTabs>
+            <IonRouterOutlet>
+                <Route exact path="/" render={() => <Redirect to="/landing" />} />
+                <Route exact path="/landing" component={LandingPage} />
+                <Route exact path="/tabs/:id" component={TabPage} />
+                <Route exact path="/cart" component={Cart} />
+                <Route exact path="/campaigns" component={Campaign} />
+            </IonRouterOutlet>
+            <TabBar buttonMaps={buttonMaps} />
+        </IonTabs>
+    );
+};
+
 const App: React.FC = () => {
     const api = initializeApi();
     initializeUserService(api);
@@ -44,20 +63,7 @@ const App: React.FC = () => {
                 <ApiProvider>
                     <CustomerProvider>
                         <IonReactRouter>
-                            <IonRouterOutlet>
-                                <Route exact path="/">
-                                    <LandingPage />
-                                </Route>
-                                <Route exact path="/tabs/:id">
-                                    <TabPage />
-                                </Route>
-                                <Route exact path="/cart">
-                                    <Cart />
-                                </Route>
-                                <Route exact path="/campaigns">
-                                    <Campaign />
-                                </Route>
-                            </IonRouterOutlet>
+                            <TabsContainer />
                         </IonReactRouter>
                     </CustomerProvider>
                 </ApiProvider>

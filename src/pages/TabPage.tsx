@@ -1,4 +1,3 @@
-// src/pages/TabPage.tsx
 import React from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -11,12 +10,12 @@ import {
     IonRefresherContent,
     IonText,
 } from "@ionic/react";
-import { refreshOutline } from "ionicons/icons";
-import { motion, AnimatePresence } from "framer-motion";
 import { useApi } from "../contexts/apiContext";
 import { ProductCard } from "../components/ProductCard";
 import { Header } from "../components/Header";
-import { Footer } from "../components/Footer";
+import { refreshOutline } from 'ionicons/icons';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ButtonMap } from '../types/buttonTypes';
 
 const TabPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -29,24 +28,58 @@ const TabPage: React.FC = () => {
         }, 1500);
     };
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                duration: 0.5,
+                when: "beforeChildren",
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.5
+            }
+        }
+    };
+
     if (loading) {
         return (
             <IonPage className="shop-page">
                 <Header />
                 <IonContent>
-                    <div className="loading-state">
-                        <IonSpinner name="crescent" />
-                        <p>Laddar produkter...</p>
+                    <div className="loading-container">
+                        <IonSpinner 
+                            name="crescent"
+                            className="loading-spinner"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 0.2 }}
+                            className="loading-text"
+                        >
+                            <IonText color="medium">
+                                <p>Laddar produkter...</p>
+                            </IonText>
+                        </motion.div>
                     </div>
                 </IonContent>
-                <Footer />
             </IonPage>
         );
     }
 
     const buttonMap = buttonMaps.find(map => map.id === parseInt(id));
     
-    if (!buttonMap) {
+    if (!buttonMap || !buttonMap.id) {
         return (
             <IonPage className="shop-page">
                 <Header />
@@ -58,23 +91,29 @@ const TabPage: React.FC = () => {
                         </IonButton>
                     </div>
                 </IonContent>
-                <Footer />
             </IonPage>
         );
     }
 
     const validProducts = buttonMap.buttons
-        .filter((button) => button.product && products[button.product])
-        .map((button) => ({
+        .filter(button => {
+            const product = button.product ? products[button.product] : null;
+            return button.product && product;
+        })
+        .map(button => ({
             button,
-            product: products[button.product!],
+            product: products[button.product!]
         }));
 
     return (
         <IonPage className="shop-page">
             <Header />
             <IonContent>
-                <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+                <IonRefresher 
+                    slot="fixed" 
+                    onIonRefresh={handleRefresh}
+                    className="custom-refresher"
+                >
                     <IonRefresherContent
                         pullingIcon={refreshOutline}
                         pullingText="Dra för att uppdatera"
@@ -85,39 +124,57 @@ const TabPage: React.FC = () => {
 
                 <AnimatePresence mode="wait">
                     {validProducts.length === 0 ? (
-                        <motion.div className="empty-state">
-                            <IonText>
-                                <h2>Inga produkter tillgängliga</h2>
-                                <p>Det finns inga produkter att visa just nu.</p>
-                            </IonText>
-                            <IonButton onClick={() => window.location.reload()}>
-                                <IonIcon slot="start" icon={refreshOutline} />
-                                Försök igen
-                            </IonButton>
+                        <motion.div 
+                            className="empty-state-container"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.5 }}
+                        >
+                            <div className="empty-state-content">
+                                <IonText>
+                                    <h2>Inga produkter tillgängliga</h2>
+                                    <p>Det finns inga produkter att visa just nu.</p>
+                                </IonText>
+                                
+                                <IonButton 
+                                    onClick={() => window.location.reload()}
+                                    fill="solid"
+                                    className="retry-button"
+                                >
+                                    <IonIcon slot="start" icon={refreshOutline} />
+                                    Försök igen
+                                </IonButton>
+                            </div>
                         </motion.div>
                     ) : (
-                        <motion.div className="product-grid">
-                            {validProducts.map(({ button }, index) => (
-                                <motion.div
-                                    key={`${buttonMap.id}-${button.product}`}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ 
-                                        duration: 0.5,
-                                        delay: index * 0.1 
-                                    }}
-                                >
-                                    <ProductCard
-                                        productId={button.product!}
-                                        index={index}
-                                    />
-                                </motion.div>
-                            ))}
+                        <motion.div 
+                            className="shop-content"
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="visible"
+                        >
+                            <motion.div 
+                                className="product-grid"
+                                variants={containerVariants}
+                            >
+                                {validProducts.map(({ button }, index) => (
+                                    <motion.div
+                                        key={`${buttonMap.id}-${button.product}`}
+                                        variants={itemVariants}
+                                        custom={index}
+                                    >
+                                        <ProductCard
+                                            productId={button.product!}
+                                            index={index}
+                                        />
+                                    </motion.div>
+                                ))}
+                            </motion.div>
                         </motion.div>
                     )}
                 </AnimatePresence>
             </IonContent>
-            <Footer />
         </IonPage>
     );
 };

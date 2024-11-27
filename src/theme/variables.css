@@ -509,3 +509,44 @@ ion-content {
         font-size: 1.125rem;
     }
 }
+
+/* Footer/Tab Bar */
+.modern-tab-bar {
+    --background: var(--brand-green);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.tab-button {
+    color: var(--black) !important;
+    --color: var(--black) !important;
+    --color-selected: var(--black) !important;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+    opacity: 1;
+}
+
+.tab-button.tab-selected {
+    opacity: 1;
+}
+
+/* Force black color on all elements inside tab bar */
+.modern-tab-bar ion-icon {
+    color: var(--black) !important;
+}
+
+.modern-tab-bar ion-label {
+    color: var(--black) !important;
+}
+
+ion-tab-button::part(native) {
+    color: var(--black) !important;
+}
+
+ion-tab-button.tab-selected::part(native) {
+    color: var(--black) !important;
+}
