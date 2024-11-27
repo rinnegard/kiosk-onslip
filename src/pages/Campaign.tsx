@@ -1,98 +1,178 @@
+import React, { useEffect, useState } from "react";
 import {
     IonPage,
     IonContent,
-    IonItem,
-    IonLabel,
-    IonList,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonNote,
+    IonText,
+    IonSpinner,
+    IonIcon,
+    IonBadge
 } from "@ionic/react";
-import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { initializeApi } from "../api/config";
 import { API } from "@onslip/onslip-360-web-api";
 import { ProductCard } from "../components/ProductCard";
 import { Header } from "../components/Header";
+import { flash, ticketOutline } from "ionicons/icons";
+
+interface CampaignBannerProps {
+    campaign: API.Campaign;
+}
+
+const CampaignBanner: React.FC<CampaignBannerProps> = ({ campaign }) => {
+    const getBannerText = () => {
+        switch (campaign.type) {
+            case "percentage":
+                return `${campaign["discount-rate"]}% rabatt på utvalda produkter`;
+            case "fixed-amount":
+                return `Spara ${campaign.amount}kr på utvalda produkter`;
+            case "fixed-price":
+                return `Just nu endast ${campaign.amount}kr`;
+            case "cheapest-free":
+                return "Köp flera - Få den billigaste på köpet!";
+            default:
+                return campaign.name;
+        }
+    };
+
+    return (
+        <motion.div 
+            className="campaign-banner"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+        >
+            <div className="campaign-banner-content">
+                <IonIcon icon={ticketOutline} className="campaign-banner-icon" />
+                <div className="campaign-banner-text">
+                    <h3>{campaign.name}</h3>
+                    <p>{getBannerText()}</p>
+                </div>
+            </div>
+        </motion.div>
+    );
+};
+
+const CampaignSection: React.FC<{
+    campaign: API.Campaign;
+    products: API.Product[];
+    index: number;
+}> = ({ campaign, products, index }) => {
+    const allCampaignProducts = campaign.rules.flatMap(rule => rule.products);
+    const validProducts = allCampaignProducts
+        .map(productId => products.find(p => p.id === productId))
+        .filter((product): product is API.Product => product !== undefined);
+
+    return (
+        <motion.section
+            className="campaign-section"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1, duration: 0.5 }}
+        >
+            <CampaignBanner campaign={campaign} />
+            
+            <div className="campaign-products">
+                <div className="campaign-products-header">
+                    <h4>Kampanjprodukter</h4>
+                    <IonBadge color="primary">{validProducts.length} produkter</IonBadge>
+                </div>
+                <div className="product-grid">
+                    {validProducts.map((product, productIndex) => (
+                        <motion.div
+                            key={product.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: productIndex * 0.1 }}
+                        >
+                            <ProductCard
+                                productId={product.id!}
+                                index={productIndex}
+                            />
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </motion.section>
+    );
+};
 
 export default function Campaign() {
     const [campaigns, setCampaigns] = useState<API.Campaign[]>([]);
     const [products, setProducts] = useState<API.Product[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function fetch() {
-            const api = initializeApi();
-            const campaignRes = await api.listCampaigns();
-            setCampaigns(campaignRes);
-
-            const productRes = await api.listProducts();
-            setProducts(productRes);
+            try {
+                const api = initializeApi();
+                const [campaignRes, productRes] = await Promise.all([
+                    api.listCampaigns(),
+                    api.listProducts()
+                ]);
+                setCampaigns(campaignRes);
+                setProducts(productRes);
+            } catch (error) {
+                console.error('Failed to fetch data:', error);
+            } finally {
+                setLoading(false);
+            }
         }
         fetch();
     }, []);
 
+    if (loading) {
+        return (
+            <IonPage>
+                <Header />
+                <IonContent>
+                    <div className="loading-state">
+                        <IonSpinner name="crescent" />
+                        <p>Laddar kampanjer...</p>
+                    </div>
+                </IonContent>
+            </IonPage>
+        );
+    }
+
     return (
         <IonPage>
-            <Header></Header>
-            <IonContent>
-                {campaigns.length > 0 ? (
-                    <IonList>
-                        {campaigns.map((campaign) => (
-                            <div
-                                key={campaign.id}
-                                style={{ marginBottom: "2rem" }}
+            <Header />
+            <IonContent className="ion-padding">
+                <div className="container">
+                    <div className="page-header">
+                        <div className="page-title">
+                            <IonIcon icon={flash} />
+                            <h1>Aktuella Kampanjer</h1>
+                        </div>
+                    </div>
+                    
+                    <AnimatePresence mode="wait">
+                        {campaigns.length === 0 ? (
+                            <motion.div
+                                className="empty-state-container"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.5 }}
                             >
-                                <IonItem>
-                                    <IonLabel>
-                                        <h2>{campaign.name}</h2>
-                                        <p>{campaign.type}</p>
-                                    </IonLabel>
-                                </IonItem>
-
-                                <IonGrid>
-                                    {campaign.rules.map((rule, ruleIndex) => (
-                                        <IonRow key={ruleIndex}>
-                                            {rule.products.map(
-                                                (productId, index) => {
-                                                    const product =
-                                                        products.find(
-                                                            (p) =>
-                                                                p.id ===
-                                                                productId
-                                                        );
-                                                    return (
-                                                        product && (
-                                                            <IonCol
-                                                                size="6"
-                                                                sizeMd="4"
-                                                                sizeLg="2"
-                                                                key={index}
-                                                            >
-                                                                <ProductCard
-                                                                    productId={
-                                                                        product.id!
-                                                                    }
-                                                                    index={
-                                                                        index
-                                                                    }
-                                                                />
-                                                            </IonCol>
-                                                        )
-                                                    );
-                                                }
-                                            )}
-                                        </IonRow>
-                                    ))}
-                                </IonGrid>
-                            </div>
-                        ))}
-                    </IonList>
-                ) : (
-                    <IonNote>Inga Kampanjer Tillgängliga</IonNote>
-                )}
+                                <IonIcon icon={ticketOutline} className="empty-state-icon" />
+                                <IonText>
+                                    <h2>Inga kampanjer tillgängliga</h2>
+                                    <p>Det finns inga aktiva kampanjer just nu.</p>
+                                </IonText>
+                            </motion.div>
+                        ) : (
+                            campaigns.map((campaign, index) => (
+                                <CampaignSection
+                                    key={campaign.id}
+                                    campaign={campaign}
+                                    products={products}
+                                    index={index}
+                                />
+                            ))
+                        )}
+                    </AnimatePresence>
+                </div>
             </IonContent>
         </IonPage>
     );

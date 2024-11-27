@@ -12,7 +12,7 @@ import { CartProvider } from "./contexts/cartContext";
 import { initializeUserService } from "./services/userService";
 import { initializeApi } from "./api/config";
 import { useApi } from "./contexts/apiContext";
-import { TabBar } from "./components/TabBar";
+import TabBar from "./components/TabBar";
 
 // CSS imports
 import "@ionic/react/css/core.css";
