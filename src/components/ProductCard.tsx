@@ -18,6 +18,7 @@ import { useApi } from "../contexts/apiContext";
 import { motion } from "framer-motion";
 import { initializeApi } from "../api/config";
 import { API } from "@onslip/onslip-360-web-api";
+import { findBestCampaign } from "../util/findBestCampaign";
 
 interface ProductCardProps {
     productId: number;
@@ -44,25 +45,37 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             const filteredCampaigns = campaigns.filter((campaign) =>
                 campaign.rules.some((rule) => rule.products.includes(productId))
             );
-            setCampaignType(filteredCampaigns[0]?.type);
-            setCampaignDisplay(
-                filteredCampaigns[0]["discount-rate"] ||
-                    filteredCampaigns[0].amount ||
-                    filteredCampaigns[0].name
+
+            const bestCampaign = findBestCampaign(
+                filteredCampaigns,
+                product!.price!
             );
-            switch (filteredCampaigns[0]?.type) {
+
+            if (bestCampaign == undefined) {
+                return;
+            }
+
+            setCampaignType(bestCampaign.type);
+            setCampaignDisplay(
+                bestCampaign["discount-rate"] ||
+                    bestCampaign.amount ||
+                    bestCampaign.name
+            );
+            switch (bestCampaign?.type) {
                 case "fixed-amount":
-                    setReducedPrice(
-                        product?.price! - filteredCampaigns[0].amount!
-                    );
+                    setReducedPrice(product?.price! - bestCampaign.amount!);
                     break;
                 case "fixed-price":
-                    setReducedPrice(filteredCampaigns[0].amount);
+                    if (bestCampaign.rules[0].quantity > 1) {
+                        setCampaignDisplay(bestCampaign.name);
+                        break;
+                    }
+                    setReducedPrice(bestCampaign.amount);
                     break;
                 case "percentage":
                     setReducedPrice(
                         (
-                            (1 - filteredCampaigns[0]["discount-rate"]! / 100) *
+                            (1 - bestCampaign["discount-rate"]! / 100) *
                             product?.price!
                         ).toFixed(2)
                     );
@@ -153,7 +166,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 )}
                 {campaignType === "fixed-price" && (
                     <div className="product-card-discount">
-                        {campaignDisplay}kr
+                        {campaignDisplay}
                     </div>
                 )}
 
