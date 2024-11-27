@@ -307,6 +307,7 @@ body {
 .tab-button:hover,
 .tab-button.tab-selected {
     opacity: 1;
+}
   
 .product-card-discount {
     position: absolute;
@@ -369,7 +370,7 @@ ion-tab-button.tab-selected::part(native) {
 @media (min-width: 769px) and (max-width: 1199px) {
     .product-grid {
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-=======
+}
 }
 
 .product-grid {
@@ -437,6 +438,7 @@ ion-tab-button.tab-selected::part(native) {
     font-weight: 800;
     letter-spacing: -0.03em;
     margin: 0;
+}
   
 .campaign-button {
     width: 100%;
@@ -529,6 +531,7 @@ ion-tab-button.tab-selected::part(native) {
     font-size: 1.5rem;
     font-weight: 700;
     margin: 0 0 var(--spacing-xs);
+}
   
 .old-price {
     text-decoration: line-through;
