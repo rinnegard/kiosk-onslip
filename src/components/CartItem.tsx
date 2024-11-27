@@ -2,9 +2,10 @@ import { IonButton, IonItem, IonLabel, IonNote } from "@ionic/react";
 import { useCart, type CartItem } from "../contexts/cartContext";
 import { useEffect, useState } from "react";
 import { initializeApi } from "../api/config";
+import { API } from "@onslip/onslip-360-web-api";
 
 export default function CartItem({ item }: { item: CartItem }) {
-    const [product, setProduct] = useState<any>();
+    const [product, setProduct] = useState<API.Product>();
 
     const { dispatch } = useCart();
 
@@ -23,7 +24,9 @@ export default function CartItem({ item }: { item: CartItem }) {
                 {item["product-name"]} {item.quantity}st
             </IonLabel>
             {product && (
-                <IonNote slot="end">{product.price * item.quantity}kr</IonNote>
+                <IonNote slot="end">
+                    {(product.price || 0) * item.quantity}kr
+                </IonNote>
             )}
             <IonButton
                 size="small"

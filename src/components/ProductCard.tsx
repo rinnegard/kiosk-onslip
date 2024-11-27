@@ -36,7 +36,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     const { dispatch } = useCart();
     const [campaignDisplay, setCampaignDisplay] = useState<number | string>();
     const [campaignType, setCampaignType] = useState<API.Campaign.Type>();
-    const [reducedPrice, setReducedPrice] = useState<number | string>();
+    const [reducedPrice, setReducedPrice] = useState<number>();
 
     useEffect(() => {
         async function fetch() {
@@ -74,10 +74,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     break;
                 case "percentage":
                     setReducedPrice(
-                        (
-                            (1 - bestCampaign["discount-rate"]! / 100) *
+                        (1 - bestCampaign["discount-rate"]! / 100) *
                             product?.price!
-                        ).toFixed(2)
                     );
                     break;
                 default:
@@ -113,6 +111,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 quantity: 1,
                 price: product.price,
                 type: "goods",
+                reducedPrice: reducedPrice,
             },
         });
     };
@@ -136,14 +135,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                                 {reducedPrice ? (
                                     <div>
                                         <span className="old-price">
-                                            {product.price} kr
+                                            {product.price.toFixed(2)} kr
                                         </span>
                                         <h3 className="reduced-price">
-                                            {reducedPrice} kr
+                                            {reducedPrice.toFixed(2)} kr
                                         </h3>
                                     </div>
                                 ) : (
-                                    <h3>{product.price} kr</h3>
+                                    <h3>{product.price.toFixed(2)} kr</h3>
                                 )}
                             </IonText>
                         </div>
