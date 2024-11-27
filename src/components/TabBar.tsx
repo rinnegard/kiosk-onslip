@@ -16,7 +16,7 @@ import {
 } from 'ionicons/icons';
 import { ButtonMap } from '../types/buttonTypes';
 
-const getIconForTab = (name: string) => {
+export const getIconForTab = (name: string) => {
     const normalizedName = name.toLowerCase();
 
     switch (true) {
@@ -39,7 +39,7 @@ interface TabBarProps {
     buttonMaps: ButtonMap[];
 }
 
-export const TabBar: React.FC<TabBarProps> = ({ buttonMaps }) => {
+const TabBar: React.FC<TabBarProps> = ({ buttonMaps }) => {
     const location = useLocation();
     const currentId = location.pathname.split('/').pop();
 
@@ -60,7 +60,11 @@ export const TabBar: React.FC<TabBarProps> = ({ buttonMaps }) => {
                     selected={currentId === buttonMap.id?.toString()}
                     className="tab-button"
                 >
-                    <IonIcon icon={getIconForTab(buttonMap.name)} />
+                    <IonIcon 
+                        icon={getIconForTab(buttonMap.name)} 
+                        size="small"
+                        style={{ fontSize: '24px' }}
+                    />
                     <IonLabel>{buttonMap.name}</IonLabel>
                 </IonTabButton>
             ))}

@@ -3,20 +3,17 @@
 @tailwind utilities;
 
 :root {
-
-    /* Onslip Brand Colors */
-    --brand-green: #A5D666;
+    /* Brand Colors */
+    --brand-green: #a5d666;
     --black: #000000;
     --white: #ffffff;
-    /* Brand färger - konstanta värden */
-    --brand-green: #a5d666;
     --header-text-color: #000000;
 
     /* Theme Colors */
     --ion-background-color: #0a0a0a;
     --ion-background-color-rgb: 10, 10, 10;
-
-    --ion-card-background: #111111;
+    --ion-card-background: #161616;
+    --ion-item-background: #161616;
     --ion-toolbar-background: var(--brand-green) !important;
     --ion-tab-bar-background: var(--brand-green) !important;
 
@@ -25,39 +22,13 @@
     --ion-text-color-rgb: 255, 255, 255;
     --ion-text-color-medium: rgba(255, 255, 255, 0.6);
 
-    --ion-item-background: #161616;
-    --ion-content-background: #0a0a0a;
-    --ion-toolbar-background: #a5d666 !important;
-    --ion-tab-bar-background: #a5d666 !important;
-    --ion-card-background: #161616;
-
-    /* Primära färger för mörkt tema */
+    /* Primary Colors */
     --ion-color-primary: var(--brand-green);
     --ion-color-primary-rgb: 165, 214, 102;
     --ion-color-primary-contrast: #000000;
     --ion-color-primary-contrast-rgb: 0, 0, 0;
     --ion-color-primary-shade: #8fb859;
     --ion-color-primary-tint: #b4dd7c;
-
-    /* Färger för framgångsmeddelanden */
-    --ion-color-success: #22c55e;
-    --ion-color-success-rgb: 34, 197, 94;
-    --ion-color-success-contrast: #ffffff;
-    --ion-color-success-contrast-rgb: 255, 255, 255;
-    --ion-color-success-shade: #1eb553;
-    --ion-color-success-tint: #38cb6e;
-
-    /* Textfärger */
-    --ion-text-color: #ffffff;
-    --ion-text-color-rgb: 255, 255, 255;
-    --ion-text-color-medium: rgba(255, 255, 255, 0.6);
-
-    /* Anpassade egenskaper */
-    --shop-card-border-radius: 16px;
-    --shop-content-max-width: 1400px;
-    --shop-card-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-    --glass-effect: rgba(255, 255, 255, 0.05);
-    --header-height: 64px;
 
     /* Layout */
     --header-height: 64px;
@@ -95,7 +66,7 @@ body {
     padding: 0 var(--spacing-md);
 }
 
-/* Header */
+/* Header Styles */
 .modern-header ion-toolbar {
     --background: var(--ion-toolbar-background);
     height: var(--header-height);
@@ -144,7 +115,54 @@ body {
     border: 2px solid var(--brand-green);
 }
 
-/* Product Card */
+/* Section Styling */
+.section-header {
+    margin: var(--spacing-xl) 0 var(--spacing-lg);
+    padding: 0 var(--spacing-lg);
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-xs);
+}
+
+/* Category Cards */
+.category-card {
+    background: var(--ion-card-background);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.category-card:hover {
+    transform: translateY(-4px);
+}
+
+.category-content {
+    padding: var(--spacing-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.category-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--spacing-xs);
+}
+
+.category-count {
+    color: var(--ion-text-color-medium);
+    font-size: 0.875rem;
+}
+
+/* Product Cards */
 .product-card {
     background: var(--ion-card-background);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -179,6 +197,14 @@ body {
     transform: scale(1.05);
 }
 
+.product-title {
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-xs);
+}
+
 .price-badge {
     position: absolute;
     top: var(--spacing-md);
@@ -193,45 +219,25 @@ body {
     transform: skew(-7deg);
 }
 
-.product-content {
-    padding: var(--spacing-lg);
-}
-
-.product-title {
-    font-weight: 700;
-    font-size: 1.25rem;
-    letter-spacing: -0.02em;
+.product-card-discount {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #ff4d4f;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
     text-transform: uppercase;
-    margin-bottom: var(--spacing-xs);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Product Grid */
-.product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing-lg);
-    padding: var(--spacing-lg);
-}
-
-/* Section Styling */
-.section-header {
-    margin: var(--spacing-xl) 0 var(--spacing-lg);
-    padding: 0 var(--spacing-lg);
-}
-
-.section-title {
-    font-size: 2rem;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
-    margin-bottom: var(--spacing-xs);
-}
-
-.section-subtitle {
-    color: var(--ion-text-color-medium);
-}
-
-/* Buttons */
+/* Add to Cart Button */
 .add-to-cart-button {
     --background: var(--black);
     --color: var(--brand-green);
@@ -245,66 +251,6 @@ body {
     margin-top: var(--spacing-md);
     position: relative;
     overflow: hidden;
-}
-
-/* Category Card */
-.category-card {
-    background: var(--ion-card-background);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.category-card:hover {
-    transform: translateY(-4px);
-}
-
-.category-content {
-    padding: var(--spacing-lg);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.category-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
-    margin-bottom: var(--spacing-xs);
-}
-
-.category-count {
-    color: var(--ion-text-color-medium);
-    font-size: 0.875rem;
-}
-
-/* Hero Section */
-.hero-section {
-    padding: var(--spacing-xl) var(--spacing-lg);
-    text-align: center;
-    background: linear-gradient(
-        180deg,
-        var(--ion-background-color) 0%,
-        rgba(10, 10, 10, 0) 100%
-    );
-}
-
-.hero-title {
-    font-size: 3.5rem;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    text-transform: uppercase;
-    margin-bottom: var(--spacing-md);
-    line-height: 1.1;
-}
-
-.hero-subtitle {
-    font-size: 1.25rem;
-    color: var(--ion-text-color-medium);
-    max-width: 600px;
-    margin: 0 auto;
 }
 
 /* Loading & Error States */
@@ -326,191 +272,7 @@ body {
     margin-bottom: var(--spacing-md);
 }
 
-/* Footer/Tab Bar */
-.modern-tab-bar {
-    --background: var(--brand-green);
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    height: var(--header-height);
-}
-
-.tab-button {
-    --color: var(--black);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    opacity: 0.7;
-    transition: all 0.2s ease;
-}
-
-.product-card-discount {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: #ff4d4f;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    text-transform: uppercase;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* Innehållspadding */
-ion-content {
-    --padding-top: calc(var(--header-height) * 0.25);
-}
-
-.tab-button.tab-selected {
-    opacity: 1;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    :root {
-        --spacing-lg: 1.25rem;
-        --spacing-xl: 2rem;
-    }
-}
-      
-    .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 16px;
-        padding: 12px;
-    }
-
-    .header-container {
-        padding: 0 12px;
-    }
-
-    .logo-container {
-        height: 32px;
-    }
-
-    .empty-state-container {
-        padding: 1rem;
-    }
-
-    .hero-title {
-        font-size: 2.5rem;
-    }
-
-    .hero-subtitle {
-        font-size: 1.125rem;
-    }
-
-    .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: var(--spacing-md);
-        padding: var(--spacing-md);
-    }
-
-    .modern-tab-bar {
-        height: calc(var(--header-height) * 0.9);
-
-    .cart-badge {
-        min-width: 16px;
-        height: 16px;
-        font-size: 11px;
-    }
-}
-
-@media (min-width: 1200px) {
-    .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    }
-}
-
-/* Campaign Buttons Section */
-.campaign-buttons {
-    margin: var(--spacing-xl) 0;
-    padding: 0 var(--spacing-lg);
-}
-
-.button-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: var(--spacing-md);
-}
-
-.campaign-button {
-    width: 100%;
-    --background: var(--ion-card-background);
-    --color: var(--ion-text-color);
-    --border-radius: 8px;
-    --border-width: 1px;
-    --border-style: solid;
-    --border-color: rgba(255, 255, 255, 0.1);
-    --padding-top: var(--spacing-lg);
-    --padding-bottom: var(--spacing-lg);
-    --padding-start: var(--spacing-lg);
-    --padding-end: var(--spacing-lg);
-    
-    height: auto;
-    margin: 0;
-    
-    font-weight: 700;
-    font-size: 1.25rem;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
-    
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.campaign-button ion-icon {
-    font-size: 1.5rem;
-    margin-left: var(--spacing-sm);
-    transition: transform 0.3s ease;
-}
-
-.campaign-button:hover {
-    transform: translateY(-4px);
-    --background: var(--ion-card-background);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.campaign-button:hover ion-icon {
-    transform: translateX(4px);
-}
-
-/* Light theme adjustments */
-@media (prefers-color-scheme: light) {
-    .campaign-button {
-        --background: var(--white);
-        --border-color: rgba(0, 0, 0, 0.1);
-    }
-    
-    .campaign-button:hover {
-        --background: var(--white);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    }
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .campaign-buttons {
-        margin: var(--spacing-lg) 0;
-        padding: 0 var(--spacing-md);
-    }
-
-    .button-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .campaign-button {
-        --padding-top: var(--spacing-md);
-        --padding-bottom: var(--spacing-md);
-        font-size: 1.125rem;
-    }
-}
-
-/* Footer/Tab Bar */
+/* Tab Bar */
 .modern-tab-bar {
     --background: var(--brand-green);
     border-top: 1px solid rgba(0, 0, 0, 0.1);
@@ -526,27 +288,203 @@ ion-content {
     transition: all 0.2s ease;
 }
 
-.tab-button:hover {
-    opacity: 1;
-}
-
+.tab-button:hover,
 .tab-button.tab-selected {
     opacity: 1;
 }
 
-/* Force black color on all elements inside tab bar */
-.modern-tab-bar ion-icon {
-    color: var(--black) !important;
-}
-
-.modern-tab-bar ion-label {
-    color: var(--black) !important;
-}
-
-ion-tab-button::part(native) {
-    color: var(--black) !important;
-}
-
+.modern-tab-bar ion-icon,
+.modern-tab-bar ion-label,
+ion-tab-button::part(native),
 ion-tab-button.tab-selected::part(native) {
     color: var(--black) !important;
+}
+
+/* Product Grid */
+.product-grid {
+    display: grid;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    :root {
+        --spacing-lg: 1.25rem;
+        --spacing-xl: 2rem;
+    }
+
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+    }
+
+    .header-container {
+        padding: 0 var(--spacing-sm);
+    }
+
+    .container {
+        padding: 0 var(--spacing-sm);
+    }
+
+    .section-header {
+        padding: 0 var(--spacing-md);
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1199px) {
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
+
+@media (min-width: 1200px) {
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    }
+}
+
+/* Campaign Styles */
+.page-header {
+    padding: var(--spacing-lg) 0;
+    margin-bottom: var(--spacing-lg);
+}
+
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.page-title h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0;
+}
+
+.page-title ion-icon {
+    font-size: 2.5rem;
+    color: var(--brand-green);
+}
+
+.campaign-section {
+    margin-bottom: var(--spacing-xl);
+    background: var(--ion-card-background);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.campaign-banner {
+    background: linear-gradient(45deg, var(--brand-green), #8fb859);
+    padding: var(--spacing-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.campaign-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
+    z-index: 1;
+}
+
+.campaign-banner-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.campaign-banner-icon {
+    font-size: 2.5rem;
+    color: var(--black);
+}
+
+.campaign-banner-text {
+    color: var(--black);
+}
+
+.campaign-banner-text h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 var(--spacing-xs);
+}
+
+.campaign-banner-text p {
+    font-size: 1.125rem;
+    margin: 0;
+    opacity: 0.8;
+}
+
+.campaign-products {
+    padding: var(--spacing-lg);
+}
+
+.campaign-products-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-lg);
+}
+
+.campaign-products-header h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.empty-state-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 40vh;
+    text-align: center;
+    padding: var(--spacing-xl);
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    color: var(--brand-green);
+    margin-bottom: var(--spacing-md);
+}
+
+.empty-state-container h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+}
+
+.empty-state-container p {
+    color: var(--ion-text-color-medium);
+    font-size: 1.125rem;
+}
+
+@media (max-width: 768px) {
+    .page-title h1 {
+        font-size: 2rem;
+    }
+    
+    .campaign-banner-text h3 {
+        font-size: 1.25rem;
+    }
+    
+    .campaign-banner-text p {
+        font-size: 1rem;
+    }
+    
+    .campaign-banner-icon {
+        font-size: 2rem;
+    }
+    
+    .campaign-products {
+        padding: var(--spacing-md);
+    }
 }
