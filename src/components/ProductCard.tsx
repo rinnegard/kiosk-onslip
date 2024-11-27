@@ -121,24 +121,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                         <div className="price-badge">
                             <IonText>
                                 {reducedPrice ? (
-                                    <>
-                                        <span
-                                            style={{
-                                                textDecorationThickness: "2px",
-                                                textDecoration: "line-through",
-                                                textDecorationColor: "black",
-                                            }}
-                                        >
+                                    <div>
+                                        <span className="old-price">
                                             {product.price} kr
                                         </span>
-                                        <h3
-                                            style={{
-                                                color: "red",
-                                            }}
-                                        >
+                                        <h3 className="reduced-price">
                                             {reducedPrice} kr
                                         </h3>
-                                    </>
+                                    </div>
                                 ) : (
                                     <h3>{product.price} kr</h3>
                                 )}

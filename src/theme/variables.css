@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 :root {
-
     /* Onslip Brand Colors */
-    --brand-green: #A5D666;
+    --brand-green: #a5d666;
     --black: #000000;
     --white: #ffffff;
+    --red: #ff4d4f;
     /* Brand färger - konstanta värden */
     --brand-green: #a5d666;
     --header-text-color: #000000;
@@ -25,7 +25,7 @@
     --ion-text-color-rgb: 255, 255, 255;
     --ion-text-color-medium: rgba(255, 255, 255, 0.6);
 
-    --ion-item-background: #161616;
+    --ion-item-background: #ffffff;
     --ion-content-background: #0a0a0a;
     --ion-toolbar-background: #a5d666 !important;
     --ion-tab-bar-background: #a5d666 !important;
@@ -83,7 +83,7 @@
 
 /* Base Styles */
 body {
-    font-family: 'Helvetica Neue', -apple-system, system-ui, sans-serif;
+    font-family: "Helvetica Neue", -apple-system, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     letter-spacing: -0.02em;
 }
@@ -345,7 +345,7 @@ body {
     position: absolute;
     top: 10px;
     left: 10px;
-    background: #ff4d4f;
+    background: var(--red);
     color: white;
     font-size: 12px;
     font-weight: bold;
@@ -375,41 +375,41 @@ ion-content {
         --spacing-xl: 2rem;
     }
 }
-      
-    .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 16px;
-        padding: 12px;
-    }
 
-    .header-container {
-        padding: 0 12px;
-    }
+.product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    padding: 12px;
+}
 
-    .logo-container {
-        height: 32px;
-    }
+.header-container {
+    padding: 0 12px;
+}
 
-    .empty-state-container {
-        padding: 1rem;
-    }
+.logo-container {
+    height: 32px;
+}
 
-    .hero-title {
-        font-size: 2.5rem;
-    }
+.empty-state-container {
+    padding: 1rem;
+}
 
-    .hero-subtitle {
-        font-size: 1.125rem;
-    }
+.hero-title {
+    font-size: 2.5rem;
+}
 
-    .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: var(--spacing-md);
-        padding: var(--spacing-md);
-    }
+.hero-subtitle {
+    font-size: 1.125rem;
+}
 
-    .modern-tab-bar {
-        height: calc(var(--header-height) * 0.9);
+.product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+}
+
+.modern-tab-bar {
+    height: calc(var(--header-height) * 0.9);
 
     .cart-badge {
         min-width: 16px;
@@ -448,15 +448,15 @@ ion-content {
     --padding-bottom: var(--spacing-lg);
     --padding-start: var(--spacing-lg);
     --padding-end: var(--spacing-lg);
-    
+
     height: auto;
     margin: 0;
-    
+
     font-weight: 700;
     font-size: 1.25rem;
     text-transform: uppercase;
     letter-spacing: -0.02em;
-    
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -485,7 +485,7 @@ ion-content {
         --background: var(--white);
         --border-color: rgba(0, 0, 0, 0.1);
     }
-    
+
     .campaign-button:hover {
         --background: var(--white);
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
@@ -508,6 +508,17 @@ ion-content {
         --padding-bottom: var(--spacing-md);
         font-size: 1.125rem;
     }
+}
+
+.old-price {
+    text-decoration: line-through;
+    text-decoration-color: gray;
+    text-decoration-thickness: 2px;
+    color: gray;
+}
+
+.reduced-price {
+    color: var(--red);
 }
 
 /* Footer/Tab Bar */
