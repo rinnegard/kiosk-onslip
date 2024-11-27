@@ -3,10 +3,19 @@
 @tailwind utilities;
 
 :root {
+
     /* Brand Colors */
     --brand-green: #a5d666;
     --black: #000000;
     --white: #ffffff;
+  
+    /* Onslip Brand Colors */
+    --brand-green: #a5d666;
+    --black: #000000;
+    --white: #ffffff;
+    --red: #ff4d4f;
+    /* Brand färger - konstanta värden */
+    --brand-green: #a5d666;
     --header-text-color: #000000;
 
     /* Theme Colors */
@@ -23,6 +32,13 @@
     --ion-text-color-medium: rgba(255, 255, 255, 0.6);
 
     /* Primary Colors */
+    --ion-item-background: #ffffff;
+    --ion-content-background: #0a0a0a;
+    --ion-toolbar-background: #a5d666 !important;
+    --ion-tab-bar-background: #a5d666 !important;
+    --ion-card-background: #161616;
+
+    /* Primära färger för mörkt tema */
     --ion-color-primary: var(--brand-green);
     --ion-color-primary-rgb: 165, 214, 102;
     --ion-color-primary-contrast: #000000;
@@ -54,7 +70,7 @@
 
 /* Base Styles */
 body {
-    font-family: 'Helvetica Neue', -apple-system, system-ui, sans-serif;
+    font-family: "Helvetica Neue", -apple-system, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     letter-spacing: -0.02em;
 }
@@ -291,6 +307,23 @@ body {
 .tab-button:hover,
 .tab-button.tab-selected {
     opacity: 1;
+  
+.product-card-discount {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--red);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .modern-tab-bar ion-icon,
@@ -336,6 +369,48 @@ ion-tab-button.tab-selected::part(native) {
 @media (min-width: 769px) and (max-width: 1199px) {
     .product-grid {
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+=======
+}
+
+.product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    padding: 12px;
+}
+
+.header-container {
+    padding: 0 12px;
+}
+
+.logo-container {
+    height: 32px;
+}
+
+.empty-state-container {
+    padding: 1rem;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+}
+
+.hero-subtitle {
+    font-size: 1.125rem;
+}
+
+.product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+}
+
+.modern-tab-bar {
+    height: calc(var(--header-height) * 0.9);
+
+    .cart-badge {
+        min-width: 16px;
+        height: 16px;
+        font-size: 11px;
     }
 }
 
@@ -362,6 +437,32 @@ ion-tab-button.tab-selected::part(native) {
     font-weight: 800;
     letter-spacing: -0.03em;
     margin: 0;
+  
+.campaign-button {
+    width: 100%;
+    --background: var(--ion-card-background);
+    --color: var(--ion-text-color);
+    --border-radius: 8px;
+    --border-width: 1px;
+    --border-style: solid;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --padding-top: var(--spacing-lg);
+    --padding-bottom: var(--spacing-lg);
+    --padding-start: var(--spacing-lg);
+    --padding-end: var(--spacing-lg);
+
+    height: auto;
+    margin: 0;
+
+    font-weight: 700;
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .page-title ion-icon {
@@ -392,6 +493,19 @@ ion-tab-button.tab-selected::part(native) {
     bottom: 0;
     background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
     z-index: 1;
+  }
+  
+/* Light theme adjustments */
+@media (prefers-color-scheme: light) {
+    .campaign-button {
+        --background: var(--white);
+        --border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .campaign-button:hover {
+        --background: var(--white);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
 }
 
 .campaign-banner-content {
@@ -415,6 +529,22 @@ ion-tab-button.tab-selected::part(native) {
     font-size: 1.5rem;
     font-weight: 700;
     margin: 0 0 var(--spacing-xs);
+  
+.old-price {
+    text-decoration: line-through;
+    text-decoration-color: gray;
+    text-decoration-thickness: 2px;
+    color: gray;
+}
+
+.reduced-price {
+    color: var(--red);
+}
+
+/* Footer/Tab Bar */
+.modern-tab-bar {
+    --background: var(--brand-green);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .campaign-banner-text p {
@@ -487,4 +617,8 @@ ion-tab-button.tab-selected::part(native) {
     .campaign-products {
         padding: var(--spacing-md);
     }
+}
+
+ion-tab-button.tab-selected::part(native) {
+    color: var(--black) !important;
 }
