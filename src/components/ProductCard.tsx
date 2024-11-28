@@ -66,7 +66,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     setReducedPrice(product?.price! - bestCampaign.amount!);
                     break;
                 case "fixed-price":
-                    if (bestCampaign.rules[0].quantity > 1) {
+                    if (
+                        bestCampaign.rules[0].quantity > 1 ||
+                        bestCampaign.rules.length
+                    ) {
                         setCampaignDisplay(bestCampaign.name);
                         break;
                     }

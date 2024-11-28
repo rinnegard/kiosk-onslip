@@ -10,7 +10,6 @@ export async function getCampaignPriceForItem(
 
     const api = initializeApi();
     const campaign = await api.getCampaign(campaignId);
-    console.log(campaign.name, campaign);
 
     if (!campaign) return price;
 

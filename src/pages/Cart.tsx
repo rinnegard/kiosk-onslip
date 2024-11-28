@@ -11,7 +11,6 @@ import {
 import { useCart } from "../contexts/cartContext";
 import { useCustomer } from "../contexts/userContext";
 import CartItem from "../components/CartItem";
-import CartIcon from "../components/CartIcon";
 import { CustomerList } from "../components/UserList";
 import { Customer } from "../types/userTypes";
 import { Resource } from "../types/resourceTypes";
