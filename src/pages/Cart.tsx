@@ -24,6 +24,7 @@ import {
 } from "../services/deliveryService";
 import { API } from "@onslip/onslip-360-api";
 import { Header } from "../components/Header";
+import { getCampaignPriceForItem } from "../util/getCampaignPrice";
 
 export default function Cart() {
     const [user, setUser] = useState<Customer>();
@@ -34,6 +35,7 @@ export default function Cart() {
     } = useCustomer();
     const [presentToast] = useIonToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [total, setTotal] = useState<number>();
 
     useEffect(() => {
         const loadResources = async () => {
@@ -47,10 +49,19 @@ export default function Cart() {
         loadResources();
     }, []);
 
-    const totalAmount = state.items.reduce(
-        (sum, item) => sum + (item.price || 0) * item.quantity,
-        0
-    );
+    useEffect(() => {
+        const calculateTotal = async () => {
+            let total = 0;
+            for (const item of state.items) {
+                const campaignPrice = await getCampaignPriceForItem(item);
+
+                total += campaignPrice || 0;
+            }
+            setTotal(total);
+        };
+
+        calculateTotal();
+    }, [state.items]);
 
     async function handleSendOrder() {
         if (!user || state.items.length === 0) return;
@@ -160,17 +171,19 @@ export default function Cart() {
                             ))}
 
                             {/* Totalsumma */}
-                            <IonItem
-                                lines="none"
-                                className="ion-margin-top font-semibold"
-                            >
-                                <IonLabel>
-                                    <h2 className="text-lg">Totalt</h2>
-                                </IonLabel>
-                                <div slot="end" className="text-lg">
-                                    {totalAmount.toFixed(2)} kr
-                                </div>
-                            </IonItem>
+                            {total && (
+                                <IonItem
+                                    lines="none"
+                                    className="ion-margin-top font-semibold"
+                                >
+                                    <IonLabel>
+                                        <h2 className="text-lg">Totalt</h2>
+                                    </IonLabel>
+                                    <div slot="end" className="text-lg">
+                                        {total.toFixed(2)} kr
+                                    </div>
+                                </IonItem>
+                            )}
                         </IonList>
                     ) : (
                         <div className="p-8 text-center text-gray-500">
