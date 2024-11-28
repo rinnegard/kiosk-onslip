@@ -9,14 +9,13 @@ import {
     IonRefresher,
     IonRefresherContent,
     IonText,
-    IonBadge
 } from "@ionic/react";
 import { useApi } from "../contexts/apiContext";
 import { ProductCard } from "../components/ProductCard";
 import { Header } from "../components/Header";
 import { refreshOutline } from 'ionicons/icons';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getIconForTab } from "../components/TabBar"; 
+import '../styles/pages/TabPage.css';
 
 const TabPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -29,44 +28,17 @@ const TabPage: React.FC = () => {
         }, 1500);
     };
 
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                duration: 0.5,
-                when: "beforeChildren",
-                staggerChildren: 0.1
-            }
-        }
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-            opacity: 1,
-            y: 0,
-            transition: {
-                duration: 0.5
-            }
-        }
-    };
-
     if (loading) {
         return (
             <IonPage className="shop-page">
                 <Header />
                 <IonContent>
                     <div className="loading-container">
-                        <IonSpinner 
-                            name="crescent"
-                            className="loading-spinner"
-                        />
+                        <IonSpinner name="crescent" className="loading-spinner" />
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 0.2 }}
-                            className="loading-text"
                         >
                             <IonText color="medium">
                                 <p>Laddar produkter...</p>
@@ -109,21 +81,17 @@ const TabPage: React.FC = () => {
     return (
         <IonPage className="shop-page">
             <Header />
-            <IonContent className="ion-padding">
-                <div className="container">
-                    <IonRefresher 
-                        slot="fixed" 
-                        onIonRefresh={handleRefresh}
-                        className="custom-refresher"
-                    >
-                        <IonRefresherContent
-                            pullingIcon={refreshOutline}
-                            pullingText="Dra för att uppdatera"
-                            refreshingSpinner="crescent"
-                            refreshingText="Uppdaterar..."
-                        />
-                    </IonRefresher>
+            <IonContent>
+                <IonRefresher slot="fixed" onIonRefresh={handleRefresh} className="custom-refresher">
+                    <IonRefresherContent
+                        pullingIcon={refreshOutline}
+                        pullingText="Dra för att uppdatera"
+                        refreshingSpinner="crescent"
+                        refreshingText="Uppdaterar..."
+                    />
+                </IonRefresher>
 
+                <div className="container">
                     <AnimatePresence mode="wait">
                         {validProducts.length === 0 ? (
                             <motion.div 
@@ -141,7 +109,6 @@ const TabPage: React.FC = () => {
                                     
                                     <IonButton 
                                         onClick={() => window.location.reload()}
-                                        fill="solid"
                                         className="retry-button"
                                     >
                                         <IonIcon slot="start" icon={refreshOutline} />
@@ -153,10 +120,6 @@ const TabPage: React.FC = () => {
                             <section className="product-section">
                                 <div className="page-header">
                                     <div className="page-title">
-                                        <IonIcon 
-                                            icon={getIconForTab(buttonMap.name)} 
-                                            color="primary"
-                                        />
                                         <h1>{buttonMap.name}</h1>
                                     </div>
                                 </div>
@@ -164,7 +127,6 @@ const TabPage: React.FC = () => {
                                     {validProducts.map(({ button }, index) => (
                                         <motion.div
                                             key={`${buttonMap.id}-${button.product}`}
-                                            variants={itemVariants}
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: index * 0.1 }}

@@ -4,17 +4,12 @@ import {
     IonContent,
     IonSpinner,
     IonButton,
-    IonIcon,
     IonGrid,
     IonRow,
     IonCol,
     IonCard,
     IonCardContent,
 } from '@ionic/react';
-import { 
-    chevronForward,
-    pricetag,
-} from 'ionicons/icons';
 import { useApi } from '../contexts/apiContext';
 import { motion } from 'framer-motion';
 import { Header } from '../components/Header';
@@ -22,10 +17,24 @@ import { ProductCard } from '../components/ProductCard';
 import { initializeApi } from "../api/config";
 import { API } from "@onslip/onslip-360-web-api";
 import { useHistory } from 'react-router';
+import '../styles/pages/LandingPage.css';
 
 interface NewProductsSectionProps {
     products: API.Product[];
 }
+
+const fadeInUp = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+    transition: { duration: 0.3 }
+};
+
+const SectionTitle: React.FC<{ title: string }> = ({ title }) => (
+    <div className="section-header">
+        <h2 className="section-title">{title}</h2>
+    </div>
+);
 
 const NewProductsSection: React.FC<NewProductsSectionProps> = ({ products }) => {
     const newProducts = [...products]
@@ -34,20 +43,21 @@ const NewProductsSection: React.FC<NewProductsSectionProps> = ({ products }) => 
             const dateB = b.created ? new Date(b.created).getTime() : 0;
             return dateB - dateA;
         })
-        .slice(0, 6);
+        .slice(0, 8);
 
     return (
-        <section className="product-section">
-            <div className="section-header">
-                <h2 className="section-title">Senaste Nyheterna</h2>
-            </div>
+        <motion.section 
+            className="product-section"
+            {...fadeInUp}
+        >
+            <SectionTitle title="Senaste Nyheterna" />
             <div className="product-grid">
                 {newProducts.map((product, index) => (
                     <motion.div
                         key={product.id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1, duration: 0.5 }}
+                        transition={{ delay: index * 0.1 }}
                     >
                         <ProductCard
                             productId={product.id!}
@@ -56,7 +66,7 @@ const NewProductsSection: React.FC<NewProductsSectionProps> = ({ products }) => 
                     </motion.div>
                 ))}
             </div>
-        </section>
+        </motion.section>
     );
 };
 
@@ -69,70 +79,88 @@ const CategorySection: React.FC = () => {
     );
 
     return (
-        <section className="category-section">
-            <div className="section-header">
-                <h2 className="section-title">Kategorier</h2>
-            </div>
-            <IonGrid>
-                <IonRow>
-                    {filteredMaps.map((category, index) => (
-                        <IonCol key={category.id} size="6" sizeMd="4">
+        <motion.section 
+            className="category-section"
+            {...fadeInUp}
+        >
+            <SectionTitle title="Kategorier" />
+            <div className="category-grid">
+                <IonGrid>
+                    <IonRow>
+                        {filteredMaps.map((category, index) => (
+                            <IonCol key={category.id} size="12" sizeMd="6">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                >
+                                    <IonCard 
+                                        className="category-card"
+                                        onClick={() => history.push(`/tabs/${category.id}`)}
+                                    >
+                                        <IonCardContent className="category-content">
+                                            <div>
+                                                <h3 className="category-title">
+                                                    {category.name}
+                                                </h3>
+                                                <p className="category-count">
+                                                    {category.buttons.length} produkter
+                                                </p>
+                                            </div>
+                                        </IonCardContent>
+                                    </IonCard>
+                                </motion.div>
+                            </IonCol>
+                        ))}
+                        <IonCol size="12" sizeMd="6">
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
+                                transition={{ delay: filteredMaps.length * 0.1 }}
                             >
                                 <IonCard 
-                                    className="category-card"
-                                    onClick={() => history.push(`/tabs/${category.id}`)}
+                                    className="category-card campaign-card"
+                                    onClick={() => history.push('/campaigns')}
                                 >
                                     <IonCardContent className="category-content">
                                         <div>
                                             <h3 className="category-title">
-                                                {category.name}
+                                                Kampanjer
                                             </h3>
                                             <p className="category-count">
-                                                {category.buttons.length} produkter
+                                                Se aktuella erbjudanden
                                             </p>
                                         </div>
-                                        <IonIcon icon={chevronForward} />
                                     </IonCardContent>
                                 </IonCard>
                             </motion.div>
                         </IonCol>
-                    ))}
-                    <IonCol size="6" sizeMd="4">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: filteredMaps.length * 0.1 }}
-                        >
-                            <IonCard 
-                                className="category-card campaign-card"
-                                onClick={() => history.push('/campaigns')}
-                            >
-                                <IonCardContent className="category-content">
-                                    <div>
-                                        <h3 className="category-title">
-                                            Kampanjer
-                                        </h3>
-                                        <p className="category-count">
-                                            Se erbjudanden
-                                        </p>
-                                    </div>
-                                    <IonIcon 
-                                        icon={pricetag} 
-                                        className="campaign-icon"
-                                    />
-                                </IonCardContent>
-                            </IonCard>
-                        </motion.div>
-                    </IonCol>
-                </IonRow>
-            </IonGrid>
-        </section>
+                    </IonRow>
+                </IonGrid>
+            </div>
+        </motion.section>
     );
 };
+
+const LoadingState: React.FC = () => (
+    <div className="loading-state">
+        <IonSpinner name="crescent" />
+        <p>Laddar innehåll...</p>
+    </div>
+);
+
+const ErrorState: React.FC<{ error: Error }> = ({ error }) => (
+    <div className="error-state">
+        <h2>Ett fel uppstod</h2>
+        <p>{error.message}</p>
+        <IonButton 
+            onClick={() => window.location.reload()}
+            size="large"
+        >
+            Försök igen
+        </IonButton>
+    </div>
+);
 
 const LandingPage: React.FC = () => {
     const { state: { loading: apiLoading, error } } = useApi();
@@ -154,45 +182,20 @@ const LandingPage: React.FC = () => {
         fetchData();
     }, []);
 
-    if (loading || apiLoading) {
-        return (
-            <IonPage>
-                <Header />
-                <IonContent>
-                    <div className="loading-state">
-                        <IonSpinner />
-                        <p>Laddar...</p>
-                    </div>
-                </IonContent>
-            </IonPage>
-        );
-    }
-
-    if (error) {
-        return (
-            <IonPage>
-                <Header />
-                <IonContent>
-                    <div className="error-state">
-                        <h2>Ett fel uppstod</h2>
-                        <p>{error.message}</p>
-                        <IonButton onClick={() => window.location.reload()}>
-                            Försök igen
-                        </IonButton>
-                    </div>
-                </IonContent>
-            </IonPage>
-        );
-    }
-
     return (
         <IonPage>
             <Header />
-            <IonContent className="ion-padding">
-                <div className="container">
-                    <CategorySection />
-                    <NewProductsSection products={products} />
-                </div>
+            <IonContent>
+                {(loading || apiLoading) ? (
+                    <LoadingState />
+                ) : error ? (
+                    <ErrorState error={error} />
+                ) : (
+                    <div className="container">
+                        <CategorySection />
+                        <NewProductsSection products={products} />
+                    </div>
+                )}
             </IonContent>
         </IonPage>
     );

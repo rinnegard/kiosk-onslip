@@ -1,0 +1,132 @@
+/* Container styling */
+.cart-container {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: var(--spacing-md);
+  }
+  
+  /* Section headers */
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  /* Empty cart message */
+  .empty-cart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+    text-align: center;
+    color: var(--ion-text-color-medium);
+  }
+  
+  /* Cart total section */
+  .cart-total {
+    background: var(--ion-background-color);
+    border-radius: 8px;
+    margin-top: var(--spacing-md);
+  }
+  
+  .cart-total ion-label {
+    font-weight: 600;
+  }
+  
+  .cart-total-amount {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ion-text-color);
+  }
+  
+  /* Action buttons container */
+  .cart-actions {
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  /* Order button states */
+  .order-button {
+    --border-radius: 8px;
+  }
+  
+  .order-button ion-spinner {
+    margin-right: var(--spacing-sm);
+  }
+  
+  /* Delivery info section */
+  .delivery-info {
+    background: var(--ion-card-background);
+    border-radius: 8px;
+    margin: var(--spacing-md);
+    padding: var(--spacing-md);
+  }
+  
+  .delivery-info-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ion-text-color);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .delivery-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .delivery-steps li {
+    color: var(--ion-text-color-medium);
+    font-size: 0.9rem;
+    padding-left: var(--spacing-md);
+    position: relative;
+  }
+  
+  .delivery-steps li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--ion-color-primary);
+  }
+  
+  /* Customer selection section */
+  .customer-selection {
+    background: var(--ion-background-color);
+    border-radius: 8px;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .cart-container {
+      padding: var(--spacing-sm);
+    }
+  
+    .delivery-info {
+      margin: var(--spacing-sm);
+      border-radius: 6px;
+    }
+  
+    .section-title {
+      font-size: 1.1rem;
+    }
+  }
+  
+  /* Loading spinner */
+  .loading-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+  }
+  
+  .loading-spinner ion-spinner {
+    --color: var(--ion-color-primary);
+  }

@@ -42,27 +42,6 @@ export const getDeliveryStaff = async (): Promise<Customer | null> => {
     }
 };
 
-// Logga leveranstilldelning
-export const logDeliveryAssignment = (details: DeliveryDetails) => {
-    console.log(`
-    ====== Ny Leveranstilldelning ======
-    Order ID: ${details.orderId}
-    Order: ${details.orderName}
-    Beställare: ${details.customerName}
-    Email: ${details.customerEmail}
-    Leveransplats: ${details.deliveryLocation}
-    Totalt belopp: ${details.totalAmount} kr
-    
-    Produkter:
-    ${details.items.join('\n')}
-    
-    Tilldelad till: ID ${DELIVERY_STAFF_ID} (Fast leveranspersonal)
-    -------------------------------
-    Status: Ordern har tilldelats för leverans
-    ==============================
-    `);
-};
-
 // Skapa leveranstagg
 export const createDeliveryTags = (resourceId: number): string[] => [
     `delivery_desk:${resourceId}`,
@@ -81,7 +60,7 @@ export const sendEmail = async (
         const command: API.Command = {
             name: 'send-email',
             args: [
-                'noreply@domain.com',
+                'noreply@onslip.com',
                 recipientEmail,
                 subject,
                 'text/plain',
@@ -126,10 +105,8 @@ Din beställning är mottagen och behandlas nu.
 
 ${formatOrderDetails(details)}
 
-Vi meddelar dig när din beställning har godkänts av vår leveranspersonal.
-
 Med vänliga hälsningar,
-Teamet`
+Teamet på Onslip`
         );
     },
 
@@ -150,28 +127,8 @@ En ny leverans väntar på din hantering.
 
 ${formatOrderDetails(details)}
 
-Vänligen granska och godkänn beställningen i systemet.
-
 Med vänliga hälsningar,
-Systemet`
-        );
-    },
-
-    // Till kund - order godkänd
-    async sendOrderApprovalNotification(details: DeliveryDetails) {
-        await sendEmail(
-            details.customerEmail,
-            `Din beställning är godkänd: ${details.orderName}`,
-            `
-Hej!
-
-Din beställning har nu godkänts av vår leveranspersonal.
-Betalning kommer att ske på plats via betalterminal.
-
-${formatOrderDetails(details)}
-
-Med vänliga hälsningar,
-Teamet`
+Teamet på Onslip`
         );
     },
 
@@ -192,7 +149,7 @@ ${formatOrderDetails(details)}
 Tack för ditt köp!
 
 Med vänliga hälsningar,
-Teamet`
+Teamet på Onslip`
         );
     }
 };

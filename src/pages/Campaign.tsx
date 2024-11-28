@@ -13,6 +13,7 @@ import { API } from "@onslip/onslip-360-web-api";
 import { ProductCard } from "../components/ProductCard";
 import { Header } from "../components/Header";
 import { flash, ticketOutline } from "ionicons/icons";
+import '../styles/pages/Campaign.css';
 
 interface CampaignBannerProps {
     campaign: API.Campaign;
@@ -37,9 +38,9 @@ const CampaignBanner: React.FC<CampaignBannerProps> = ({ campaign }) => {
     return (
         <motion.div 
             className="campaign-banner"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
         >
             <div className="campaign-banner-content">
                 <IonIcon icon={ticketOutline} className="campaign-banner-icon" />
@@ -67,28 +68,24 @@ const CampaignSection: React.FC<{
             className="campaign-section"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1, duration: 0.5 }}
+            transition={{ delay: index * 0.1 }}
         >
             <CampaignBanner campaign={campaign} />
             
             <div className="campaign-products">
                 <div className="campaign-products-header">
                     <h4>Kampanjprodukter</h4>
-                    <IonBadge color="primary">{validProducts.length} produkter</IonBadge>
+                    <IonBadge color="primary">
+                        {validProducts.length} produkter
+                    </IonBadge>
                 </div>
                 <div className="product-grid">
                     {validProducts.map((product, productIndex) => (
-                        <motion.div
+                        <ProductCard
                             key={product.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: productIndex * 0.1 }}
-                        >
-                            <ProductCard
-                                productId={product.id!}
-                                index={productIndex}
-                            />
-                        </motion.div>
+                            productId={product.id!}
+                            index={productIndex}
+                        />
                     ))}
                 </div>
             </div>
@@ -137,7 +134,7 @@ export default function Campaign() {
     return (
         <IonPage>
             <Header />
-            <IonContent className="ion-padding">
+            <IonContent>
                 <div className="container">
                     <div className="page-header">
                         <div className="page-title">
@@ -153,7 +150,7 @@ export default function Campaign() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                transition={{ duration: 0.5 }}
+                                transition={{ duration: 0.3 }}
                             >
                                 <IonIcon icon={ticketOutline} className="empty-state-icon" />
                                 <IonText>

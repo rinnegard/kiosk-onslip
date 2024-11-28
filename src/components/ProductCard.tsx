@@ -19,73 +19,78 @@ import { motion } from "framer-motion";
 import { initializeApi } from "../api/config";
 import { API } from "@onslip/onslip-360-web-api";
 import { findBestCampaign } from "../util/findBestCampaign";
+import '../styles/components/ProductCard.css';
 
 interface ProductCardProps {
     productId: number;
-    index: number;
+    index?: number;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({
-    productId,
-    index,
-}) => {
-    const {
-        state: { products, loading },
-    } = useApi();
+export const ProductCard: React.FC<ProductCardProps> = ({ productId, index }) => {
+    const { state: { products, loading } } = useApi();
     const product = productId ? products[productId] : null;
     const { dispatch } = useCart();
-    const [campaignDisplay, setCampaignDisplay] = useState<number | string>();
-    const [campaignType, setCampaignType] = useState<API.Campaign.Type>();
-    const [reducedPrice, setReducedPrice] = useState<number | string>();
+    const [campaignDetails, setCampaignDetails] = useState<{
+        display: number | string;
+        type?: API.Campaign.Type;
+        reducedPrice?: number | string;
+    }>({
+        display: '',
+    });
 
     useEffect(() => {
-        async function fetch() {
+        async function fetchCampaigns() {
+            if (!product?.price) return;
+
             const api = initializeApi();
             const campaigns = await api.listCampaigns();
-            const filteredCampaigns = campaigns.filter((campaign) =>
-                campaign.rules.some((rule) => rule.products.includes(productId))
+            const filteredCampaigns = campaigns.filter(campaign =>
+                campaign.rules.some(rule => rule.products.includes(productId))
             );
 
-            const bestCampaign = findBestCampaign(
-                filteredCampaigns,
-                product!.price!
-            );
+            const bestCampaign = findBestCampaign(filteredCampaigns, product.price);
+            if (!bestCampaign) return;
 
-            if (bestCampaign == undefined) {
-                return;
-            }
+            const display = bestCampaign["discount-rate"] || bestCampaign.amount || bestCampaign.name;
+            let reducedPrice;
 
-            setCampaignType(bestCampaign.type);
-            setCampaignDisplay(
-                bestCampaign["discount-rate"] ||
-                    bestCampaign.amount ||
-                    bestCampaign.name
-            );
-            switch (bestCampaign?.type) {
+            switch (bestCampaign.type) {
                 case "fixed-amount":
-                    setReducedPrice(product?.price! - bestCampaign.amount!);
+                    reducedPrice = product.price - bestCampaign.amount!;
                     break;
                 case "fixed-price":
                     if (bestCampaign.rules[0].quantity > 1) {
-                        setCampaignDisplay(bestCampaign.name);
                         break;
                     }
-                    setReducedPrice(bestCampaign.amount);
+                    reducedPrice = bestCampaign.amount;
                     break;
                 case "percentage":
-                    setReducedPrice(
-                        (
-                            (1 - bestCampaign["discount-rate"]! / 100) *
-                            product?.price!
-                        ).toFixed(2)
-                    );
-                    break;
-                default:
+                    reducedPrice = ((1 - bestCampaign["discount-rate"]! / 100) * product.price).toFixed(2);
                     break;
             }
+
+            setCampaignDetails({
+                display,
+                type: bestCampaign.type,
+                reducedPrice,
+            });
         }
-        fetch();
-    }, [productId]);
+
+        fetchCampaigns();
+    }, [productId, product]);
+
+    const handleAddToCart = () => {
+        dispatch({
+            type: "ADD_ITEM",
+            payload: {
+                "product-name": product!.name,
+                product: product!.id!,
+                quantity: 1,
+                price: product!.price,
+                type: "goods",
+            },
+        });
+    };
 
     if (loading || !product) {
         return (
@@ -104,24 +109,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         );
     }
 
-    const handleAddToCart = () => {
-        dispatch({
-            type: "ADD_ITEM",
-            payload: {
-                "product-name": product.name,
-                product: product.id,
-                quantity: 1,
-                price: product.price,
-                type: "goods",
-            },
-        });
-    };
+    const { display, type: campaignType, reducedPrice } = campaignDetails;
 
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
+            transition={{ duration: 0.3, delay: index! * 0.1 }}
         >
             <IonCard className="product-card">
                 <div className="image-container">
@@ -149,24 +143,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                         </div>
                     )}
                 </div>
-                {campaignType === "percentage" && (
+
+                {campaignType && display && (
                     <div className="product-card-discount">
-                        -{campaignDisplay}%
-                    </div>
-                )}
-                {campaignType === "fixed-amount" && (
-                    <div className="product-card-discount">
-                        -{campaignDisplay}kr
-                    </div>
-                )}
-                {campaignType === "cheapest-free" && (
-                    <div className="product-card-discount">
-                        {campaignDisplay}
-                    </div>
-                )}
-                {campaignType === "fixed-price" && (
-                    <div className="product-card-discount">
-                        {campaignDisplay}
+                        {campaignType === "percentage" ? `-${display}%` : 
+                         campaignType === "fixed-amount" ? `-${display}kr` :
+                         display}
                     </div>
                 )}
 
@@ -191,9 +173,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                             onClick={handleAddToCart}
                         >
                             <IonIcon
-                                icon={
-                                    product.price ? cartOutline : flashOutline
-                                }
+                                icon={product.price ? cartOutline : flashOutline}
                                 slot="start"
                             />
                             {loading
@@ -209,3 +189,5 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </motion.div>
     );
 };
+
+export default ProductCard;

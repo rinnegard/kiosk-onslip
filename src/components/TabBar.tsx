@@ -15,31 +15,33 @@ import {
     cartOutline
 } from 'ionicons/icons';
 import { ButtonMap } from '../types/buttonTypes';
+import '../styles/components/TabBar.css';
 
+// Exportera funktionen så den kan användas i andra komponenter
 export const getIconForTab = (name: string) => {
     const normalizedName = name.toLowerCase();
+    
+    const iconMap: Record<string, string> = {
+        glass: iceCreamOutline,
+        godis: bagHandleOutline,
+        snacks: bagHandleOutline,
+        dryck: beerOutline,
+        läsk: beerOutline,
+        frukost: fastFoodOutline,
+        macka: fastFoodOutline,
+        lunch: restaurantOutline,
+        mat: restaurantOutline,
+    };
 
-    switch (true) {
-        case normalizedName.includes('glass'):
-            return iceCreamOutline;
-        case normalizedName.includes('godis') || normalizedName.includes('snacks'):
-            return bagHandleOutline;
-        case normalizedName.includes('dryck') || normalizedName.includes('läsk'):
-            return beerOutline;
-        case normalizedName.includes('frukost') || normalizedName.includes('macka'):
-            return fastFoodOutline;
-        case normalizedName.includes('lunch') || normalizedName.includes('mat'):
-            return restaurantOutline;
-        default:
-            return cartOutline;
-    }
+    return Object.entries(iconMap).find(([key]) => 
+        normalizedName.includes(key))?.[1] || cartOutline;
 };
 
 interface TabBarProps {
     buttonMaps: ButtonMap[];
 }
 
-const TabBar: React.FC<TabBarProps> = ({ buttonMaps }) => {
+export const TabBar: React.FC<TabBarProps> = ({ buttonMaps }) => {
     const location = useLocation();
     const currentId = location.pathname.split('/').pop();
 
@@ -52,22 +54,26 @@ const TabBar: React.FC<TabBarProps> = ({ buttonMaps }) => {
 
     return (
         <IonTabBar slot="bottom" className="modern-tab-bar">
-            {filteredMaps.map((buttonMap) => (
-                <IonTabButton
-                    key={buttonMap.id}
-                    tab={`tab-${buttonMap.id}`}
-                    href={`/tabs/${buttonMap.id}`}
-                    selected={currentId === buttonMap.id?.toString()}
-                    className="tab-button"
-                >
-                    <IonIcon 
-                        icon={getIconForTab(buttonMap.name)} 
-                        size="small"
-                        style={{ fontSize: '24px' }}
-                    />
-                    <IonLabel>{buttonMap.name}</IonLabel>
-                </IonTabButton>
-            ))}
+            {filteredMaps.map((buttonMap) => {
+                const isSelected = currentId === buttonMap.id?.toString();
+                const icon = getIconForTab(buttonMap.name);
+                
+                return (
+                    <IonTabButton
+                        key={buttonMap.id}
+                        tab={`tab-${buttonMap.id}`}
+                        href={`/tabs/${buttonMap.id}`}
+                        selected={isSelected}
+                        className="tab-button"
+                    >
+                        <IonIcon 
+                            icon={icon}
+                            aria-hidden="true"
+                        />
+                        <IonLabel>{buttonMap.name}</IonLabel>
+                    </IonTabButton>
+                );
+            })}
         </IonTabBar>
     );
 };

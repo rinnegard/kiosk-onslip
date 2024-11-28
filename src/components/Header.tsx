@@ -7,6 +7,7 @@ import {
     useIonRouter,
 } from "@ionic/react";
 import CartIcon from "./CartIcon";
+import '../styles/components/Header.css';
 
 interface HeaderProps {
     title?: string;
@@ -20,7 +21,7 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
             <IonToolbar>
                 <div className="header-container">
                     <div
-                        className="logo-container cursor-pointer"
+                        className="logo-container"
                         onClick={() => router.push("/")}
                     >
                         <img
@@ -29,10 +30,10 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
                             className="header-logo"
                         />
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="header-nav">
                         <IonRouterLink
-                            className="text-current hover:text-primary transition-colors"
-                            routerLink={`/campaigns`}
+                            className="header-link"
+                            routerLink="/campaigns"
                             routerDirection="none"
                         >
                             Kampanjer
@@ -46,3 +47,5 @@ export const Header: React.FC<HeaderProps> = ({ title }) => {
         </IonHeader>
     );
 };
+
+export default Header;
