@@ -35,7 +35,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     const product = productId ? products[productId] : null;
     const { dispatch } = useCart();
     const [campaignDisplay, setCampaignDisplay] = useState<number | string>();
-    const [campaignType, setCampaignType] = useState<API.Campaign.Type>();
+    const [campaign, setCampaign] = useState<API.Campaign>();
     const [reducedPrice, setReducedPrice] = useState<number>();
 
     useEffect(() => {
@@ -55,13 +55,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 return;
             }
 
-            setCampaignType(bestCampaign.type);
+            setCampaign(bestCampaign);
             setCampaignDisplay(
                 bestCampaign["discount-rate"] ||
                     bestCampaign.amount ||
                     bestCampaign.name
             );
-            switch (bestCampaign?.type) {
+            switch (bestCampaign.type) {
                 case "fixed-amount":
                     setReducedPrice(product?.price! - bestCampaign.amount!);
                     break;
@@ -111,7 +111,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 quantity: 1,
                 price: product.price,
                 type: "goods",
-                reducedPrice: reducedPrice,
+                campaign: campaign?.id,
             },
         });
     };
@@ -148,22 +148,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                         </div>
                     )}
                 </div>
-                {campaignType === "percentage" && (
+                {campaign?.type === "percentage" && (
                     <div className="product-card-discount">
                         -{campaignDisplay}%
                     </div>
                 )}
-                {campaignType === "fixed-amount" && (
+                {campaign?.type === "fixed-amount" && (
                     <div className="product-card-discount">
                         -{campaignDisplay}kr
                     </div>
                 )}
-                {campaignType === "cheapest-free" && (
+                {campaign?.type === "cheapest-free" && (
                     <div className="product-card-discount">
                         {campaignDisplay}
                     </div>
                 )}
-                {campaignType === "fixed-price" && (
+                {campaign?.type === "fixed-price" && (
                     <div className="product-card-discount">
                         {campaignDisplay}
                     </div>

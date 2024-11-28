@@ -1,51 +1,43 @@
 import { IonButton, IonItem, IonLabel, IonNote } from "@ionic/react";
 import { useCart, type CartItem } from "../contexts/cartContext";
 import { useEffect, useState } from "react";
-import { initializeApi } from "../api/config";
-import { API } from "@onslip/onslip-360-web-api";
+import { getCampaignPriceForItem } from "../util/getCampaignPrice";
 
 export default function CartItem({ item }: { item: CartItem }) {
-    const [product, setProduct] = useState<API.Product>();
-
     const { dispatch } = useCart();
+    const [price, setPrice] = useState<number>();
 
     useEffect(() => {
         async function fetch() {
-            const api = initializeApi();
-            const res = await api.getProduct(item.product!);
-            setProduct(res);
+            const res = await getCampaignPriceForItem(item);
+            setPrice(res);
         }
         fetch();
-    }, []);
+    }, [item]);
 
     return (
         <IonItem>
             <IonLabel>
                 {item["product-name"]} {item.quantity}st
             </IonLabel>
-            {product && (
-                <div slot="end">
-                    {item.reducedPrice ? (
-                        <div>
-                            <span className="old-price">
-                                {((product.price || 0) * item.quantity).toFixed(
-                                    2
-                                )}{" "}
-                                kr
-                            </span>
-                            <h3 className="reduced-price">
-                                {(item.reducedPrice * item.quantity).toFixed(2)}{" "}
-                                kr
-                            </h3>
-                        </div>
-                    ) : (
-                        <h3>
-                            {((product.price || 0) * item.quantity).toFixed(2)}{" "}
+
+            <div slot="end">
+                {price && item.price! * item.quantity - price > 0 ? (
+                    <div>
+                        <h3 className="text-end">
+                            {((item.price || 0) * item.quantity).toFixed(2)} kr
+                        </h3>
+                        <h3 className="reduced-price">
+                            -{(item.price! * item.quantity - price).toFixed(2)}{" "}
                             kr
                         </h3>
-                    )}
-                </div>
-            )}
+                    </div>
+                ) : (
+                    <h3 className="text-end">
+                        {((item.price || 0) * item.quantity).toFixed(2)} kr
+                    </h3>
+                )}
+            </div>
             <IonButton
                 size="small"
                 onClick={() => {

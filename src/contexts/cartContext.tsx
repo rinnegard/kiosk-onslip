@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { API } from "@onslip/onslip-360-web-api";
 
-export type CartItem = API.Item & { reducedPrice?: number };
+export type CartItem = API.Item;
 
 type CartState = {
     items: CartItem[];
