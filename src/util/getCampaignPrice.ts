@@ -30,7 +30,12 @@ export async function getCampaignPriceForItem(
         case "fixed-price":
             const requiredQuantity = campaign.rules[0]?.quantity || 1;
             if (quantity >= requiredQuantity) {
-                reducedPrice = campaign.amount!;
+                const remainingQuantity = quantity % requiredQuantity;
+                const divisibleUnits = Math.floor(quantity / requiredQuantity);
+
+                reducedPrice =
+                    campaign.amount! * divisibleUnits +
+                    price * remainingQuantity;
             }
             break;
         case "cheapest-free":

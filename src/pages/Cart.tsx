@@ -50,6 +50,17 @@ export default function Cart() {
 
     useEffect(() => {
         const calculateTotal = async () => {
+            const api = initializeApi();
+            const campaigns = await api.listCampaigns();
+
+            const multiItemCampaigns = campaigns.filter((campaign) => {
+                return (
+                    campaign.rules.length > 1 ||
+                    campaign.rules[0].products.length > 1
+                );
+            });
+            console.log(multiItemCampaigns);
+
             let total = 0;
             for (const item of state.items) {
                 const campaignPrice = await getCampaignPriceForItem(item);
