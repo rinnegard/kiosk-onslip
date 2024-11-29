@@ -50,7 +50,7 @@ export default function CartItem({ item }: { item: CartItem }) {
                     </IonLabel>
                     <div slot="end">
                         {price && item.price! * item.quantity - price > 0 ? (
-                            <div>
+                            <div className="cart-item-price-container">
                                 <IonNote className="cart-item__price">
                                     {(
                                         (item.price || 0) * item.quantity
