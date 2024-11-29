@@ -11,7 +11,7 @@
     --gray-300: #d1d5db;
 
     /* Ionic Theme Colors */
-    --ion-background-color: var(--white);
+    --ion-background-color: var(--gray-100);
     --ion-background-color-rgb: 255, 255, 255;
     --ion-text-color: var(--black);
     --ion-text-color-rgb: 0, 0, 0;

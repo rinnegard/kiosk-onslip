@@ -1,31 +1,43 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React from 'react';
 import {
     IonContent,
     IonPage,
-    IonButton,
-    IonIcon,
-    IonSpinner,
     IonRefresher,
     IonRefresherContent,
+    IonSpinner,
     IonText,
-} from "@ionic/react";
-import { useApi } from "../contexts/apiContext";
-import { ProductCard } from "../components/ProductCard";
-import { Header } from "../components/Header";
-import { refreshOutline } from 'ionicons/icons';
+    IonIcon,
+    IonButton,
+} from '@ionic/react';
+import { refreshOutline, homeOutline } from 'ionicons/icons';
 import { motion, AnimatePresence } from 'framer-motion';
-import '../styles/pages/TabPage.css';
+import { useApi } from '../contexts/apiContext';
+import { ProductCard } from '../components/ProductCard';
+import { Header } from '../components/Header';
 
-const TabPage: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
-    const { state: { buttonMaps, products, loading } } = useApi();
+const Home: React.FC = () => {
+    const { state: { products, buttonMaps, loading } } = useApi();
 
     const handleRefresh = (event: CustomEvent) => {
         window.location.reload();
         setTimeout(() => {
             event.detail.complete();
         }, 1500);
+    };
+
+    // Ta alla unika produkt-ID:n från alla buttonMaps
+    const getAllProductIds = () => {
+        const productIds = new Set<number>();
+        buttonMaps.forEach(map => {
+            if (map.buttons) {
+                map.buttons.forEach(button => {
+                    if (button.product) {
+                        productIds.add(button.product);
+                    }
+                });
+            }
+        });
+        return Array.from(productIds);
     };
 
     if (loading) {
@@ -50,33 +62,7 @@ const TabPage: React.FC = () => {
         );
     }
 
-    const buttonMap = buttonMaps.find(map => map.id === parseInt(id));
-    
-    if (!buttonMap || !buttonMap.id) {
-        return (
-            <IonPage className="shop-page">
-                <Header />
-                <IonContent>
-                    <div className="error-state">
-                        <h2>Kategori hittades inte</h2>
-                        <IonButton routerLink="/">
-                            Tillbaka till startsidan
-                        </IonButton>
-                    </div>
-                </IonContent>
-            </IonPage>
-        );
-    }
-
-    const validProducts = buttonMap.buttons
-        .filter(button => {
-            const product = button.product ? products[button.product] : null;
-            return button.product && product;
-        })
-        .map(button => ({
-            button,
-            product: products[button.product!]
-        }));
+    const productIds = getAllProductIds();
 
     return (
         <IonPage className="shop-page">
@@ -93,7 +79,7 @@ const TabPage: React.FC = () => {
 
                 <div className="container">
                     <AnimatePresence mode="wait">
-                        {validProducts.length === 0 ? (
+                        {productIds.length === 0 ? (
                             <motion.div 
                                 className="empty-state-container"
                                 initial={{ opacity: 0, y: 20 }}
@@ -102,6 +88,10 @@ const TabPage: React.FC = () => {
                                 transition={{ duration: 0.5 }}
                             >
                                 <div className="empty-state-content">
+                                    <IonIcon
+                                        icon={homeOutline}
+                                        className="empty-state-icon"
+                                    />
                                     <IonText>
                                         <h2>Inga produkter tillgängliga</h2>
                                         <p>Det finns inga produkter att visa just nu.</p>
@@ -117,17 +107,17 @@ const TabPage: React.FC = () => {
                                 </div>
                             </motion.div>
                         ) : (
-                            <section className="product-section">
+                            <section className="home-section">
                                 <div className="product-grid">
-                                    {validProducts.map(({ button }, index) => (
+                                    {productIds.map((productId, index) => (
                                         <motion.div
-                                            key={`${buttonMap.id}-${button.product}`}
+                                            key={productId}
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: index * 0.1 }}
                                         >
                                             <ProductCard
-                                                productId={button.product!}
+                                                productId={productId}
                                                 index={index}
                                             />
                                         </motion.div>
@@ -142,4 +132,4 @@ const TabPage: React.FC = () => {
     );
 };
 
-export default TabPage;
+export default Home;

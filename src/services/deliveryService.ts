@@ -22,12 +22,12 @@ export interface DeliveryStaffInfo {
 
 const DELIVERY_STAFF_ID = 6;
 
-// Funktion för att hämta den dedikerade leveranspersonalen (ID 6)
+// Funktion för att hämta den utvalde leveranspersonalen (ID 6)
 export const getDeliveryStaff = async (): Promise<Customer | null> => {
     const api = initializeApi();
 
     try {
-        const staff = await api.getCustomer(DELIVERY_STAFF_ID);
+        const staff = await api.getCustomer(DELIVERY_STAFF_ID); 
         
         if (staff) {
             console.log(`Tilldelad leveranspersonal: ${staff.name} (Employee ID: ${DELIVERY_STAFF_ID})`);

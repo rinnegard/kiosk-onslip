@@ -74,7 +74,6 @@ const CampaignSection: React.FC<{
             
             <div className="campaign-products">
                 <div className="campaign-products-header">
-                    <h4>Kampanjprodukter</h4>
                     <IonBadge color="primary">
                         {validProducts.length} produkter
                     </IonBadge>
@@ -136,13 +135,6 @@ export default function Campaign() {
             <Header />
             <IonContent>
                 <div className="container">
-                    <div className="page-header">
-                        <div className="page-title">
-                            <IonIcon icon={flash} />
-                            <h1>Aktuella Kampanjer</h1>
-                        </div>
-                    </div>
-                    
                     <AnimatePresence mode="wait">
                         {campaigns.length === 0 ? (
                             <motion.div

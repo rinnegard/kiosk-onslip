@@ -1,132 +1,190 @@
-/* Container styling */
 .cart-container {
-    max-width: var(--content-max-width);
-    margin: 0 auto;
-    padding: var(--spacing-md);
-  }
-  
-  /* Section headers */
-  .section-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--ion-text-color);
-    margin-bottom: var(--spacing-md);
-  }
-  
-  /* Empty cart message */
-  .empty-cart {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: var(--spacing-xl);
-    text-align: center;
-    color: var(--ion-text-color-medium);
-  }
-  
-  /* Cart total section */
-  .cart-total {
-    background: var(--ion-background-color);
-    border-radius: 8px;
-    margin-top: var(--spacing-md);
-  }
-  
-  .cart-total ion-label {
-    font-weight: 600;
-  }
-  
-  .cart-total-amount {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--ion-text-color);
-  }
-  
-  /* Action buttons container */
-  .cart-actions {
-    padding: var(--spacing-md);
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
-  
-  /* Order button states */
-  .order-button {
-    --border-radius: 8px;
-  }
-  
-  .order-button ion-spinner {
-    margin-right: var(--spacing-sm);
-  }
-  
-  /* Delivery info section */
-  .delivery-info {
-    background: var(--ion-card-background);
-    border-radius: 8px;
-    margin: var(--spacing-md);
-    padding: var(--spacing-md);
-  }
-  
-  .delivery-info-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--ion-text-color);
-    margin-bottom: var(--spacing-sm);
-  }
-  
-  .delivery-steps {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
-  
-  .delivery-steps li {
-    color: var(--ion-text-color-medium);
-    font-size: 0.9rem;
-    padding-left: var(--spacing-md);
-    position: relative;
-  }
-  
-  .delivery-steps li::before {
-    content: "•";
-    position: absolute;
-    left: 0;
-    color: var(--ion-color-primary);
-  }
-  
-  /* Customer selection section */
-  .customer-selection {
-    background: var(--ion-background-color);
-    border-radius: 8px;
-    margin-bottom: var(--spacing-md);
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .cart-container {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-md);
+  min-height: 100%;
+  background: #FAFAFA;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--ion-text-color);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.customer-selection {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.cart-list {
+  background: transparent;
+  padding: 0;
+}
+
+.cart-list ion-item {
+  --background: #FFFFFF;
+  --border-radius: 12px;
+  margin-bottom: var(--spacing-sm);
+  --padding-start: var(--spacing-md);
+  --padding-end: var(--spacing-md);
+  --padding-top: var(--spacing-sm);
+  --padding-bottom: var(--spacing-sm);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.cart-total {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.cart-total-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.cart-total-label {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ion-text-color);
+}
+
+.cart-total-amount {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+}
+
+.cart-actions {
+  position: sticky;
+  bottom: 0;
+  background: rgba(250, 250, 250, 0.95);
+  backdrop-filter: blur(8px);
+  padding: var(--spacing-md);
+  display: flex;
+  gap: var(--spacing-md);
+  margin: var(--spacing-xl) -var(--spacing-md) -var(--spacing-md);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.action-button {
+  --border-radius: 12px;
+  min-height: 52px;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.empty-cart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+  text-align: center;
+  min-height: 40vh;
+}
+
+.empty-cart-icon {
+  font-size: 48px;
+  color: var(--ion-color-medium);
+  margin-bottom: var(--spacing-md);
+}
+
+.empty-cart-text {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--ion-text-color);
+  margin-bottom: var(--spacing-sm);
+}
+
+.empty-cart-subtext {
+  color: var(--ion-color-medium);
+  margin-bottom: var(--spacing-lg);
+}
+
+.delivery-info {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.delivery-info-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ion-text-color);
+  margin-bottom: var(--spacing-md);
+}
+
+.delivery-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.delivery-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  color: var(--ion-text-color-medium);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.step-icon {
+  color: var(--ion-color-primary);
+  font-size: 20px;
+  margin-top: 2px;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+@media (max-width: 768px) {
+  .cart-container {
       padding: var(--spacing-sm);
-    }
-  
-    .delivery-info {
-      margin: var(--spacing-sm);
-      border-radius: 6px;
-    }
-  
-    .section-title {
-      font-size: 1.1rem;
-    }
   }
-  
-  /* Loading spinner */
-  .loading-spinner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-xs);
+
+  .cart-actions {
+      padding: var(--spacing-sm);
+      margin: var(--spacing-lg) -var(--spacing-sm) -var(--spacing-sm);
+      flex-direction: column;
   }
-  
-  .loading-spinner ion-spinner {
-    --color: var(--ion-color-primary);
+
+  .section-title {
+      font-size: 1.25rem;
   }
+
+  .delivery-info {
+      padding: var(--spacing-md);
+  }
+}

@@ -28,7 +28,7 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 
 // Page imports
-import LandingPage from "./pages/LandingPage";
+import Home from "./pages/Home";
 import TabPage from "./pages/TabPage";
 import Cart from "./pages/Cart";
 import Campaign from "./pages/Campaign";
@@ -41,8 +41,8 @@ const TabsContainer: React.FC = () => {
     return (
         <IonTabs>
             <IonRouterOutlet>
-                <Route exact path="/" render={() => <Redirect to="/landing" />} />
-                <Route exact path="/landing" component={LandingPage} />
+                <Route exact path="/" render={() => <Redirect to="/home" />} />
+                <Route exact path="/home" component={Home} />
                 <Route exact path="/tabs/:id" component={TabPage} />
                 <Route exact path="/cart" component={Cart} />
                 <Route exact path="/campaigns" component={Campaign} />

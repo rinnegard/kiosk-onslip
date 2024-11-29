@@ -12,10 +12,10 @@ import {
     IonRippleEffect,
     IonImg,
 } from "@ionic/react";
-import { cartOutline, flashOutline } from "ionicons/icons";
+import { cartOutline, flashOutline, checkmarkCircleOutline } from "ionicons/icons";
 import { useCart } from "../contexts/cartContext";
 import { useApi } from "../contexts/apiContext";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { initializeApi } from "../api/config";
 import { API } from "@onslip/onslip-360-web-api";
 import { findBestCampaign } from "../util/findBestCampaign";
@@ -28,8 +28,9 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ productId, index }) => {
     const { state: { products, loading } } = useApi();
+    const { state: cartState, dispatch } = useCart();
     const product = productId ? products[productId] : null;
-    const { dispatch } = useCart();
+    const [isAdded, setIsAdded] = useState(false);
     const [campaignDetails, setCampaignDetails] = useState<{
         display: number | string;
         type?: API.Campaign.Type;
@@ -90,6 +91,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ productId, index }) =>
                 type: "goods",
             },
         });
+        
+        setIsAdded(true);
+        setTimeout(() => setIsAdded(false), 1500);
     };
 
     if (loading || !product) {
@@ -110,6 +114,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ productId, index }) =>
     }
 
     const { display, type: campaignType, reducedPrice } = campaignDetails;
+    const isInCart = cartState.items.some(item => item.product === product.id);
 
     return (
         <motion.div
@@ -144,13 +149,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ productId, index }) =>
                     )}
                 </div>
 
-                {campaignType && display && (
-                    <div className="product-card-discount">
-                        {campaignType === "percentage" ? `-${display}%` : 
-                         campaignType === "fixed-amount" ? `-${display}kr` :
-                         display}
-                    </div>
-                )}
+                <AnimatePresence>
+                    {campaignType && display && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            className="product-card-discount"
+                        >
+                            {campaignType === "percentage" ? `-${display}%` : 
+                             campaignType === "fixed-amount" ? `-${display}kr` :
+                             display}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 <IonCardHeader>
                     <IonCardTitle className="product-title">
@@ -169,17 +181,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ productId, index }) =>
                         <IonButton
                             className="add-to-cart-button"
                             expand="block"
-                            disabled={loading || !product.price}
+                            disabled={loading || !product.price || isAdded}
                             onClick={handleAddToCart}
+                            color={isAdded ? "success" : "primary"}
                         >
                             <IonIcon
-                                icon={product.price ? cartOutline : flashOutline}
+                                icon={isAdded ? checkmarkCircleOutline : (product.price ? cartOutline : flashOutline)}
                                 slot="start"
                             />
                             {loading
                                 ? "Laddar..."
                                 : !product.price
                                 ? "Ej tillgänglig"
+                                : isAdded
+                                ? "Tillagd i kundvagn"
                                 : "Lägg till i kundvagn"}
                             <IonRippleEffect />
                         </IonButton>
