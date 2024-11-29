@@ -30,8 +30,8 @@ import { Customer } from "../types/userTypes";
 import { Resource } from "../types/resourceTypes";
 import { API } from "@onslip/onslip-360-api";
 import { initializeApi } from "../api/config";
-import { getCampaignPriceForItem } from "../util/getCampaignPrice";
 import "../styles/pages/Cart.css";
+import { calcTotal, calcTotalWithoutCampaigns } from "../util/calcTotal";
 
 export default function Cart() {
     const [deliveryLocation, setDeliveryLocation] = useState<
@@ -42,6 +42,7 @@ export default function Cart() {
     const [presentToast] = useIonToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [total, setTotal] = useState<number>();
+    const [totalDiscount, setTotalDiscount] = useState<number>();
 
     useEffect(() => {
         const loadResources = async () => {
@@ -63,24 +64,11 @@ export default function Cart() {
 
     useEffect(() => {
         const calculateTotal = async () => {
-            const api = initializeApi();
-            const campaigns = await api.listCampaigns();
+            const total = await calcTotal(state.items);
+            const totalWithoutDiscount = calcTotalWithoutCampaigns(state.items);
 
-            const multiItemCampaigns = campaigns.filter((campaign) => {
-                return (
-                    campaign.rules.length > 1 ||
-                    campaign.rules[0].products.length > 1
-                );
-            });
-            console.log(multiItemCampaigns);
-
-            let total = 0;
-            for (const item of state.items) {
-                const campaignPrice = await getCampaignPriceForItem(item);
-
-                total += campaignPrice || 0;
-            }
             setTotal(total);
+            setTotalDiscount(totalWithoutDiscount - total);
         };
 
         calculateTotal();
@@ -229,9 +217,21 @@ export default function Cart() {
                                             <span className="cart-total-label">
                                                 Totalt att betala
                                             </span>
-                                            <span className="cart-total-amount">
-                                                {total?.toFixed(2)} kr
-                                            </span>
+                                            <div className="cart-total-container">
+                                                {totalDiscount &&
+                                                totalDiscount > 0 ? (
+                                                    <span className="cart-total-discount">
+                                                        -
+                                                        {totalDiscount?.toFixed(
+                                                            2
+                                                        )}{" "}
+                                                        kr
+                                                    </span>
+                                                ) : null}
+                                                <span className="cart-total-amount">
+                                                    {total?.toFixed(2)} kr
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </>
