@@ -1,19 +1,21 @@
 import { API } from "@onslip/onslip-360-web-api";
 import { initializeApi } from "../api/config";
 
-export async function getCampaignPriceForItem(
-    item: API.Item
-): Promise<number | undefined> {
+export async function getCampaignPriceForItem(item: API.Item): Promise<number> {
     const { campaign: campaignId, quantity, price } = item;
 
-    if (!campaignId || price === undefined) return price;
+    if (price == undefined) {
+        return 0;
+    }
+
+    let reducedPrice = price * quantity;
+
+    if (!campaignId) return reducedPrice;
 
     const api = initializeApi();
     const campaign = await api.getCampaign(campaignId);
 
-    if (!campaign) return price;
-
-    let reducedPrice = price * quantity;
+    if (!campaign) return reducedPrice;
 
     if (campaign.rules.length > 1) {
         return reducedPrice;
