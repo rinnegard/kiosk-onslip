@@ -26,7 +26,7 @@
 }
 
 .header-logo {
-  height: 24px;
+  height: 32px;
   width: auto;
   filter: brightness(0) invert(1);
 }
@@ -80,9 +80,5 @@
 @media (max-width: 768px) {
   .header-container {
       padding: 0 var(--spacing-sm);
-  }
-  
-  .header-logo {
-      height: 24px;
   }
 }
