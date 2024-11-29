@@ -5,7 +5,7 @@
   }
   
   .tab-button {
-    --color: rgba(255, 255, 255, 0.6);
+    --color: rgb(255, 255, 255);
     --color-selected: var(--brand-green);
   }
   
