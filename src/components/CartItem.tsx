@@ -1,21 +1,20 @@
 import { IonButton, IonItem, IonLabel, IonNote } from "@ionic/react";
 import { useCart, type CartItem } from "../contexts/cartContext";
 import { useEffect, useState } from "react";
-import { initializeApi } from "../api/config";
-import '../styles/components/CartItem.css';
+import { getCampaignPriceForItem } from "../util/getCampaignPrice";
+import "../styles/components/CartItem.css";
 
 export default function CartItem({ item }: { item: CartItem }) {
-    const [product, setProduct] = useState<any>();
     const { dispatch } = useCart();
+    const [price, setPrice] = useState<number>();
 
     useEffect(() => {
         async function fetch() {
-            const api = initializeApi();
-            const res = await api.getProduct(item.product!);
-            setProduct(res);
+            const res = await getCampaignPriceForItem(item);
+            setPrice(res);
         }
         fetch();
-    }, []);
+    }, [item]);
 
     const handleIncrement = () => {
         dispatch({
@@ -52,11 +51,31 @@ export default function CartItem({ item }: { item: CartItem }) {
                     <IonLabel className="cart-item__name">
                         {item["product-name"]} {item.quantity}st
                     </IonLabel>
-                    {product && (
-                        <IonNote className="cart-item__price">
-                            {product.price * item.quantity}kr
-                        </IonNote>
-                    )}
+                    <div slot="end">
+                        {price && item.price! * item.quantity - price > 0 ? (
+                            <div>
+                                <IonNote className="cart-item__price">
+                                    {(
+                                        (item.price || 0) * item.quantity
+                                    ).toFixed(2)}{" "}
+                                    kr
+                                </IonNote>
+                                <IonNote className="reduced-price">
+                                    -
+                                    {(
+                                        item.price! * item.quantity -
+                                        price
+                                    ).toFixed(2)}{" "}
+                                    kr
+                                </IonNote>
+                            </div>
+                        ) : (
+                            <IonNote className="cart-item__price">
+                                {((item.price || 0) * item.quantity).toFixed(2)}{" "}
+                                kr
+                            </IonNote>
+                        )}
+                    </div>
                 </div>
                 <div className="cart-item__controls">
                     <IonButton

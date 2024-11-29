@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
     /* Brand Colors */
@@ -16,13 +16,13 @@
     --ion-text-color: var(--black);
     --ion-text-color-rgb: 0, 0, 0;
     --ion-text-color-medium: rgba(0, 0, 0, 0.6);
-    
+
     /* Component Colors */
     --ion-toolbar-background: var(--brand-green);
     --ion-tab-bar-background: var(--brand-green);
     --ion-card-background: var(--white);
     --ion-item-background: var(--white);
-    
+
     /* Primary Color Configuration */
     --ion-color-primary: var(--brand-green);
     --ion-color-primary-rgb: 165, 214, 102;
@@ -30,11 +30,11 @@
     --ion-color-primary-contrast-rgb: 0, 0, 0;
     --ion-color-primary-shade: #8fb859;
     --ion-color-primary-tint: #b4dd7c;
-    
+
     /* Layout Constants */
     --header-height: 64px;
     --content-max-width: 1400px;
-    
+
     /* Spacing Scale */
     --spacing-xs: 0.5rem;
     --spacing-sm: 1rem;

@@ -10,7 +10,6 @@ import {
     IonSpinner,
 } from "@ionic/react";
 import { useCart } from "../contexts/cartContext";
-import { useCustomer } from "../contexts/userContext";
 import CartItem from "../components/CartItem";
 import { CustomerList } from "../components/UserList";
 import { Customer } from "../types/userTypes";
@@ -21,12 +20,12 @@ import {
     getDeliveryStaff,
     createDeliveryTags,
     notifications,
-    DeliveryDetails
+    DeliveryDetails,
 } from "../services/deliveryService";
-import { paymentService } from "../services/paymentService";
 import { API } from "@onslip/onslip-360-api";
 import { Header } from "../components/Header";
-import '../styles/pages/Cart.css';
+import { getCampaignPriceForItem } from "../util/getCampaignPrice";
+import "../styles/pages/Cart.css";
 
 export default function Cart() {
     const [deliveryLocation, setDeliveryLocation] = useState<Customer>();
@@ -34,6 +33,7 @@ export default function Cart() {
     const { state, dispatch } = useCart();
     const [presentToast] = useIonToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [total, setTotal] = useState<number>();
 
     useEffect(() => {
         const loadResources = async () => {
@@ -53,14 +53,37 @@ export default function Cart() {
         loadResources();
     }, []);
 
-    const totalAmount = state.items.reduce(
-        (sum, item) => sum + ((item.price ?? 0) * item.quantity),
-        0
-    );
+    useEffect(() => {
+        const calculateTotal = async () => {
+            const api = initializeApi();
+            const campaigns = await api.listCampaigns();
+
+            const multiItemCampaigns = campaigns.filter((campaign) => {
+                return (
+                    campaign.rules.length > 1 ||
+                    campaign.rules[0].products.length > 1
+                );
+            });
+            console.log(multiItemCampaigns);
+
+            let total = 0;
+            for (const item of state.items) {
+                const campaignPrice = await getCampaignPriceForItem(item);
+
+                total += campaignPrice || 0;
+            }
+            setTotal(total);
+        };
+
+        calculateTotal();
+    }, [state.items]);
 
     const formatOrderItems = () => {
-        return state.items.map(item => 
-            `${item["product-name"]}: ${item.quantity} st - ${((item.price ?? 0) * item.quantity).toFixed(2)} kr`
+        return state.items.map(
+            (item) =>
+                `${item["product-name"]}: ${item.quantity} st - ${(
+                    (item.price ?? 0) * item.quantity
+                ).toFixed(2)} kr`
         );
     };
 
@@ -76,7 +99,9 @@ export default function Cart() {
                 throw new Error("Kunde inte hitta leveranspersonal");
             }
 
-            let deliveryResource = resources.find((r) => r.name === deliveryLocation.name);
+            let deliveryResource = resources.find(
+                (r) => r.name === deliveryLocation.name
+            );
             if (!deliveryResource) {
                 deliveryResource = await createResource({
                     location: 1,
@@ -87,7 +112,7 @@ export default function Cart() {
 
             const orderReference = crypto.randomUUID();
             const orderName = `Leverans till ${deliveryLocation.name}`;
-            
+
             const deliveryTags = createDeliveryTags(deliveryResource.id!);
 
             const order = await api.addOrder({
@@ -124,13 +149,13 @@ export default function Cart() {
                 customerName: deliveryLocation.name,
                 customerEmail: deliveryLocation.email!,
                 deliveryLocation: deliveryResource.name,
-                totalAmount,
-                items: formatOrderItems()
+                totalAmount: total!,
+                items: formatOrderItems(),
             };
 
             await Promise.all([
                 notifications.sendCustomerOrderConfirmation(deliveryDetails),
-                notifications.sendDeliveryStaffNotification(deliveryDetails)
+                notifications.sendDeliveryStaffNotification(deliveryDetails),
             ]);
 
             dispatch({ type: "CLEAR_CART" });
@@ -172,17 +197,26 @@ export default function Cart() {
                                     <CartItem key={item.product} item={item} />
                                 ))}
 
-                                <IonItem lines="none" className="cart-total">
-                                    <IonLabel>
-                                        <h2>Totalt</h2>
-                                    </IonLabel>
-                                    <div slot="end" className="cart-total-amount">
-                                        {totalAmount.toFixed(2)} kr
-                                    </div>
-                                </IonItem>
+                                {/* Totalsumma */}
+                                {total && (
+                                    <IonItem
+                                        lines="none"
+                                        className="ion-margin-top font-semibold"
+                                    >
+                                        <IonLabel>
+                                            <h2 className="text-lg">Totalt</h2>
+                                        </IonLabel>
+                                        <div
+                                            slot="end"
+                                            className="cart-total-amount"
+                                        >
+                                            {total.toFixed(2)} kr
+                                        </div>
+                                    </IonItem>
+                                )}
                             </IonList>
                         ) : (
-                            <div className="empty-cart">
+                            <div className="p-8 text-center text-gray-500">
                                 <p>Din kundvagn är tom</p>
                             </div>
                         )}
@@ -207,8 +241,8 @@ export default function Cart() {
                             color="primary"
                             onClick={handleSendOrder}
                             disabled={
-                                !deliveryLocation || 
-                                state.items.length === 0 || 
+                                !deliveryLocation ||
+                                state.items.length === 0 ||
                                 isSubmitting
                             }
                         >
@@ -234,11 +268,25 @@ export default function Cart() {
                                 Om leveransprocessen:
                             </h3>
                             <ul className="delivery-steps">
-                                <li>Din beställning skickas till vår dedikerade leveranspersonal</li>
-                                <li>Du får en bekräftelse via e-post när beställningen mottagits</li>
-                                <li>Efter godkännande får du en ny bekräftelse</li>
-                                <li>Betalning sker på plats vid leverans via betalterminal</li>
-                                <li>En slutlig orderbekräftelse skickas efter genomförd betalning</li>
+                                <li>
+                                    Din beställning skickas till vår dedikerade
+                                    leveranspersonal
+                                </li>
+                                <li>
+                                    Du får en bekräftelse via e-post när
+                                    beställningen mottagits
+                                </li>
+                                <li>
+                                    Efter godkännande får du en ny bekräftelse
+                                </li>
+                                <li>
+                                    Betalning sker på plats vid leverans via
+                                    betalterminal
+                                </li>
+                                <li>
+                                    En slutlig orderbekräftelse skickas efter
+                                    genomförd betalning
+                                </li>
                             </ul>
                         </div>
                     )}
