@@ -1,33 +1,36 @@
+/* Cart.css */
 .cart-container {
   max-width: var(--content-max-width);
   margin: 0 auto;
   padding: var(--spacing-md);
   min-height: 100%;
-  background: #FAFAFA;
+  background: var(--gray-200);
 }
 
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
+.cart-section {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  margin-bottom: var(--spacing-xl);
+  overflow: hidden;
+}
+
+.cart-section-header {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--gray-200);
 }
 
 .section-title {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--ion-text-color);
   margin: 0;
   letter-spacing: -0.01em;
 }
 
-.customer-selection {
-  background: #FFFFFF;
-  border-radius: 16px;
+.cart-section-content {
   padding: var(--spacing-md);
-  margin-bottom: var(--spacing-xl);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 .cart-list {
@@ -36,31 +39,28 @@
 }
 
 .cart-list ion-item {
-  --background: #FFFFFF;
-  --border-radius: 12px;
+  --background: var(--gray-50);
+  --border-radius: 0;
   margin-bottom: var(--spacing-sm);
   --padding-start: var(--spacing-md);
   --padding-end: var(--spacing-md);
   --padding-top: var(--spacing-sm);
   --padding-bottom: var(--spacing-sm);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--gray-200);
 }
 
 .cart-total {
-  background: #FFFFFF;
-  border-radius: 16px;
+  background: var(--gray-50);
+  border-radius: 0;
   padding: var(--spacing-md);
   margin-top: var(--spacing-lg);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--gray-200);
 }
 
 .cart-total-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-sm);
 }
 
 .cart-total-label {
@@ -78,64 +78,27 @@
 .cart-actions {
   position: sticky;
   bottom: 0;
-  background: rgba(250, 250, 250, 0.95);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   padding: var(--spacing-md);
   display: flex;
   gap: var(--spacing-md);
   margin: var(--spacing-xl) -var(--spacing-md) -var(--spacing-md);
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 1px solid var(--gray-200);
 }
 
 .action-button {
-  --border-radius: 12px;
+  --border-radius: 0 !important;
+  --box-shadow: none !important;
   min-height: 52px;
   font-weight: 600;
   font-size: 1.05rem;
 }
 
-.empty-cart {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xl);
-  text-align: center;
-  min-height: 40vh;
-}
-
-.empty-cart-icon {
-  font-size: 48px;
-  color: var(--ion-color-medium);
-  margin-bottom: var(--spacing-md);
-}
-
-.empty-cart-text {
-  font-size: 1.2rem;
-  font-weight: 500;
-  color: var(--ion-text-color);
-  margin-bottom: var(--spacing-sm);
-}
-
-.empty-cart-subtext {
-  color: var(--ion-color-medium);
-  margin-bottom: var(--spacing-lg);
-}
-
-.delivery-info {
-  background: #FFFFFF;
-  border-radius: 16px;
-  padding: var(--spacing-lg);
-  margin-top: var(--spacing-xl);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.04);
-}
-
-.delivery-info-title {
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--ion-text-color);
-  margin-bottom: var(--spacing-md);
+.action-button[color="danger"] {
+  --background: transparent !important;
+  --color: var(--ion-color-danger) !important;
+  border: 1px solid var(--ion-color-danger);
 }
 
 .delivery-steps {
@@ -154,19 +117,15 @@
   color: var(--ion-text-color-medium);
   font-size: 0.95rem;
   line-height: 1.5;
+  padding: var(--spacing-sm);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
 }
 
 .step-icon {
   color: var(--ion-color-primary);
   font-size: 20px;
   margin-top: 2px;
-}
-
-.loading-spinner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
 }
 
 @media (max-width: 768px) {
@@ -181,10 +140,6 @@
   }
 
   .section-title {
-      font-size: 1.25rem;
-  }
-
-  .delivery-info {
-      padding: var(--spacing-md);
+      font-size: 1.2rem;
   }
 }

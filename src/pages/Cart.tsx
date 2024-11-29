@@ -5,16 +5,20 @@ import {
     IonList,
     IonButton,
     useIonToast,
-    IonItem,
-    IonLabel,
+    IonIcon,
     IonSpinner,
 } from "@ionic/react";
+import {
+    timeOutline,
+    mailOutline,
+    cardOutline,
+    documentTextOutline,
+    cartOutline,
+} from "ionicons/icons";
 import { useCart } from "../contexts/cartContext";
 import CartItem from "../components/CartItem";
 import { CustomerList } from "../components/UserList";
-import { Customer } from "../types/userTypes";
-import { Resource } from "../types/resourceTypes";
-import { initializeApi } from "../api/config";
+import { Header } from "../components/Header";
 import { fetchResources, createResource } from "../services/resourceService";
 import {
     getDeliveryStaff,
@@ -22,13 +26,17 @@ import {
     notifications,
     DeliveryDetails,
 } from "../services/deliveryService";
+import { Customer } from "../types/userTypes";
+import { Resource } from "../types/resourceTypes";
 import { API } from "@onslip/onslip-360-api";
-import { Header } from "../components/Header";
+import { initializeApi } from "../api/config";
 import { getCampaignPriceForItem } from "../util/getCampaignPrice";
 import "../styles/pages/Cart.css";
 
 export default function Cart() {
-    const [deliveryLocation, setDeliveryLocation] = useState<Customer>();
+    const [deliveryLocation, setDeliveryLocation] = useState<
+        Customer | undefined
+    >();
     const [resources, setResources] = useState<Resource[]>([]);
     const { state, dispatch } = useCart();
     const [presentToast] = useIonToast();
@@ -184,110 +192,155 @@ export default function Cart() {
             <IonContent>
                 <div className="cart-container">
                     {/* Leveransplats-sektion */}
-                    <section className="customer-selection">
-                        <h2 className="section-title">Välj leveransplats</h2>
-                        <CustomerList onCustomerSelect={setDeliveryLocation} />
+                    <section className="cart-section">
+                        <div className="cart-section-header">
+                            <h2 className="section-title">
+                                Välj leveransplats
+                            </h2>
+                        </div>
+                        <div className="cart-section-content">
+                            <CustomerList
+                                onCustomerSelect={(customer: Customer) =>
+                                    setDeliveryLocation(customer)
+                                }
+                            />
+                        </div>
                     </section>
 
                     {/* Produktlista */}
-                    <section>
-                        {state.items.length > 0 ? (
-                            <IonList>
-                                {state.items.map((item) => (
-                                    <CartItem key={item.product} item={item} />
-                                ))}
+                    <section className="cart-section">
+                        <div className="cart-section-header">
+                            <h2 className="section-title">Din varukorg</h2>
+                        </div>
+                        <div className="cart-section-content">
+                            {state.items.length > 0 ? (
+                                <>
+                                    <IonList className="cart-list">
+                                        {state.items.map((item) => (
+                                            <CartItem
+                                                key={item.product}
+                                                item={item}
+                                            />
+                                        ))}
+                                    </IonList>
 
-                                {/* Totalsumma */}
-                                {total && (
-                                    <IonItem
-                                        lines="none"
-                                        className="ion-margin-top font-semibold"
-                                    >
-                                        <IonLabel>
-                                            <h2 className="text-lg">Totalt</h2>
-                                        </IonLabel>
-                                        <div
-                                            slot="end"
-                                            className="cart-total-amount"
-                                        >
-                                            {total.toFixed(2)} kr
+                                    <div className="cart-total">
+                                        <div className="cart-total-header">
+                                            <span className="cart-total-label">
+                                                Totalt att betala
+                                            </span>
+                                            <span className="cart-total-amount">
+                                                {total?.toFixed(2)} kr
+                                            </span>
                                         </div>
-                                    </IonItem>
-                                )}
-                            </IonList>
-                        ) : (
-                            <div className="p-8 text-center text-gray-500">
-                                <p>Din kundvagn är tom</p>
-                            </div>
-                        )}
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="empty-cart">
+                                    <IonIcon
+                                        icon={cartOutline}
+                                        className="empty-cart-icon"
+                                    />
+                                    <h3 className="empty-cart-text">
+                                        Din varukorg är tom
+                                    </h3>
+                                    <p className="empty-cart-subtext">
+                                        Lägg till produkter för att komma igång
+                                        med din beställning
+                                    </p>
+                                </div>
+                            )}
+                        </div>
                     </section>
 
+                    {/* Leveransinformation */}
+                    {state.items.length > 0 && (
+                        <section className="cart-section">
+                            <div className="cart-section-header">
+                                <h2 className="section-title">
+                                    Om leveransprocessen
+                                </h2>
+                            </div>
+                            <div className="cart-section-content">
+                                <ul className="delivery-steps">
+                                    <li className="delivery-step">
+                                        <IonIcon
+                                            icon={timeOutline}
+                                            className="step-icon"
+                                        />
+                                        <span>
+                                            Din beställning skickas direkt till
+                                            vår dedikerade leveranspersonal
+                                        </span>
+                                    </li>
+                                    <li className="delivery-step">
+                                        <IonIcon
+                                            icon={mailOutline}
+                                            className="step-icon"
+                                        />
+                                        <span>
+                                            Du får en orderbekräftelse via
+                                            e-post
+                                        </span>
+                                    </li>
+                                    <li className="delivery-step">
+                                        <IonIcon
+                                            icon={cardOutline}
+                                            className="step-icon"
+                                        />
+                                        <span>
+                                            Betala enkelt med kort vid leverans
+                                        </span>
+                                    </li>
+                                    <li className="delivery-step">
+                                        <IonIcon
+                                            icon={documentTextOutline}
+                                            className="step-icon"
+                                        />
+                                        <span>
+                                            Kvitto skickas till din e-post efter
+                                            betalning
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </section>
+                    )}
+
                     {/* Knappar */}
-                    <div className="cart-actions">
-                        {state.items.length > 0 && (
+                    {state.items.length > 0 && (
+                        <div className="cart-actions">
                             <IonButton
                                 expand="block"
+                                className="action-button"
                                 color="danger"
                                 onClick={() => dispatch({ type: "CLEAR_CART" })}
                                 disabled={isSubmitting}
                             >
-                                Rensa kundvagn
+                                Rensa varukorg
                             </IonButton>
-                        )}
 
-                        <IonButton
-                            className="order-button"
-                            expand="block"
-                            color="primary"
-                            onClick={handleSendOrder}
-                            disabled={
-                                !deliveryLocation ||
-                                state.items.length === 0 ||
-                                isSubmitting
-                            }
-                        >
-                            {isSubmitting ? (
-                                <div className="loading-spinner">
-                                    <IonSpinner name="crescent" />
-                                    <span>Skickar beställning...</span>
-                                </div>
-                            ) : !deliveryLocation ? (
-                                "Välj leveransplats först"
-                            ) : state.items.length === 0 ? (
-                                "Lägg till produkter först"
-                            ) : (
-                                `Skicka beställning till ${deliveryLocation.name}`
-                            )}
-                        </IonButton>
-                    </div>
-
-                    {/* Information om leveransprocess */}
-                    {state.items.length > 0 && (
-                        <div className="delivery-info">
-                            <h3 className="delivery-info-title">
-                                Om leveransprocessen:
-                            </h3>
-                            <ul className="delivery-steps">
-                                <li>
-                                    Din beställning skickas till vår dedikerade
-                                    leveranspersonal
-                                </li>
-                                <li>
-                                    Du får en bekräftelse via e-post när
-                                    beställningen mottagits
-                                </li>
-                                <li>
-                                    Efter godkännande får du en ny bekräftelse
-                                </li>
-                                <li>
-                                    Betalning sker på plats vid leverans via
-                                    betalterminal
-                                </li>
-                                <li>
-                                    En slutlig orderbekräftelse skickas efter
-                                    genomförd betalning
-                                </li>
-                            </ul>
+                            <IonButton
+                                expand="block"
+                                className="action-button"
+                                onClick={handleSendOrder}
+                                disabled={
+                                    !deliveryLocation ||
+                                    state.items.length === 0 ||
+                                    isSubmitting
+                                }
+                            >
+                                {isSubmitting ? (
+                                    <div className="loading-spinner">
+                                        <IonSpinner name="crescent" />
+                                        <span>Skickar beställning...</span>
+                                    </div>
+                                ) : !deliveryLocation ? (
+                                    "Välj leveransplats först"
+                                ) : (
+                                    `Skicka beställning till ${deliveryLocation.name}`
+                                )}
+                            </IonButton>
                         </div>
                     )}
                 </div>

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
 
 :root {
     /* Brand Colors */
@@ -9,17 +9,25 @@
     --gray-100: #f3f4f6;
     --gray-200: #e5e7eb;
     --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+
+    /* Typography */
+    --font-primary: "Space Grotesk", -apple-system, system-ui, sans-serif;
+
+    /* Ionic Font Overrides */
+    --ion-font-family: var(--font-primary);
+    --ion-default-font: var(--font-primary);
 
     /* Ionic Theme Colors */
-    --ion-background-color: var(--gray-100);
+    --ion-background-color: var(--gray-200);
     --ion-background-color-rgb: 255, 255, 255;
     --ion-text-color: var(--black);
     --ion-text-color-rgb: 0, 0, 0;
     --ion-text-color-medium: rgba(0, 0, 0, 0.6);
 
     /* Component Colors */
-    --ion-toolbar-background: var(--brand-green);
-    --ion-tab-bar-background: var(--brand-green);
+    --ion-toolbar-background: var(--black);
+    --ion-tab-bar-background: var(--black);
     --ion-card-background: var(--white);
     --ion-item-background: var(--white);
 
@@ -31,8 +39,13 @@
     --ion-color-primary-shade: #8fb859;
     --ion-color-primary-tint: #b4dd7c;
 
+    /* Button Colors */
+    --button-background: var(--black);
+    --button-text: var(--brand-green);
+    --button-hover: #1a1a1a;
+
     /* Layout Constants */
-    --header-height: 64px;
+    --nav-height: 56px;
     --content-max-width: 1400px;
 
     /* Spacing Scale */
@@ -43,9 +56,35 @@
     --spacing-xl: 3rem;
 }
 
-/* Base Typography */
+/* Global styles */
 body {
-    font-family: "Inter", -apple-system, system-ui, sans-serif;
+    font-family: var(--font-primary);
     -webkit-font-smoothing: antialiased;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
+}
+
+/* Force Ionic components to use our font */
+ion-content,
+ion-item,
+ion-label,
+ion-button,
+ion-card,
+ion-card-title,
+ion-card-content,
+ion-header,
+ion-toolbar,
+ion-title,
+ion-tab-bar,
+ion-tab-button {
+    font-family: var(--font-primary) !important;
+}
+
+/* Ensure headings use our font */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-primary);
 }

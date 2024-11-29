@@ -1,4 +1,5 @@
-import { IonButton, IonItem, IonLabel, IonNote } from "@ionic/react";
+import { IonButton, IonItem, IonIcon, IonLabel, IonNote } from "@ionic/react";
+import { add, remove, trash } from "ionicons/icons";
 import { useCart, type CartItem } from "../contexts/cartContext";
 import { useEffect, useState } from "react";
 import { getCampaignPriceForItem } from "../util/getCampaignPrice";
@@ -40,16 +41,12 @@ export default function CartItem({ item }: { item: CartItem }) {
         }
     };
 
-    const handleDelete = () => {
-        dispatch({ type: "REMOVE_ITEM", payload: item.product! });
-    };
-
     return (
         <IonItem className="cart-item">
             <div className="cart-item__content">
                 <div className="cart-item__info">
                     <IonLabel className="cart-item__name">
-                        {item["product-name"]} {item.quantity}st
+                        {item["product-name"]} {item.quantity} st
                     </IonLabel>
                     <div slot="end">
                         {price && item.price! * item.quantity - price > 0 ? (
@@ -81,24 +78,29 @@ export default function CartItem({ item }: { item: CartItem }) {
                     <IonButton
                         className="quantity-button"
                         size="small"
-                        onClick={handleIncrement}
+                        onClick={handleDecrement}
                     >
-                        +
+                        <IonIcon icon={remove} />
                     </IonButton>
                     <IonButton
                         className="quantity-button"
                         size="small"
-                        onClick={handleDecrement}
+                        onClick={handleIncrement}
                     >
-                        -
+                        <IonIcon icon={add} />
                     </IonButton>
                     <IonButton
                         className="delete-button"
                         color="danger"
                         size="small"
-                        onClick={handleDelete}
+                        onClick={() =>
+                            dispatch({
+                                type: "REMOVE_ITEM",
+                                payload: item.product!,
+                            })
+                        }
                     >
-                        Delete
+                        <IonIcon icon={trash} />
                     </IonButton>
                 </div>
             </div>
