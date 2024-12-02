@@ -2,21 +2,67 @@ import React from 'react';
 import {
     IonContent,
     IonPage,
+    IonButton,
+    IonIcon,
+    IonSpinner,
     IonRefresher,
     IonRefresherContent,
-    IonSpinner,
     IonText,
-    IonIcon,
-    IonButton,
+    IonBadge
 } from '@ionic/react';
 import { refreshOutline, homeOutline } from 'ionicons/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApi } from '../contexts/apiContext';
 import { ProductCard } from '../components/ProductCard';
 import { Header } from '../components/Header';
+import { getIconForTab } from '../components/TabBar';
+import '../styles/pages/Home.css';
+
+const CategorySection: React.FC<{
+    category: any;
+    products: any[];
+    index: number;
+}> = ({ category, products, index }) => {
+    const categoryIcon = getIconForTab(category.name);
+    
+    return (
+        <motion.section
+            className="category-section"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.1 }}
+        >
+            <div className="category-header">
+                <div className="category-header-content">
+                    <IonIcon icon={categoryIcon} className="category-header-icon" />
+                    <div className="category-header-text">
+                        <h3>{category.name}</h3>
+                    </div>
+                </div>
+            </div>
+            
+            <div className="category-products">
+                <div className="category-products-header">
+                    <IonBadge color="primary">
+                        {products.length} produkter
+                    </IonBadge>
+                </div>
+                <div className="product-grid">
+                    {products.map((productId, productIndex) => (
+                        <ProductCard
+                            key={productId}
+                            productId={productId}
+                            index={productIndex}
+                        />
+                    ))}
+                </div>
+            </div>
+        </motion.section>
+    );
+};
 
 const Home: React.FC = () => {
-    const { state: { products, buttonMaps, loading } } = useApi();
+    const { state: { buttonMaps, products, loading } } = useApi();
 
     const handleRefresh = (event: CustomEvent) => {
         window.location.reload();
@@ -25,47 +71,31 @@ const Home: React.FC = () => {
         }, 1500);
     };
 
-    // Ta alla unika produkt-ID:n från alla buttonMaps
-    const getAllProductIds = () => {
-        const productIds = new Set<number>();
-        buttonMaps.forEach(map => {
-            if (map.buttons) {
-                map.buttons.forEach(button => {
-                    if (button.product) {
-                        productIds.add(button.product);
-                    }
-                });
-            }
-        });
-        return Array.from(productIds);
-    };
-
     if (loading) {
         return (
-            <IonPage className="shop-page">
+            <IonPage>
                 <Header />
                 <IonContent>
-                    <div className="loading-container">
-                        <IonSpinner name="crescent" className="loading-spinner" />
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.2 }}
-                        >
-                            <IonText color="medium">
-                                <p>Laddar produkter...</p>
-                            </IonText>
-                        </motion.div>
+                    <div className="loading-state">
+                        <IonSpinner name="crescent" />
+                        <p>Laddar produkter...</p>
                     </div>
                 </IonContent>
             </IonPage>
         );
     }
 
-    const productIds = getAllProductIds();
+    const filteredMaps = buttonMaps
+        .filter(map => map.type === 'tablet-buttons' && map.buttons && map.buttons.length > 0)
+        .map(map => ({
+            ...map,
+            products: map.buttons
+                .filter(button => button.product)
+                .map(button => button.product!)
+        }));
 
     return (
-        <IonPage className="shop-page">
+        <IonPage>
             <Header />
             <IonContent>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh} className="custom-refresher">
@@ -78,52 +108,30 @@ const Home: React.FC = () => {
                 </IonRefresher>
 
                 <div className="container">
-                    <AnimatePresence mode="wait">
-                        {productIds.length === 0 ? (
+                    <AnimatePresence mode="sync">
+                        {filteredMaps.length === 0 ? (
                             <motion.div 
                                 className="empty-state-container"
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                transition={{ duration: 0.5 }}
+                                transition={{ duration: 0.3 }}
                             >
-                                <div className="empty-state-content">
-                                    <IonIcon
-                                        icon={homeOutline}
-                                        className="empty-state-icon"
-                                    />
-                                    <IonText>
-                                        <h2>Inga produkter tillgängliga</h2>
-                                        <p>Det finns inga produkter att visa just nu.</p>
-                                    </IonText>
-                                    
-                                    <IonButton 
-                                        onClick={() => window.location.reload()}
-                                        className="retry-button"
-                                    >
-                                        <IonIcon slot="start" icon={refreshOutline} />
-                                        Försök igen
-                                    </IonButton>
-                                </div>
+                                <IonIcon icon={homeOutline} className="empty-state-icon" />
+                                <IonText>
+                                    <h2>Inga produkter tillgängliga</h2>
+                                    <p>Det finns inga produkter att visa just nu.</p>
+                                </IonText>
                             </motion.div>
                         ) : (
-                            <section className="home-section">
-                                <div className="product-grid">
-                                    {productIds.map((productId, index) => (
-                                        <motion.div
-                                            key={productId}
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: index * 0.1 }}
-                                        >
-                                            <ProductCard
-                                                productId={productId}
-                                                index={index}
-                                            />
-                                        </motion.div>
-                                    ))}
-                                </div>
-                            </section>
+                            filteredMaps.map((category, index) => (
+                                <CategorySection
+                                    key={category.id}
+                                    category={category}
+                                    products={category.products}
+                                    index={index}
+                                />
+                            ))
                         )}
                     </AnimatePresence>
                 </div>

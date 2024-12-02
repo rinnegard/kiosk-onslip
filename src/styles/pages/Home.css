@@ -1,86 +1,26 @@
-.home-page {
-    height: 100%;
-}
-
-.home-header {
-    margin-bottom: var(--spacing-lg);
-}
-
-.home-section {
+/* Container */
+.container {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
     padding: var(--spacing-md);
 }
 
-.featured-section {
-    margin-bottom: var(--spacing-xl);
-}
-
-.section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--spacing-md);
-}
-
-.section-title {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--ion-text-color);
-}
-
-.featured-products {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-lg);
-}
-
-.category-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-xl);
-}
-
-.category-card {
-    background: var(--ion-color-light);
-    border-radius: 12px;
-    padding: var(--spacing-md);
-    text-align: center;
-    transition: transform 0.2s ease;
-    cursor: pointer;
-}
-
-.category-card:hover {
-    transform: translateY(-2px);
-}
-
-.category-icon {
-    font-size: 24px;
-    margin-bottom: var(--spacing-sm);
-    color: var(--ion-color-primary);
-}
-
-.category-name {
-    margin: 0;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.loading-container {
+/* Laddningstillstånd */
+.loading-state {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 60vh;
     gap: var(--spacing-md);
+    color: var(--ion-text-color-medium);
 }
 
-.loading-spinner {
-    width: 48px;
-    height: 48px;
+.loading-state ion-spinner {
+    --color: var(--ion-color-primary);
 }
 
+/* Tomt tillstånd */
 .empty-state-container {
     display: flex;
     flex-direction: column;
@@ -89,6 +29,10 @@
     min-height: 40vh;
     text-align: center;
     padding: var(--spacing-xl);
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .empty-state-icon {
@@ -97,39 +41,116 @@
     margin-bottom: var(--spacing-md);
 }
 
-.retry-button {
-    margin-top: var(--spacing-md);
+.empty-state-container h2 {
+    margin: 0 0 var(--spacing-sm) 0;
+    color: var(--ion-text-color);
 }
 
+.empty-state-container p {
+    margin: 0;
+    color: var(--ion-text-color-medium);
+}
+
+/* Kategori Sektion */
+.category-section {
+    margin-bottom: var(--spacing-xl);
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+/* Kategori Header */
+.category-header {
+    background: var(--black);
+    border-radius: 12px 12px 0 0;
+    overflow: hidden;
+}
+
+.category-header-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    color: var(--white);
+}
+
+.category-header-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.category-header-text {
+    flex-grow: 1;
+}
+
+.category-header-text h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Kategori Produkter */
+.category-products {
+    padding: var(--spacing-md);
+}
+
+.category-products-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+    padding-top: var(--spacing-sm);
+}
+
+/* Produktrutnät */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+}
+
+/* Anpassad uppdaterare */
+.custom-refresher {
+    --color: var(--ion-color-primary);
+}
+
+/* Responsiv design */
 @media (max-width: 1024px) {
-    .featured-products {
+    .product-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 768px) {
-    .home-section {
+    .container {
         padding: var(--spacing-sm);
     }
 
-    .category-grid {
-        grid-template-columns: repeat(3, 1fr);
+    .category-header-content {
+        padding: var(--spacing-sm);
+    }
+
+    .category-products {
+        padding: var(--spacing-sm);
+    }
+
+    .product-grid {
         gap: var(--spacing-sm);
     }
 
-    .section-title {
+    .category-header-text h3 {
         font-size: 1.1rem;
     }
 }
 
 @media (max-width: 480px) {
-    .featured-products {
+    .product-grid {
         grid-template-columns: 1fr;
-        gap: var(--spacing-sm);
     }
 
-    .category-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--spacing-sm);
+    .category-header-text h3 {
+        font-size: 1rem;
     }
 }
