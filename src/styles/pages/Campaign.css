@@ -6,7 +6,7 @@
 
 /* Campaign Banner */
 .campaign-banner {
-  background: var(--ion-color-primary);
+  background: var(--black);
   border-radius: 12px 12px 0 0;
   overflow: hidden;
 }
@@ -16,7 +16,7 @@
   align-items: center;
   gap: var(--spacing-md);
   padding: var(--spacing-md);
-  color: var(--ion-color-primary-contrast);
+  color: var(--white);
 }
 
 .campaign-banner-icon {

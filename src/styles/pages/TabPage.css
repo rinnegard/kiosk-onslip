@@ -1,151 +1,87 @@
-.shop-page {
-    background: var(--ion-background-color);
-  }
-  
-  .container {
-    max-width: var(--content-max-width);
-    margin: 0 auto;
-    padding: var(--spacing-md);
-  }
-  
-  /* Header Styling */
-  .page-header {
-    margin-bottom: var(--spacing-lg);
-  }
-  
-  .page-title {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-  }
-  
-  .page-title h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
-    color: var(--ion-text-color);
-  }
-  
-  .page-title ion-icon {
-    font-size: 24px;
-  }
-  
-  /* Product Grid */
+.container {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-md);
+}
+
+/* Laddningstillstånd */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: var(--spacing-md);
+  color: var(--ion-text-color-medium);
+}
+
+.loading-state ion-spinner {
+  --color: var(--ion-color-primary);
+}
+
+/* Tomt tillstånd */
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  text-align: center;
+  padding: var(--spacing-xl);
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  color: var(--ion-color-medium);
+  margin-bottom: var(--spacing-md);
+}
+
+.empty-state-container h2 {
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--ion-text-color);
+}
+
+.empty-state-container p {
+  margin: 0;
+  color: var(--ion-text-color-medium);
+}
+
+/* Produktrutnät */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-md);
+}
+
+/* Anpassad uppdaterare */
+.custom-refresher {
+  --color: var(--ion-color-primary);
+}
+
+/* Responsiv design */
+@media (max-width: 1200px) {
   .product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing-md);
+      grid-template-columns: repeat(3, 1fr);
   }
-  
-  /* Loading State */
-  .loading-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 60vh;
-    gap: var(--spacing-md);
-  }
-  
-  .loading-spinner {
-    --color: var(--ion-color-primary);
-    width: 48px;
-    height: 48px;
-  }
-  
-  .loading-text {
-    text-align: center;
-    color: var(--ion-text-color-medium);
-  }
-  
-  /* Empty State */
-  .empty-state-container {
-    min-height: 50vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-  }
-  
-  .empty-state-content {
-    max-width: 400px;
-    padding: var(--spacing-xl);
-  }
-  
-  .empty-state-content h2 {
-    font-size: 1.3rem;
-    margin-bottom: var(--spacing-sm);
-    color: var(--ion-text-color);
-  }
-  
-  .empty-state-content p {
-    color: var(--ion-text-color-medium);
-    margin-bottom: var(--spacing-lg);
-  }
-  
-  .retry-button {
-    --padding-start: var(--spacing-md);
-    --padding-end: var(--spacing-md);
-  }
-  
-  /* Error State */
-  .error-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 60vh;
-    text-align: center;
-    padding: var(--spacing-xl);
-  }
-  
-  .error-state h2 {
-    color: var(--ion-text-color);
-    margin-bottom: var(--spacing-md);
-  }
-  
-  /* Custom Refresher */
-  .custom-refresher {
-    --color: var(--ion-color-primary);
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 1200px) {
-    .product-grid {
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .container {
+}
+
+@media (max-width: 768px) {
+  .container {
       padding: var(--spacing-sm);
-    }
-  
-    .product-grid {
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+
+  .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .product-grid {
+      grid-template-columns: 1fr;
       gap: var(--spacing-sm);
-    }
-  
-    .page-title h1 {
-      font-size: 1.3rem;
-    }
-  
-    .page-title ion-icon {
-      font-size: 20px;
-    }
   }
-  
-  @media (max-width: 480px) {
-    .product-grid {
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 12px;
-    }
-  
-    .empty-state-content {
-      padding: var(--spacing-md);
-    }
-  
-    .page-title h1 {
-      font-size: 1.2rem;
-    }
-  }
+}

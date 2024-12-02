@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { IonSelect, IonSelectOption, IonSpinner } from "@ionic/react";
 import { Customer } from "../types/userTypes";
 import { useCustomer } from "../contexts/userContext";
@@ -10,6 +10,22 @@ interface CustomerListProps {
 
 export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) => {
     const { state: { customers, loading, error } } = useCustomer();
+    const [selectInterface, setSelectInterface] = useState<"action-sheet" | "popover">("popover");
+
+    useEffect(() => {
+        const handleResize = () => {
+            setSelectInterface(window.innerWidth < 768 ? "action-sheet" : "popover");
+        };
+
+        // Sätt initialt värde
+        handleResize();
+
+        // Lyssna på window resize
+        window.addEventListener('resize', handleResize);
+
+        // Cleanup
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     if (loading) {
         return (
@@ -43,7 +59,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
     return (
         <div className="customer-select-container">
             <IonSelect
-                interface="popover"
+                interface={selectInterface}
                 placeholder="Välj anställd..."
                 onIonChange={(e) => {
                     const selectedCustomer = customers.find(
@@ -54,6 +70,7 @@ export const CustomerList: React.FC<CustomerListProps> = ({ onCustomerSelect }) 
                     }
                 }}
                 className="modern-select"
+                toggleIcon="caret-down-outline"
             >
                 {sortedCustomers.map((customer: Customer) => (
                     <IonSelectOption 

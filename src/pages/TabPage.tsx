@@ -30,20 +30,12 @@ const TabPage: React.FC = () => {
 
     if (loading) {
         return (
-            <IonPage className="shop-page">
+            <IonPage>
                 <Header />
                 <IonContent>
-                    <div className="loading-container">
-                        <IonSpinner name="crescent" className="loading-spinner" />
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.2 }}
-                        >
-                            <IonText color="medium">
-                                <p>Laddar produkter...</p>
-                            </IonText>
-                        </motion.div>
+                    <div className="loading-state">
+                        <IonSpinner name="crescent" />
+                        <p>Laddar produkter...</p>
                     </div>
                 </IonContent>
             </IonPage>
@@ -54,11 +46,14 @@ const TabPage: React.FC = () => {
     
     if (!buttonMap || !buttonMap.id) {
         return (
-            <IonPage className="shop-page">
+            <IonPage>
                 <Header />
                 <IonContent>
-                    <div className="error-state">
-                        <h2>Kategori hittades inte</h2>
+                    <div className="empty-state-container">
+                        <IonText>
+                            <h2>Kategori hittades inte</h2>
+                            <p>Det finns inga produkter att visa just nu.</p>
+                        </IonText>
                         <IonButton routerLink="/">
                             Tillbaka till startsidan
                         </IonButton>
@@ -79,7 +74,7 @@ const TabPage: React.FC = () => {
         }));
 
     return (
-        <IonPage className="shop-page">
+        <IonPage>
             <Header />
             <IonContent>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh} className="custom-refresher">
@@ -99,41 +94,24 @@ const TabPage: React.FC = () => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                transition={{ duration: 0.5 }}
+                                transition={{ duration: 0.3 }}
                             >
-                                <div className="empty-state-content">
-                                    <IonText>
-                                        <h2>Inga produkter tillgängliga</h2>
-                                        <p>Det finns inga produkter att visa just nu.</p>
-                                    </IonText>
-                                    
-                                    <IonButton 
-                                        onClick={() => window.location.reload()}
-                                        className="retry-button"
-                                    >
-                                        <IonIcon slot="start" icon={refreshOutline} />
-                                        Försök igen
-                                    </IonButton>
-                                </div>
+                                <IonIcon icon={refreshOutline} className="empty-state-icon" />
+                                <IonText>
+                                    <h2>Inga produkter tillgängliga</h2>
+                                    <p>Det finns inga produkter att visa just nu.</p>
+                                </IonText>
                             </motion.div>
                         ) : (
-                            <section className="product-section">
-                                <div className="product-grid">
-                                    {validProducts.map(({ button }, index) => (
-                                        <motion.div
-                                            key={`${buttonMap.id}-${button.product}`}
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: index * 0.1 }}
-                                        >
-                                            <ProductCard
-                                                productId={button.product!}
-                                                index={index}
-                                            />
-                                        </motion.div>
-                                    ))}
-                                </div>
-                            </section>
+                            <div className="product-grid">
+                                {validProducts.map(({ button }, index) => (
+                                    <ProductCard
+                                        key={`${buttonMap.id}-${button.product}`}
+                                        productId={button.product!}
+                                        index={index}
+                                    />
+                                ))}
+                            </div>
                         )}
                     </AnimatePresence>
                 </div>
