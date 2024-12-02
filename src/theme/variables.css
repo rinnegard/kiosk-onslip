@@ -10,6 +10,7 @@
     --gray-200: #e5e7eb;
     --gray-300: #d1d5db;
     --gray-400: #9ca3af;
+    --black-200 : #1a1a1a;
 
     /* Typografi */
     --font-primary: "Space Grotesk", -apple-system, system-ui, sans-serif;
@@ -19,7 +20,7 @@
     --ion-default-font: var(--font-primary);
 
     /* Ionic Temafärger */
-    --ion-background-color: var(--gray-200);
+    --ion-background-color: var(--gray-300);
     --ion-background-color-rgb: 255, 255, 255;
     --ion-text-color: var(--black);
     --ion-text-color-rgb: 0, 0, 0;

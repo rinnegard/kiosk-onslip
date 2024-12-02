@@ -1,3 +1,4 @@
+/* Container */
 .container {
   max-width: var(--content-max-width);
   margin: 0 auto;
@@ -50,6 +51,59 @@
   color: var(--ion-text-color-medium);
 }
 
+/* Tab Sektion */
+.tab-section {
+  margin-bottom: var(--spacing-xl);
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+/* Tab Header */
+.tab-header {
+  background: var(--black);
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+}
+
+.tab-header-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  color: var(--white);
+}
+
+.tab-header-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.tab-header-text {
+  flex-grow: 1;
+}
+
+.tab-header-text h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Tab Produkter */
+.tab-products {
+  padding: var(--spacing-md);
+}
+
+.tab-products-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+  padding-top: var(--spacing-sm);
+}
+
 /* Produktrutnät */
 .product-grid {
   display: grid;
@@ -74,8 +128,20 @@
       padding: var(--spacing-sm);
   }
 
+  .tab-header-content {
+      padding: var(--spacing-sm);
+  }
+
+  .tab-products {
+      padding: var(--spacing-sm);
+  }
+
   .product-grid {
       grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tab-header-text h3 {
+      font-size: 1.1rem;
   }
 }
 
@@ -83,5 +149,9 @@
   .product-grid {
       grid-template-columns: 1fr;
       gap: var(--spacing-sm);
+  }
+
+  .tab-header-text h3 {
+      font-size: 1rem;
   }
 }
