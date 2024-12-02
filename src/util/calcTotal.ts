@@ -22,7 +22,6 @@ export async function calcTotal(items: API.Item[]) {
             campaign.rules.length > 1 || campaign.rules[0]?.products.length > 1
         );
     });
-    console.log(multiItemCampaigns);
 
     multiItemCampaigns.forEach((campaign) => {
         const { amount, rules } = campaign;
@@ -32,8 +31,6 @@ export async function calcTotal(items: API.Item[]) {
             campaign.rules[0].products.length > 1
         ) {
             if (campaign.type === "cheapest-free") {
-                console.log("cheapest");
-
                 campaign.rules.forEach((rule) => {
                     const { quantity, products } = rule;
 
@@ -71,8 +68,6 @@ export async function calcTotal(items: API.Item[]) {
                 campaign.type === "fixed-price" &&
                 campaign.rules.length <= 1
             ) {
-                console.log("fixed-price");
-
                 while (true) {
                     // Gather all products eligible for this campaign
                     const eligibleProducts = sortedCart.filter((item) =>
@@ -109,8 +104,6 @@ export async function calcTotal(items: API.Item[]) {
                     }
                 }
             } else if (rules.every((rule) => rule.products.length > 1)) {
-                console.log("rule");
-
                 while (true) {
                     const allProducts = sortedCart.flatMap((item) =>
                         item.product
@@ -149,7 +142,6 @@ export async function calcTotal(items: API.Item[]) {
                     if (!foundMatch || count <= 0) break;
                 }
             } else {
-                console.log("all");
                 while (true) {
                     const matchedItems = rules.map((rule) => {
                         const { quantity, products } = rule;
@@ -171,14 +163,10 @@ export async function calcTotal(items: API.Item[]) {
         }
     });
 
-    console.log(sortedCart);
-
     // Calculate the total after applying discounts from campaigns
     const prices = await Promise.all(
         sortedCart.map((item) => getCampaignPriceForItem(item))
     );
-
-    console.log(prices);
 
     const remainingTotal = prices.reduce((sum, price) => sum + price, 0);
 
@@ -191,23 +179,17 @@ export async function calcTotal(items: API.Item[]) {
         );
     });
 
-    console.log(total);
-
-    console.log(fullCampaigns);
-
     fullCampaigns.forEach((campaign) => {
         switch (campaign.type) {
             case "tab-fixed-amount":
                 if (campaign.amount) {
                     total = total - campaign.amount;
-                    console.log("fixed", total);
                 }
                 break;
             case "tab-percentage":
                 if (campaign["discount-rate"]) {
                     total =
                         total * (1 - (campaign["discount-rate"] || 0) / 100);
-                    console.log("%", total);
                 }
                 break;
             default:
