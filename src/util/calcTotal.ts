@@ -5,87 +5,139 @@ import { getCampaignPriceForItem } from "./getCampaignPrice";
 export async function calcTotal(items: API.Item[]) {
     let discountedTotal = 0;
 
-    // Deep clone the cart items to avoid mutating the original ones
-    const cartItems = structuredClone(items);
+    const cartItems: API.Item[] = structuredClone(items);
+
+    const sortedCart = cartItems.toSorted((item1, item2) => {
+        if (item1.price && item2.price) {
+            return item2.price - item1.price;
+        }
+        return 0;
+    });
 
     const api = initializeApi();
     const campaigns = await api.listCampaigns();
 
-    // Filter multi-item campaigns (those that involve multiple products)
     const multiItemCampaigns = campaigns.filter((campaign) => {
         return (
             campaign.rules.length > 1 || campaign.rules[0].products.length > 1
         );
     });
+    console.log(multiItemCampaigns);
 
-    // Process each campaign
     multiItemCampaigns.forEach((campaign) => {
         const { amount, rules } = campaign;
 
-        // If the campaign involves "any combination of items" (like 3 for 30)
-        if (rules.every((rule) => rule.products.length > 1)) {
-            let canApply = true;
+        if (
+            campaign.rules.length > 1 ||
+            campaign.rules[0].products.length > 1
+        ) {
+            if (campaign.type === "cheapest-free") {
+                console.log("cheapest");
 
-            while (canApply) {
-                // Flatten all products into a single list
-                const allProducts = cartItems.flatMap((item) =>
-                    item.product ? Array(item.quantity).fill(item.product) : []
-                );
+                campaign.rules.forEach((rule) => {
+                    const { quantity, products } = rule;
 
-                const campaignQuantity = rules[0].quantity; // Get the quantity needed for the campaign
+                    // Find matched items based on the rule's products
+                    const matchedItems = products
+                        .map((product) => {
+                            return sortedCart.filter(
+                                (item) =>
+                                    item.product === product &&
+                                    item.quantity >= quantity
+                            );
+                        })
+                        .flat();
 
-                if (allProducts.length >= campaignQuantity) {
-                    // We can apply the discount for every 'campaignQuantity' items
-                    discountedTotal += amount!; // Add the campaign discount
-                    // Deduct 'campaignQuantity' items from the cart
+                    if (matchedItems.length > 0) {
+                        // Sort matched items by price to find the cheapest one
+                        const cheapestItem = matchedItems.sort(
+                            (a, b) => (a!.price || 0) - (b!.price || 0)
+                        )[0];
+
+                        if (cheapestItem) {
+                            // Subtract the price of the cheapest item from the total (apply discount)
+                            discountedTotal -= cheapestItem.price!;
+
+                            // Reduce the quantity for the matched items (since they get the discount)
+                            matchedItems.forEach((item) => {
+                                if (item) {
+                                    item.quantity -= 1; // Decrease the quantity of the cheapest item
+                                }
+                            });
+                        }
+                    }
+                });
+            } else if (rules.every((rule) => rule.products.length > 1)) {
+                console.log("rule");
+
+                while (true) {
+                    const allProducts = sortedCart.flatMap((item) =>
+                        item.product
+                            ? Array(item.quantity).fill(item.product)
+                            : []
+                    );
+
+                    const campaignQuantity = rules[0].quantity;
+
+                    // Break if there aren't enough items for the campaign
+                    if (allProducts.length < campaignQuantity) break;
+
                     let count = campaignQuantity;
-                    cartItems.forEach((item) => {
-                        if (item.product && count > 0 && item.quantity > 0) {
+                    let foundMatch = false;
+
+                    sortedCart.forEach((item) => {
+                        const isProductInCampaign = rules.some((rule) =>
+                            rule.products.includes(item.product!)
+                        );
+
+                        if (
+                            isProductInCampaign &&
+                            count > 0 &&
+                            item.quantity > 0
+                        ) {
+                            foundMatch = true;
                             const takeQuantity = Math.min(item.quantity, count);
+                            discountedTotal += amount!;
+
                             item.quantity -= takeQuantity;
                             count -= takeQuantity;
                         }
                     });
-                } else {
-                    canApply = false;
+
+                    // If no matches were found or all required quantities were reduced, break
+                    if (!foundMatch || count <= 0) break;
                 }
-            }
-        }
-        // Handle exact product combinations (like 1 Fanta and 1 Coke for 5)
-        else {
-            let canApply = true;
-
-            while (canApply) {
-                const matchedItems = rules.map((rule) => {
-                    const { quantity, products } = rule;
-                    return cartItems.find(
-                        (item) =>
-                            products.includes(item.product!) &&
-                            item.quantity >= quantity
-                    );
-                });
-
-                // If any product combination cannot be matched, break the loop
-                if (matchedItems.some((item) => !item)) {
-                    canApply = false;
-                    break;
+            } else {
+                console.log("all");
+                while (true) {
+                    const matchedItems = rules.map((rule) => {
+                        const { quantity, products } = rule;
+                        return sortedCart.find(
+                            (item) =>
+                                products.includes(item.product!) &&
+                                item.quantity >= quantity
+                        );
+                    });
+                    if (matchedItems.some((item) => !item)) {
+                        break;
+                    }
+                    matchedItems.forEach((item, index) => {
+                        item!.quantity -= rules[index].quantity;
+                    });
+                    discountedTotal += amount!;
                 }
-
-                // Apply the campaign and reduce quantities for matched items
-                matchedItems.forEach((item, index) => {
-                    item!.quantity -= rules[index].quantity;
-                });
-
-                // Apply the campaign discount
-                discountedTotal += amount!;
             }
         }
     });
 
-    // Calculate the total for the remaining items at their regular prices
+    console.log(sortedCart);
+
+    // Calculate the total after applying discounts from campaigns
     const prices = await Promise.all(
-        cartItems.map((item) => getCampaignPriceForItem(item))
+        sortedCart.map((item) => getCampaignPriceForItem(item))
     );
+
+    console.log(prices);
 
     const remainingTotal = prices.reduce((sum, price) => sum + price, 0);
 
