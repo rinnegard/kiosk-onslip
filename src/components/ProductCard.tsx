@@ -43,6 +43,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     const [campaign, setCampaign] = useState<API.Campaign>();
     const [reducedPrice, setReducedPrice] = useState<number>();
     const [isAdded, setIsAdded] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
 
     useEffect(() => {
         async function fetchCampaigns() {
@@ -134,7 +135,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index! * 0.1 }}
         >
-            <IonCard className="product-card">
+            <IonCard 
+                className="product-card"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+            >
                 <div className="image-container">
                     <IonImg
                         src={product.description}
@@ -142,7 +147,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                         className="product-image"
                     />
                     {product.price && (
-                        <div className="price-badge">
+                        <motion.div 
+                            className="price-badge"
+                            animate={{ scale: isHovered ? 1.05 : 1 }}
+                            transition={{ duration: 0.2 }}
+                        >
                             <IonText>
                                 {reducedPrice ? (
                                     <div>
@@ -154,32 +163,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                                         </h3>
                                     </div>
                                 ) : (
-                                    <h3>{product.price.toFixed(2)} kr</h3>
+                                    <h3 className="price">{product.price.toFixed(2)} kr</h3>
                                 )}
                             </IonText>
-                        </div>
+                        </motion.div>
                     )}
                 </div>
-                {campaign?.type === "percentage" && (
-                    <div className="product-card-discount">
-                        -{campaignDisplay}%
-                    </div>
-                )}
-                {campaign?.type === "fixed-amount" && (
-                    <div className="product-card-discount">
-                        -{campaignDisplay}kr
-                    </div>
-                )}
-                {campaign?.type === "cheapest-free" && (
-                    <div className="product-card-discount">
-                        {campaignDisplay}
-                    </div>
-                )}
-                {campaign?.type === "fixed-price" && (
-                    <div className="product-card-discount">
-                        {campaignDisplay}
-                    </div>
-                )}
 
                 <AnimatePresence>
                     {campaign?.type && campaignDisplay && (
@@ -212,32 +201,37 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                             </IonBadge>
                         )}
 
-                        <IonButton
-                            className="add-to-cart-button"
-                            expand="block"
-                            disabled={loading || !product.price || isAdded}
-                            onClick={handleAddToCart}
-                            color={isAdded ? "success" : "primary"}
+                        <motion.div
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                         >
-                            <IonIcon
-                                icon={
-                                    isAdded
-                                        ? checkmarkCircleOutline
-                                        : product.price
-                                        ? cartOutline
-                                        : flashOutline
-                                }
-                                slot="start"
-                            />
-                            {loading
-                                ? "Laddar..."
-                                : !product.price
-                                ? "Ej tillgänglig"
-                                : isAdded
-                                ? "Tillagd i kundvagn"
-                                : "Lägg till i kundvagn"}
-                            <IonRippleEffect />
-                        </IonButton>
+                            <IonButton
+                                className="add-to-cart-button"
+                                expand="block"
+                                disabled={loading || !product.price || isAdded}
+                                onClick={handleAddToCart}
+                                color={isAdded ? "success" : undefined}
+                            >
+                                <IonIcon
+                                    icon={
+                                        isAdded
+                                            ? checkmarkCircleOutline
+                                            : product.price
+                                            ? cartOutline
+                                            : flashOutline
+                                    }
+                                    slot="start"
+                                />
+                                {loading
+                                    ? "Laddar..."
+                                    : !product.price
+                                    ? "Ej tillgänglig"
+                                    : isAdded
+                                    ? "Tillagd i kundvagn"
+                                    : "Lägg till i kundvagn"}
+                                <IonRippleEffect />
+                            </IonButton>
+                        </motion.div>
                     </div>
                 </IonCardContent>
             </IonCard>

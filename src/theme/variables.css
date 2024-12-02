@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
 
 :root {
-    /* Brand Colors */
+    /* Varumärkesfärger */
     --brand-green: #a5d666;
     --white: #ffffff;
     --black: #000000;
@@ -11,27 +11,27 @@
     --gray-300: #d1d5db;
     --gray-400: #9ca3af;
 
-    /* Typography */
+    /* Typografi */
     --font-primary: "Space Grotesk", -apple-system, system-ui, sans-serif;
 
-    /* Ionic Font Overrides */
+    /* Ionic Typsnitt Överskrivningar */
     --ion-font-family: var(--font-primary);
     --ion-default-font: var(--font-primary);
 
-    /* Ionic Theme Colors */
+    /* Ionic Temafärger */
     --ion-background-color: var(--gray-200);
     --ion-background-color-rgb: 255, 255, 255;
     --ion-text-color: var(--black);
     --ion-text-color-rgb: 0, 0, 0;
     --ion-text-color-medium: rgba(0, 0, 0, 0.6);
 
-    /* Component Colors */
+    /* Komponentfärger */
     --ion-toolbar-background: var(--black);
     --ion-tab-bar-background: var(--black);
     --ion-card-background: var(--white);
     --ion-item-background: var(--white);
 
-    /* Primary Color Configuration */
+    /* Primära Färginställningar */
     --ion-color-primary: var(--brand-green);
     --ion-color-primary-rgb: 165, 214, 102;
     --ion-color-primary-contrast: var(--black);
@@ -39,16 +39,16 @@
     --ion-color-primary-shade: #8fb859;
     --ion-color-primary-tint: #b4dd7c;
 
-    /* Button Colors */
+    /* Knappfärger */
     --button-background: var(--black);
     --button-text: var(--brand-green);
     --button-hover: #1a1a1a;
 
-    /* Layout Constants */
+    /* Layoutkonstanter */
     --nav-height: 56px;
-    --content-max-width: 1400px;
+    --content-max-width: 1200px; /* Justerad för smalare innehåll */
 
-    /* Spacing Scale */
+    /* Avståndsskala */
     --spacing-xs: 0.5rem;
     --spacing-sm: 1rem;
     --spacing-md: 1.5rem;
@@ -56,14 +56,14 @@
     --spacing-xl: 3rem;
 }
 
-/* Global styles */
+/* Globala stilar */
 body {
     font-family: var(--font-primary);
     -webkit-font-smoothing: antialiased;
     letter-spacing: -0.02em;
 }
 
-/* Force Ionic components to use our font */
+/* Tvinga Ionic-komponenter att använda vårt typsnitt */
 ion-content,
 ion-item,
 ion-label,
@@ -79,7 +79,7 @@ ion-tab-button {
     font-family: var(--font-primary) !important;
 }
 
-/* Ensure headings use our font */
+/* Säkerställ att rubriker använder vårt typsnitt */
 h1,
 h2,
 h3,

@@ -5,7 +5,7 @@
 .modern-select {
   width: 100%;
   --padding-start: var(--spacing-md);
-  --padding-end: var(--spacing-md);
+  --padding-end: 2.5rem;
   --padding-top: 14px;
   --padding-bottom: 14px;
   --border-radius: 12px;
@@ -13,6 +13,12 @@
   --border-width: 1px;
   --border-color: var(--gray-200);
   --placeholder-color: var(--gray-400);
+}
+
+.modern-select::part(icon) {
+  margin-right: 0.5rem;
+  position: absolute;
+  right: 0;
 }
 
 .customer-status {
