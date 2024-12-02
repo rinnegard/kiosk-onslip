@@ -17,9 +17,10 @@ import '../styles/pages/Campaign.css';
 
 interface CampaignBannerProps {
     campaign: API.Campaign;
+    productCount: number;
 }
 
-const CampaignBanner: React.FC<CampaignBannerProps> = ({ campaign }) => {
+const CampaignBanner: React.FC<CampaignBannerProps> = ({ campaign, productCount }) => {
     const getBannerText = () => {
         switch (campaign.type) {
             case "percentage":
@@ -45,7 +46,12 @@ const CampaignBanner: React.FC<CampaignBannerProps> = ({ campaign }) => {
             <div className="campaign-banner-content">
                 <IonIcon icon={ticketOutline} className="campaign-banner-icon" />
                 <div className="campaign-banner-text">
-                    <h3>{campaign.name}</h3>
+                    <div className="campaign-banner-title">
+                        <h3>{campaign.name}</h3>
+                        <IonBadge color="primary">
+                            {productCount} produkter
+                        </IonBadge>
+                    </div>
                     <p>{getBannerText()}</p>
                 </div>
             </div>
@@ -70,14 +76,12 @@ const CampaignSection: React.FC<{
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
         >
-            <CampaignBanner campaign={campaign} />
+            <CampaignBanner 
+                campaign={campaign} 
+                productCount={validProducts.length}
+            />
             
             <div className="campaign-products">
-                <div className="campaign-products-header">
-                    <IonBadge color="primary">
-                        {validProducts.length} produkter
-                    </IonBadge>
-                </div>
                 <div className="product-grid">
                     {validProducts.map((product, productIndex) => (
                         <ProductCard
@@ -135,7 +139,7 @@ export default function Campaign() {
             <Header />
             <IonContent>
                 <div className="container">
-                    <AnimatePresence mode="wait">
+                    <AnimatePresence mode="sync">
                         {campaigns.length === 0 ? (
                             <motion.div
                                 className="empty-state-container"

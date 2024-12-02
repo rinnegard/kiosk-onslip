@@ -36,17 +36,17 @@ const CategorySection: React.FC<{
                 <div className="category-header-content">
                     <IonIcon icon={categoryIcon} className="category-header-icon" />
                     <div className="category-header-text">
-                        <h3>{category.name}</h3>
+                        <div className="category-header-title">
+                            <h3>{category.name}</h3>
+                            <IonBadge color="primary">
+                                {products.length} produkter
+                            </IonBadge>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <div className="category-products">
-                <div className="category-products-header">
-                    <IonBadge color="primary">
-                        {products.length} produkter
-                    </IonBadge>
-                </div>
                 <div className="product-grid">
                     {products.map((productId, productIndex) => (
                         <ProductCard

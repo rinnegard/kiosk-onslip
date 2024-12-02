@@ -36,17 +36,17 @@ const TabSection: React.FC<{
                 <div className="tab-header-content">
                     <IonIcon icon={tabIcon} className="tab-header-icon" />
                     <div className="tab-header-text">
-                        <h3>{name}</h3>
+                        <div className="tab-header-title">
+                            <h3>{name}</h3>
+                            <IonBadge color="primary">
+                                {products.length} produkter
+                            </IonBadge>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <div className="tab-products">
-                <div className="tab-products-header">
-                    <IonBadge color="primary">
-                        {products.length} produkter
-                    </IonBadge>
-                </div>
                 <div className="product-grid">
                     {products.map(({ button }, index) => (
                         <ProductCard

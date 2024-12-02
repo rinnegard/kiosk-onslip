@@ -85,7 +85,13 @@
   flex-grow: 1;
 }
 
-.tab-header-text h3 {
+.tab-header-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tab-header-title h3 {
   margin: 0;
   font-size: 1.2rem;
   font-weight: 600;
@@ -94,14 +100,6 @@
 /* Tab Produkter */
 .tab-products {
   padding: var(--spacing-md);
-}
-
-.tab-products-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--spacing-md);
-  padding-top: var(--spacing-sm);
 }
 
 /* Produktrutnät */

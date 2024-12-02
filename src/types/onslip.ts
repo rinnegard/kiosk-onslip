@@ -8,6 +8,7 @@ export type Button = API.Button;
 export type Product = API.Product;
 export type ButtonMap = API.ButtonMap;
 export type ButtonMapItem = API.ButtonMapItem;
+export type Payment = API.Payment;
 
 // Stored versions of entities (includes metadata like id, created, updated etc)
 export type StoredTab = API.Stored_Tab;
