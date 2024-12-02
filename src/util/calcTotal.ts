@@ -67,6 +67,47 @@ export async function calcTotal(items: API.Item[]) {
                         }
                     }
                 });
+            } else if (
+                campaign.type === "fixed-price" &&
+                campaign.rules.length <= 1
+            ) {
+                console.log("fixed-price");
+
+                while (true) {
+                    // Gather all products eligible for this campaign
+                    const eligibleProducts = sortedCart.filter((item) =>
+                        rules.some((rule) =>
+                            rule.products.includes(item.product!)
+                        )
+                    );
+
+                    const allProducts = eligibleProducts.flatMap((item) =>
+                        Array(item.quantity).fill(item)
+                    );
+
+                    const campaignQuantity = rules[0].quantity;
+
+                    if (allProducts.length >= campaignQuantity) {
+                        discountedTotal += amount!; // Apply the fixed price
+                        let count = campaignQuantity;
+
+                        eligibleProducts.forEach((item) => {
+                            if (count > 0 && item.quantity > 0) {
+                                const takeQuantity = Math.min(
+                                    item.quantity,
+                                    count
+                                );
+                                item.quantity -= takeQuantity;
+                                count -= takeQuantity;
+                            }
+                        });
+
+                        // Break when no more full sets can be formed
+                        if (count > 0) break;
+                    } else {
+                        break; // Exit if not enough items to meet the requirement
+                    }
+                }
             } else if (rules.every((rule) => rule.products.length > 1)) {
                 console.log("rule");
 
