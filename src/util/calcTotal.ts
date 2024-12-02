@@ -19,7 +19,7 @@ export async function calcTotal(items: API.Item[]) {
 
     const multiItemCampaigns = campaigns.filter((campaign) => {
         return (
-            campaign.rules.length > 1 || campaign.rules[0].products.length > 1
+            campaign.rules.length > 1 || campaign.rules[0]?.products.length > 1
         );
     });
     console.log(multiItemCampaigns);
@@ -182,7 +182,40 @@ export async function calcTotal(items: API.Item[]) {
 
     const remainingTotal = prices.reduce((sum, price) => sum + price, 0);
 
-    return discountedTotal + remainingTotal;
+    let total = discountedTotal + remainingTotal;
+
+    const fullCampaigns = campaigns.filter((campaign) => {
+        return (
+            campaign.type === "tab-fixed-amount" ||
+            campaign.type === "tab-percentage"
+        );
+    });
+
+    console.log(total);
+
+    console.log(fullCampaigns);
+
+    fullCampaigns.forEach((campaign) => {
+        switch (campaign.type) {
+            case "tab-fixed-amount":
+                if (campaign.amount) {
+                    total = total - campaign.amount;
+                    console.log("fixed", total);
+                }
+                break;
+            case "tab-percentage":
+                if (campaign["discount-rate"]) {
+                    total =
+                        total * (1 - (campaign["discount-rate"] || 0) / 100);
+                    console.log("%", total);
+                }
+                break;
+            default:
+                break;
+        }
+    });
+
+    return total;
 }
 
 export const calcTotalWithoutCampaigns = (items: API.Item[]): number => {
