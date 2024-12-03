@@ -141,14 +141,27 @@ export async function calcTotal(items: API.Item[]) {
                             count -= takeQuantity;
                         });
 
-                        // Calculate the discount amount (fixed amount for the first campaignQuantity items)
-                        if (count === 0) {
-                            totalDiscountedPrice = amount!; // Only apply the discount once all eligible items are accounted for
-                        }
+                        if (campaign.type === "fixed-amount") {
+                            // Calculate the discount amount (fixed amount for the first campaignQuantity items)
+                            if (count === 0) {
+                                totalDiscountedPrice = amount!; // Only apply the discount once all eligible items are accounted for
+                            }
 
-                        // Apply the discount to the total price of eligible items
-                        discountedTotal +=
-                            totalEligiblePrice - totalDiscountedPrice;
+                            // Apply the discount to the total price of eligible items
+                            discountedTotal +=
+                                totalEligiblePrice - totalDiscountedPrice;
+                        } else {
+                            if (count === 0) {
+                                totalDiscountedPrice =
+                                    (totalEligiblePrice *
+                                        (campaign["discount-rate"] || 0)) /
+                                    100;
+                            }
+
+                            // Apply the discount to the total price of eligible items
+                            discountedTotal +=
+                                totalEligiblePrice - totalDiscountedPrice;
+                        }
                     }
 
                     // Exit the loop if not enough items to meet the requirement
