@@ -82,6 +82,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     setReducedPrice(bestCampaign.amount);
                     break;
                 case "percentage":
+                    if (
+                        bestCampaign.rules[0].quantity > 1 ||
+                        bestCampaign.rules.length > 1
+                    ) {
+                        setCampaignDisplay(bestCampaign.name);
+                        break;
+                    }
                     setReducedPrice(
                         (1 - bestCampaign["discount-rate"]! / 100) *
                             product?.price!
@@ -135,7 +142,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index! * 0.1 }}
         >
-            <IonCard 
+            <IonCard
                 className="product-card"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
@@ -147,7 +154,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                         className="product-image"
                     />
                     {product.price && (
-                        <motion.div 
+                        <motion.div
                             className="price-badge"
                             animate={{ scale: isHovered ? 1.05 : 1 }}
                             transition={{ duration: 0.2 }}
@@ -163,7 +170,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                                         </h3>
                                     </div>
                                 ) : (
-                                    <h3 className="price">{product.price.toFixed(2)} kr</h3>
+                                    <h3 className="price">
+                                        {product.price.toFixed(2)} kr
+                                    </h3>
                                 )}
                             </IonText>
                         </motion.div>
@@ -178,7 +187,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                             exit={{ opacity: 0, scale: 0.8 }}
                             className="product-card-discount"
                         >
-                            {campaign?.type === "percentage"
+                            {typeof campaignDisplay === "string"
+                                ? campaignDisplay
+                                : campaign?.type === "percentage"
                                 ? `-${campaignDisplay}%`
                                 : campaign?.type === "fixed-amount"
                                 ? `-${campaignDisplay}kr`
