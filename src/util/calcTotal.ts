@@ -31,12 +31,9 @@ export async function calcTotal(items: API.Item[]) {
             campaign.rules[0].products.length > 1
         ) {
             if (campaign.type === "cheapest-free") {
-                console.log("chepest", campaign.name);
-
                 campaign.rules.forEach((rule) => {
                     const { quantity, products } = rule;
 
-                    // Find matched items based on the rule's products
                     const matchedItems = products
                         .map((product) => {
                             return sortedCart.filter(
@@ -48,19 +45,16 @@ export async function calcTotal(items: API.Item[]) {
                         .flat();
 
                     if (matchedItems.length > 0) {
-                        // Sort matched items by price to find the cheapest one
                         const cheapestItem = matchedItems.sort(
                             (a, b) => (a!.price || 0) - (b!.price || 0)
                         )[0];
 
                         if (cheapestItem) {
-                            // Subtract the price of the cheapest item from the total (apply discount)
                             discountedTotal -= cheapestItem.price!;
 
-                            // Reduce the quantity for the matched items (since they get the discount)
                             matchedItems.forEach((item) => {
                                 if (item) {
-                                    item.quantity -= 1; // Decrease the quantity of the cheapest item
+                                    item.quantity -= 1;
                                 }
                             });
                         }
@@ -70,9 +64,7 @@ export async function calcTotal(items: API.Item[]) {
                 campaign.type === "fixed-price" &&
                 campaign.rules.length <= 1
             ) {
-                console.log("fixed-price1", campaign.name);
                 while (true) {
-                    // Gather all products eligible for this campaign
                     const eligibleProducts = sortedCart.filter((item) =>
                         rules.some((rule) =>
                             rule.products.includes(item.product!)
@@ -86,7 +78,7 @@ export async function calcTotal(items: API.Item[]) {
                     const campaignQuantity = rules[0].quantity;
 
                     if (allProducts.length >= campaignQuantity) {
-                        discountedTotal += amount!; // Apply the fixed price
+                        discountedTotal += amount!;
                         let count = campaignQuantity;
 
                         eligibleProducts.forEach((item) => {
@@ -100,20 +92,16 @@ export async function calcTotal(items: API.Item[]) {
                             }
                         });
 
-                        // Break when no more full sets can be formed
                         if (count > 0) break;
                     } else {
-                        break; // Exit if not enough items to meet the requirement
+                        break;
                     }
                 }
             } else if (
                 campaign.type === "fixed-amount" ||
                 campaign.type === "percentage"
             ) {
-                console.log("percentfixed", campaign.name);
-
                 while (true) {
-                    // Gather all products eligible for this campaign
                     const eligibleProducts = sortedCart.filter((item) =>
                         rules.some((rule) =>
                             rule.products.includes(item.product!)
@@ -142,12 +130,10 @@ export async function calcTotal(items: API.Item[]) {
                         });
 
                         if (campaign.type === "fixed-amount") {
-                            // Calculate the discount amount (fixed amount for the first campaignQuantity items)
                             if (count === 0) {
-                                totalDiscountedPrice = amount!; // Only apply the discount once all eligible items are accounted for
+                                totalDiscountedPrice = amount!;
                             }
 
-                            // Apply the discount to the total price of eligible items
                             discountedTotal +=
                                 totalEligiblePrice - totalDiscountedPrice;
                         } else {
@@ -158,17 +144,14 @@ export async function calcTotal(items: API.Item[]) {
                                     100;
                             }
 
-                            // Apply the discount to the total price of eligible items
                             discountedTotal +=
                                 totalEligiblePrice - totalDiscountedPrice;
                         }
                     }
 
-                    // Exit the loop if not enough items to meet the requirement
                     break;
                 }
             } else if (rules.every((rule) => rule.products.length > 1)) {
-                console.log("other", campaign.name);
                 while (true) {
                     const allProducts = sortedCart.flatMap((item) =>
                         item.product
@@ -178,7 +161,6 @@ export async function calcTotal(items: API.Item[]) {
 
                     const campaignQuantity = rules[0].quantity;
 
-                    // Break if there aren't enough items for the campaign
                     if (allProducts.length < campaignQuantity) break;
 
                     let count = campaignQuantity;
@@ -203,11 +185,9 @@ export async function calcTotal(items: API.Item[]) {
                         }
                     });
 
-                    // If no matches were found or all required quantities were reduced, break
                     if (!foundMatch || count <= 0) break;
                 }
             } else {
-                console.log("else", campaign.name);
                 while (true) {
                     const matchedItems = rules.map((rule) => {
                         const { quantity, products } = rule;
@@ -229,7 +209,6 @@ export async function calcTotal(items: API.Item[]) {
         }
     });
 
-    // Calculate the total after applying discounts from campaigns
     const prices = await Promise.all(
         sortedCart.map((item) => getCampaignPriceForItem(item))
     );
