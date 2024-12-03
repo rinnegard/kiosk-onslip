@@ -23,6 +23,8 @@ export async function calcTotal(items: API.Item[]) {
         );
     });
 
+    console.log(multiItemCampaigns);
+
     multiItemCampaigns.forEach((campaign) => {
         const { amount, rules } = campaign;
 
@@ -103,6 +105,47 @@ export async function calcTotal(items: API.Item[]) {
                         break; // Exit if not enough items to meet the requirement
                     }
                 }
+            } else if (
+                campaign.type === "fixed-amount" ||
+                campaign.type === "percentage"
+            ) {
+                console.log("fixed", campaign.name);
+
+                while (true) {
+                    const eligibleItems = sortedCart.filter((item) =>
+                        rules.some((rule) =>
+                            rule.products.includes(item.product!)
+                        )
+                    );
+
+                    const allProducts = eligibleItems.flatMap((item) =>
+                        Array(item.quantity).fill(item)
+                    );
+
+                    const campaignQuantity = rules[0].quantity;
+                    if (allProducts.length < campaignQuantity) break;
+
+                    let totalEligiblePrice = 0;
+                    let count = campaignQuantity;
+
+                    eligibleItems.forEach((item) => {
+                        if (count <= 0) return;
+                        const takeQuantity = Math.min(item.quantity, count);
+                        totalEligiblePrice += (item.price || 0) * takeQuantity;
+                        item.quantity -= takeQuantity;
+                        count -= takeQuantity;
+                    });
+
+                    if (campaign.type === "fixed-amount") {
+                        discountedTotal -= amount!;
+                    } else if (campaign.type === "percentage") {
+                        const discount =
+                            (totalEligiblePrice *
+                                (campaign["discount-rate"] || 0)) /
+                            100;
+                        discountedTotal -= discount;
+                    }
+                }
             } else if (rules.every((rule) => rule.products.length > 1)) {
                 while (true) {
                     const allProducts = sortedCart.flatMap((item) =>
@@ -131,7 +174,11 @@ export async function calcTotal(items: API.Item[]) {
                         ) {
                             foundMatch = true;
                             const takeQuantity = Math.min(item.quantity, count);
-                            discountedTotal += amount!;
+                            discountedTotal +=
+                                amount ||
+                                item.price! *
+                                    (1 -
+                                        (campaign["discount-rate"] || 0) / 100);
 
                             item.quantity -= takeQuantity;
                             count -= takeQuantity;
@@ -156,8 +203,11 @@ export async function calcTotal(items: API.Item[]) {
                     }
                     matchedItems.forEach((item, index) => {
                         item!.quantity -= rules[index].quantity;
+                        discountedTotal +=
+                            amount ||
+                            item!.price! *
+                                (1 - (campaign["discount-rate"] || 0) / 100);
                     });
-                    discountedTotal += amount!;
                 }
             }
         }
