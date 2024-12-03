@@ -23,15 +23,31 @@ export async function getCampaignPriceForItem(item: API.Item): Promise<number> {
 
     switch (campaign.type) {
         case "fixed-amount":
-            reducedPrice = (price - (campaign.amount || 0)) * quantity;
-            break;
+            if (quantity >= campaign.rules[0]?.quantity) {
+                const requiredQuantity = campaign.rules[0]?.quantity || 1;
+                const divisibleUnits = Math.floor(quantity / requiredQuantity);
+                reducedPrice =
+                    price * quantity - (campaign.amount || 0) * divisibleUnits;
+                break;
+            }
         case "percentage":
-            reducedPrice =
-                price * quantity * (1 - (campaign["discount-rate"] || 0) / 100);
-            break;
+            if (quantity >= campaign.rules[0]?.quantity) {
+                const requiredQuantity = campaign.rules[0]?.quantity || 1;
+                const divisibleUnits = Math.floor(quantity / requiredQuantity);
+                const remainingQuantity = quantity % requiredQuantity;
+                console.log(1 - (campaign["discount-rate"] || 0) / 100);
+
+                reducedPrice =
+                    price *
+                        requiredQuantity *
+                        divisibleUnits *
+                        (1 - (campaign["discount-rate"] || 0) / 100) +
+                    remainingQuantity * price;
+                break;
+            }
         case "fixed-price":
-            const requiredQuantity = campaign.rules[0]?.quantity || 1;
-            if (quantity >= requiredQuantity) {
+            if (quantity >= campaign.rules[0]?.quantity) {
+                const requiredQuantity = campaign.rules[0]?.quantity || 1;
                 const remainingQuantity = quantity % requiredQuantity;
                 const divisibleUnits = Math.floor(quantity / requiredQuantity);
 

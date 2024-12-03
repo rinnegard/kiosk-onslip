@@ -5,7 +5,7 @@ import {
     IonText,
     IonSpinner,
     IonIcon,
-    IonBadge
+    IonBadge,
 } from "@ionic/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { initializeApi } from "../api/config";
@@ -13,14 +13,17 @@ import { API } from "@onslip/onslip-360-web-api";
 import { ProductCard } from "../components/ProductCard";
 import { Header } from "../components/Header";
 import { flash, ticketOutline } from "ionicons/icons";
-import '../styles/pages/Campaign.css';
+import "../styles/pages/Campaign.css";
 
 interface CampaignBannerProps {
     campaign: API.Campaign;
     productCount: number;
 }
 
-const CampaignBanner: React.FC<CampaignBannerProps> = ({ campaign, productCount }) => {
+const CampaignBanner: React.FC<CampaignBannerProps> = ({
+    campaign,
+    productCount,
+}) => {
     const getBannerText = () => {
         switch (campaign.type) {
             case "percentage":
@@ -37,14 +40,17 @@ const CampaignBanner: React.FC<CampaignBannerProps> = ({ campaign, productCount 
     };
 
     return (
-        <motion.div 
+        <motion.div
             className="campaign-banner"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
         >
             <div className="campaign-banner-content">
-                <IonIcon icon={ticketOutline} className="campaign-banner-icon" />
+                <IonIcon
+                    icon={ticketOutline}
+                    className="campaign-banner-icon"
+                />
                 <div className="campaign-banner-text">
                     <div className="campaign-banner-title">
                         <h3>{campaign.name}</h3>
@@ -64,9 +70,9 @@ const CampaignSection: React.FC<{
     products: API.Product[];
     index: number;
 }> = ({ campaign, products, index }) => {
-    const allCampaignProducts = campaign.rules.flatMap(rule => rule.products);
+    const allCampaignProducts = campaign.rules.flatMap((rule) => rule.products);
     const validProducts = allCampaignProducts
-        .map(productId => products.find(p => p.id === productId))
+        .map((productId) => products.find((p) => p.id === productId))
         .filter((product): product is API.Product => product !== undefined);
 
     return (
@@ -76,11 +82,11 @@ const CampaignSection: React.FC<{
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
         >
-            <CampaignBanner 
-                campaign={campaign} 
+            <CampaignBanner
+                campaign={campaign}
                 productCount={validProducts.length}
             />
-            
+
             <div className="campaign-products">
                 <div className="product-grid">
                     {validProducts.map((product, productIndex) => (
@@ -107,12 +113,12 @@ export default function Campaign() {
                 const api = initializeApi();
                 const [campaignRes, productRes] = await Promise.all([
                     api.listCampaigns(),
-                    api.listProducts()
+                    api.listProducts(),
                 ]);
                 setCampaigns(campaignRes);
                 setProducts(productRes);
             } catch (error) {
-                console.error('Failed to fetch data:', error);
+                console.error("Failed to fetch data:", error);
             } finally {
                 setLoading(false);
             }
@@ -148,10 +154,15 @@ export default function Campaign() {
                                 exit={{ opacity: 0, y: -20 }}
                                 transition={{ duration: 0.3 }}
                             >
-                                <IonIcon icon={ticketOutline} className="empty-state-icon" />
+                                <IonIcon
+                                    icon={ticketOutline}
+                                    className="empty-state-icon"
+                                />
                                 <IonText>
                                     <h2>Inga kampanjer tillgängliga</h2>
-                                    <p>Det finns inga aktiva kampanjer just nu.</p>
+                                    <p>
+                                        Det finns inga aktiva kampanjer just nu.
+                                    </p>
                                 </IonText>
                             </motion.div>
                         ) : (
