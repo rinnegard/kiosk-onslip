@@ -55,8 +55,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
             const stock = await api.listStockBalances(1, `id:${product.id}`);
 
-            console.log(product.name, stock[0].quantity);
-
             setStockQuantity(stock[0].quantity || 0);
 
             const campaigns = await api.listCampaigns();
