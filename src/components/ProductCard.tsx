@@ -11,6 +11,7 @@ import {
     IonIcon,
     IonRippleEffect,
     IonImg,
+    IonCardSubtitle,
 } from "@ionic/react";
 import {
     cartOutline,
@@ -44,12 +45,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     const [reducedPrice, setReducedPrice] = useState<number>();
     const [isAdded, setIsAdded] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const [stockQuantity, setStockQuantity] = useState<number>(0);
 
     useEffect(() => {
         async function fetchCampaigns() {
             if (!product?.price) return;
 
             const api = initializeApi();
+
+            const stock = await api.listStockBalances(1, `id:${product.id}`);
+
+            setStockQuantity(stock[0].quantity || 0);
+
             const campaigns = await api.listCampaigns();
             const filteredCampaigns = campaigns.filter((campaign) =>
                 campaign.rules.some((rule) => rule.products.includes(productId))
@@ -201,6 +208,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 <IonCardHeader>
                     <IonCardTitle className="product-title">
                         {product.name}
+                        {stockQuantity > 0 ? (
+                            <IonCardSubtitle>
+                                I lager: {stockQuantity}st
+                            </IonCardSubtitle>
+                        ) : (
+                            <IonCardSubtitle>Tillfälligt Slut</IonCardSubtitle>
+                        )}
                     </IonCardTitle>
                 </IonCardHeader>
 
@@ -219,7 +233,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                             <IonButton
                                 className="add-to-cart-button"
                                 expand="block"
-                                disabled={loading || !product.price || isAdded}
+                                disabled={
+                                    loading ||
+                                    !product.price ||
+                                    isAdded ||
+                                    stockQuantity === 0
+                                }
                                 onClick={handleAddToCart}
                                 color={isAdded ? "success" : undefined}
                             >
